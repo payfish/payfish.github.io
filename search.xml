@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>nacos部署相关问题</title>
+      <link href="/2024/03/15/nacos-bu-shu-xiang-guan-wen-ti/"/>
+      <url>/2024/03/15/nacos-bu-shu-xiang-guan-wen-ti/</url>
+      
+        <content type="html"><![CDATA[<h2 id="一、配置NACOS"><a href="#一、配置NACOS" class="headerlink" title="一、配置NACOS"></a>一、配置NACOS</h2><ul><li>下载好的nacos压缩包解压，进入bin</li><li>控制台输入.&#x2F;startup.cmd -m standalone本地启动</li><li>点击生成的链接，访问不了的话替换链接中的ip为本机的ip地址</li><li>登录nacos，默认账号密码均为nacos</li></ul><h2 id="二、配置nacos集群"><a href="#二、配置nacos集群" class="headerlink" title="二、配置nacos集群"></a>二、配置nacos集群</h2><ul><li>准备三个nacos文件夹，分别修改其中的application.properties的server.port</li></ul><center>    <img style="border-radius: 0.3125em;    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);"     src="image.png">    <br>    <div style="color:orange; border-bottom: 1px solid #d9d9d9;    display: inline-block;    color: #999;    padding: 2px;">nacos集群文件夹</div></center><center>    <img style="border-radius: 0.3125em;    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);"     src="image-1.png">    <br>    <div style="color:orange; border-bottom: 1px solid #d9d9d9;    display: inline-block;    color: #999;    padding: 2px;">端口号</div></center><ul><li>删掉cluster.conf.example的后缀example，在其中添加所有端口号</li><li>直接运行每个nacos的startup.cmd，集群部署成功</li><li>报错no jdbc obtain, 打开navicat连接一下数据库就ok</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 微服务 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 创建文章 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+  
+  
+</search>
