@@ -4,13 +4,50 @@
   
     
     <entry>
-      <title>测试图片</title>
-      <link href="/2024/03/15/ce-shi-tu-pian/"/>
-      <url>/2024/03/15/ce-shi-tu-pian/</url>
+      <title>Nacos报错：failed to req API:/nacos/v1/ns/instance after all servers([localhost:8848]) tried</title>
+      <link href="/2024/03/15/nacos-bao-cuo-failed-to-req-api-nacos-v1-ns-instance-after-all-servers-localhost-8848-tried/"/>
+      <url>/2024/03/15/nacos-bao-cuo-failed-to-req-api-nacos-v1-ns-instance-after-all-servers-localhost-8848-tried/</url>
       
-        <content type="html"><![CDATA[]]></content>
+        <content type="html"><![CDATA[<h1 id="Nacos报错：failed-to-req-API-nacos-v1-ns-instance-after-all-servers-localhost-8848-tried"><a href="#Nacos报错：failed-to-req-API-nacos-v1-ns-instance-after-all-servers-localhost-8848-tried" class="headerlink" title="Nacos报错：failed to req API:&#x2F;nacos&#x2F;v1&#x2F;ns&#x2F;instance after all servers([localhost:8848]) tried"></a>Nacos报错：failed to req API:&#x2F;nacos&#x2F;v1&#x2F;ns&#x2F;instance after all servers([localhost:8848]) tried</h1><p>添加nacos作为配置中心的依赖就好了，项目启动后，会根据bootstrap.yml文件中的拉取地址拉取配置。没有导入nacos配置中心的依赖是不可能去拉取配置的。下面附上nacos作为注册中心和配置中心的maven依赖</p><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--引入nacos 注册中心依赖--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-nacos-discovery<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--引入nacos config配置依赖--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-nacos-config<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure><p>若还是不行，尝试新建一个bootstrap.yml文件，把配置放进去，不知道为什么就启动成功了，绕过了之前的一堆报错，connect、server之类</p><center>    <img style="border-radius: 0.3125em;    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" src="/2024/03/15/nacos-bao-cuo-failed-to-req-api-nacos-v1-ns-instance-after-all-servers-localhost-8848-tried/image.png">    <br>    <div style="color:orange; border-bottom: 1px solid #d9d9d9;    display: inline-block;    color: #999;    padding: 2px;">bootstrap.yml</div></center>]]></content>
       
       
+      <categories>
+          
+          <category> 微服务 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> nacos </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Public Key Retrieval is not allowed</title>
+      <link href="/2024/03/15/public-key-retrieval-is-not-allowed/"/>
+      <url>/2024/03/15/public-key-retrieval-is-not-allowed/</url>
+      
+        <content type="html"><![CDATA[<h2 id="1、Public-Key-Retrieval-is-not-allowed"><a href="#1、Public-Key-Retrieval-is-not-allowed" class="headerlink" title="1、Public Key Retrieval is not allowed"></a>1、Public Key Retrieval is not allowed</h2><p>当使用数据库查询第一条数据的时候，发现报了这个Public Key Retrieval is not allowed（不允许检索公钥）。出现这个问题原因是：mysql8以上版本默认使用 sha256_password 认证，密码在传输过程中必须加密保护，如果无法使用 TLS，就需要使用 RSA 公钥加密</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">url:jdbc:mysql://localhost:3306/cloud-user?useSSL=false&amp;allowPublicKeyRetrieval=true</span><br></pre></td></tr></table></figure><p><code>allowPublicKeyRetrieval=True</code>可能会导致恶意的代理通过中间人攻击(MITM)获取到明文密码，所以默认是关闭的，必须显式开启</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> springboot </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> spring </tag>
+            
+        </tags>
       
     </entry>
     
@@ -33,7 +70,7 @@
       
         <tags>
             
-            <tag> 创建文章 </tag>
+            <tag> nacos </tag>
             
         </tags>
       
