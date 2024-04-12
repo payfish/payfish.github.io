@@ -1,3 +1,29 @@
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="<%- url_for('/libs/codeBlock/codeBlockFunction.js') %>"></script>
+
+<!-- 代码语言 -->
+<% if (theme.code.lang) { %>
+<script type="text/javascript" src="<%- url_for('/libs/codeBlock/codeLang.js') %>"></script>
+<% } %>
+
+<!-- 代码块复制 -->
+<% if (theme.code.copy) { %>
+<script type="text/javascript" src="<%- url_for('/libs/codeBlock/codeCopy.js') %>"></script>
+<% } %>
+
+<!-- 代码块收缩 -->
+<% if (theme.code.shrink) { %>
+<script type="text/javascript" src="<%- url_for('/libs/codeBlock/codeShrink.js') %>"></script>
+<% } %>
+
+<!-- 代码块折行 -->
+<% if (!theme.code.break) { %>
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+<% } %>
+
+
 <!-- 文章内容详情 -->
 <div id="artDetail">
     <div class="card">
