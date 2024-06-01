@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>Synchronized关键字</title>
+    <link href="/2024/05/22/Synchronized%E5%85%B3%E9%94%AE%E5%AD%97/"/>
+    <url>/2024/05/22/Synchronized%E5%85%B3%E9%94%AE%E5%AD%97/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    <categories>
+      
+      <category>多线程</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Java并发</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>线程池</title>
+    <link href="/2024/05/18/%E7%BA%BF%E7%A8%8B%E6%B1%A0/"/>
+    <url>/2024/05/18/%E7%BA%BF%E7%A8%8B%E6%B1%A0/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>动态代理与反射</title>
+    <link href="/2024/05/17/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E4%B8%8E%E5%8F%8D%E5%B0%84/"/>
+    <url>/2024/05/17/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E4%B8%8E%E5%8F%8D%E5%B0%84/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    <categories>
+      
+      <category>Java</category>
+      
+    </categories>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>HTTP总结</title>
+    <link href="/2024/05/16/HTTP%E6%80%BB%E7%BB%93/"/>
+    <url>/2024/05/16/HTTP%E6%80%BB%E7%BB%93/</url>
+    
+    <content type="html"><![CDATA[<h1 id="HTTP基本概念"><a href="#HTTP基本概念" class="headerlink" title="HTTP基本概念"></a>HTTP基本概念</h1><p>1、HTTP是什么？<br>HTTP 是超文本传输协议，也就是HyperText Transfer Protocol。</p><ul><li>超文本：它就是超越了普通文本的文本，它是文字、图片、视频等的混合体，最关键有超链接，能从一个超文本跳转到另外一个超文本。</li><li>传输：HTTP 是一个在计算机世界里专门用来在<strong>两点之间传输数据</strong>的约定和规范。</li><li>协议：它使用计算机能够理解的语言确立了一种计算机之间交流通信的规范（两个以上的参与者），以及相关的各种控制和错误处理方式（行为约定和规范）。</li></ul><p>2、HTTP状态码</p><ul><li>200 OK：成功</li><li>3xx：表示客户端请求的资源发生了变动，需要客户端用新的 URL 重新发送请求获取资源，也就是<strong>重定向</strong>。</li><li>4xx：表示客户端发送的报文有误，服务器无法处理，属于客户端的错误码。</li><li>5xx：表示客户端请求报文正确，但是服务器处理时内部发生了错误，属于服务器端的错误码。</li></ul><p>3、HTTP字段</p><ul><li>Host：客户端发送请求时，用来指定服务器的域名。<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-symbol">Host:</span> www.A.com<br></code></pre></td></tr></table></figure></li><li>Content-Length 字段：服务器返回数据的长度。</li><li>Connection 字段：客户端要求服务器使用「HTTP 长连接」机制，<code>Connection: Keep-Alive</code></li><li>Content-Encoding 字段：服务器返回的数据使用了什么压缩格式。</li></ul><h1 id="GET-POST"><a href="#GET-POST" class="headerlink" title="GET&#x2F;POST"></a>GET&#x2F;POST</h1><p>1、GET 和 POST 方法都是安全和幂等的吗？</p><ul><li>在 HTTP 协议里，所谓的「安全」是指请求方法不会「破坏」服务器上的资源。</li><li>所谓的「幂等」，意思是多次执行相同的操作，结果都是「相同」的。</li></ul><p>RFC 规范定义下：</p><ul><li><p>GET 方法是安全且幂等的，因为它是「只读」操作，无论操作多少次，服务器上的数据都是安全的，且每次的结果都是相同的。所以，可以对 GET 请求的数据做缓存，这个缓存可以做到浏览器本身上（彻底避免浏览器发请求），也可以做到代理上（如nginx），而且在浏览器中 GET 请求可以保存为书签。</p></li><li><p>POST 因为是「新增或提交数据」的操作，会修改服务器上的资源，所以是不安全的，且多次提交数据就会创建多个资源，所以不是幂等的。所以，浏览器一般不会缓存 POST 请求，也不能把 POST 请求保存为书签。</p></li></ul><h1 id="HTTP缓存"><a href="#HTTP缓存" class="headerlink" title="HTTP缓存"></a>HTTP缓存</h1><p>把重复性的 HTTP「请求-响应」的数据缓存在本地</p><p>1、强制缓存</p><ul><li>只要浏览器判断缓存没有过期，则直接使用浏览器的本地缓存，决定是否使用缓存的主动性在于浏览器这边。通过HTTP 响应头部（Response Header）的字段<code>Cache-Control</code>和<code>Expires</code>控制</li></ul><p>2、协商缓存</p><ul><li>通过服务端告知客户端是否可以使用缓存的方式被称为协商缓存。与服务端协商之后，通过协商结果来判断是否使用本地缓存。</li></ul><h1 id="HTTP特性"><a href="#HTTP特性" class="headerlink" title="HTTP特性"></a>HTTP特性</h1><h2 id="HTTP-1-1-相比-HTTP-1-0-提高了什么性能？"><a href="#HTTP-1-1-相比-HTTP-1-0-提高了什么性能？" class="headerlink" title="HTTP&#x2F;1.1 相比 HTTP&#x2F;1.0 提高了什么性能？"></a>HTTP&#x2F;1.1 相比 HTTP&#x2F;1.0 提高了什么性能？</h2><p>优化：</p><ul><li>使用长连接的方式改善了 HTTP&#x2F;1.0 短连接造成的性能开销。</li><li>支持管道（pipeline）网络传输，只要第一个请求发出去了，不必等其回来，就可以发第二个请求出去，可以减少整体的响应时间。</li></ul><p>缺点：</p><ul><li>请求 &#x2F; 响应头部（Header）未经压缩就发送，首部信息越多延迟越大。只能压缩 Body 的部分；</li><li>服务器是按请求的顺序响应的，如果服务器响应慢，会招致客户端一直请求不到数据，也就是队头阻塞；</li><li>请求只能从客户端开始，服务器只能被动响应；</li><li>没有请求优先级控制。</li></ul><h2 id="HTTP-2-相比-HTTP-1-1-性能上的改进"><a href="#HTTP-2-相比-HTTP-1-1-性能上的改进" class="headerlink" title="HTTP&#x2F;2 相比 HTTP&#x2F;1.1 性能上的改进"></a>HTTP&#x2F;2 相比 HTTP&#x2F;1.1 性能上的改进</h2><ul><li>头部压缩</li><li>二进制格式</li><li>并发传输</li><li>服务器主动推送资源</li></ul><p>缺点：</p><ul><li>一旦发生丢包，就会阻塞住所有的 HTTP 请求，这属于 TCP 层队头阻塞。<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">HTTP</span>/<span class="hljs-number">2</span> 是基于 TCP 协议来传输数据的，TCP 是字节流协议，TCP 层必须保证收到的字节数据是完整且连续的，这样内核才会将缓冲区里的数据返回给 HTTP 应用，那么当「前 <span class="hljs-number">1</span> 个字节数据」没有到达时，后收到的字节数据只能存放在内核缓冲区里，只有等到这 <span class="hljs-number">1</span> 个字节数据到达时，HTTP/<span class="hljs-number">2</span> 应用层才能从内核中拿到数据，这就是 HTTP/<span class="hljs-number">2</span> 队头阻塞问题。<br></code></pre></td></tr></table></figure></li></ul><h2 id="HTTP-3-做了哪些优化？"><a href="#HTTP-3-做了哪些优化？" class="headerlink" title="HTTP&#x2F;3 做了哪些优化？"></a>HTTP&#x2F;3 做了哪些优化？</h2><p> HTTP&#x2F;3 把 HTTP 下层的 TCP 协议改成了 UDP！<br> <img src="/2024/05/16/HTTP%E6%80%BB%E7%BB%93/1-HTTP3.webp" alt="小林Coding"> </p>]]></content>
+    
+    
+    <categories>
+      
+      <category>计算机网络</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>计算机网络</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Lambda表达式和String类的compareTo方法</title>
+    <link href="/2024/05/16/Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%92%8CString%E7%B1%BB%E7%9A%84compareTo%E6%96%B9%E6%B3%95/"/>
+    <url>/2024/05/16/Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%92%8CString%E7%B1%BB%E7%9A%84compareTo%E6%96%B9%E6%B3%95/</url>
+    
+    <content type="html"><![CDATA[<h2 id="Lambda表达式"><a href="#Lambda表达式" class="headerlink" title="Lambda表达式"></a>Lambda表达式</h2><p>可以将Lambda表达式理解为一个匿名函数； Lambda表达式允许将一个函数作为另外一个函数的参数； 我们可以把 Lambda 表达式理解为是一段可以传递的代码（将代码作为实参）,也可以理解为函数式编程，将一个函数作为参数进行传递。</p><ul><li>实例</li></ul><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TestLambda</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">main</span>(<span class="hljs-params"><span class="hljs-built_in">String</span>[] args</span>) &#123;<br>       <span class="hljs-title class_">Thread</span> thread = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyRunnable</span>());<br>       thread.<span class="hljs-title function_">start</span>();<br>       thread.<span class="hljs-title function_">close</span>();<br>    &#125;<br>&#125;<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyRunnable</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Runnable</span>&#123;<br><span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">run</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-title class_">System</span>.<span class="hljs-property">out</span>.<span class="hljs-title function_">println</span>(<span class="hljs-string">&quot;Hello&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure><p>为了使这段代码更加简洁，可以使用匿名内部类重构：</p><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TestLambda</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">main</span>(<span class="hljs-params"><span class="hljs-built_in">String</span>[] args</span>) &#123;<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Runnable</span>() &#123;<br>        <span class="hljs-comment">//这里的 new 了 Runnable() 接口，在这个 new 的接口里面，我们写了这个接口的实现类。</span><br>        <span class="hljs-comment">//这里可以看出，我们把一个重写的 run() 方法传入了一个构造函数中。</span><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">run</span>(<span class="hljs-params"></span>) &#123;<br>                <span class="hljs-title class_">System</span>.<span class="hljs-property">out</span>.<span class="hljs-title function_">println</span>(<span class="hljs-string">&quot;Hello&quot;</span>);<br>            &#125;<br>        &#125;).<span class="hljs-title function_">start</span>();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure><p>继续简化，使用Lambda：</p><figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs livescript">public <span class="hljs-keyword">class</span> <span class="hljs-title class_">TestLambda</span> &#123;<br>    public <span class="hljs-keyword">static</span> <span class="hljs-literal">void</span> main(<span class="hljs-built_in">String</span>[] args) &#123;<br>        <span class="hljs-keyword">new</span> Thread<span class="hljs-function"><span class="hljs-params">(() -&gt; System.out.println(<span class="hljs-string">&quot;Hello&quot;</span>))</span>.<span class="hljs-title">start</span><span class="hljs-params">()</span>;</span><br><span class="hljs-function">    &#125;</span><br><span class="hljs-function">&#125;</span><br></code></pre></td></tr></table></figure><h1 id="String的compareTo-方法"><a href="#String的compareTo-方法" class="headerlink" title="String的compareTo()方法"></a>String的compareTo()方法</h1><ul><li>源码</li></ul><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">String</span> implements java.io.Serializable, Comparable&lt;<span class="hljs-type">String</span>&gt;, CharSequence &#123;<br><br>    @<span class="hljs-function">Override</span><br><span class="hljs-function">    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title">compareTo</span><span class="hljs-params">(<span class="hljs-type">String</span> anotherString)</span> </span>&#123;<br>        <span class="hljs-type">int</span> len1 = value.length;<br>        <span class="hljs-type">int</span> len2 = anotherString.value.length;<br>        <span class="hljs-type">int</span> lim = Math.<span class="hljs-built_in">min</span>(len1, len2);<br>        <span class="hljs-type">char</span> v1[] = value;<br>        <span class="hljs-type">char</span> v2[] = anotherString.value;<br><br>        <span class="hljs-type">int</span> k = <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">while</span> (k &lt; lim) &#123;<br>            <span class="hljs-type">char</span> c1 = v1[k];<br>            <span class="hljs-type">char</span> c2 = v2[k];<br>            <span class="hljs-keyword">if</span> (c1 != c2) &#123;<br>                <span class="hljs-keyword">return</span> c1 - c2;<br>            &#125;<br>            k++;<br>        &#125;<br>        <span class="hljs-keyword">return</span> len1 - len2;<br>    &#125;<br><br>&#125;<br><br></code></pre></td></tr></table></figure><h1 id="剑指offer-把数组排成最小的数"><a href="#剑指offer-把数组排成最小的数" class="headerlink" title="剑指offer.把数组排成最小的数"></a>剑指offer.把数组排成最小的数</h1><p>输入一个正整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。输出格式为字符串。</p><p>样例:</p><figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs accesslog">输入：<span class="hljs-string">[3, 32, 321]</span><br><br>输出：<span class="hljs-number">321323</span><br></code></pre></td></tr></table></figure><ul><li><p>思路：自定义排序规则，<code>nums[i] &lt; nums[j]</code> 当且仅当 <code>nums[i] + nums[j](字符串连接) &lt; nums[j] + nums[i]</code></p></li><li><p>代码：</p><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-type">String</span> <span class="hljs-title">printMinNumber</span><span class="hljs-params">(<span class="hljs-type">int</span>[] nums)</span> </span>&#123;<br>        StringBuilder sb = <span class="hljs-keyword">new</span> <span class="hljs-built_in">StringBuilder</span>();<br>        <span class="hljs-type">int</span> n = nums.length;<br>        <span class="hljs-comment">// 将整数数组转换为字符串数组</span><br>        <span class="hljs-type">String</span>[] strNums = <span class="hljs-keyword">new</span> <span class="hljs-type">String</span>[n];<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++) &#123;<br>            strNums[i] = <span class="hljs-type">String</span>.<span class="hljs-built_in">valueOf</span>(nums[i]);<br>        &#125;<br>        <span class="hljs-comment">// 自定义排序逻辑，按连接后的字符串进行比较</span><br>        Arrays.<span class="hljs-built_in">sort</span>(strNums, (o1, o2) -&gt; (o1 + o2).<span class="hljs-built_in">compareTo</span>(o2 + o1));<br>        <span class="hljs-comment">// 拼接排序后的字符串数组</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">String</span> str : strNums) &#123;<br>            sb.<span class="hljs-built_in">append</span>(str);<br>        &#125;<br>        <span class="hljs-keyword">return</span> sb.<span class="hljs-built_in">toString</span>();<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>Java</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Java基础</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>全排列（没有重复数字）</title>
+    <link href="/2024/05/14/%E5%85%A8%E6%8E%92%E5%88%97%EF%BC%88%E6%B2%A1%E6%9C%89%E9%87%8D%E5%A4%8D%E6%95%B0%E5%AD%97%EF%BC%89/"/>
+    <url>/2024/05/14/%E5%85%A8%E6%8E%92%E5%88%97%EF%BC%88%E6%B2%A1%E6%9C%89%E9%87%8D%E5%A4%8D%E6%95%B0%E5%AD%97%EF%BC%89/</url>
+    
+    <content type="html"><![CDATA[<blockquote><p>Problem: <a href="https://leetcode.cn/problems/VvJkup/description/">LCR 083. 全排列</a></p></blockquote><h1 id="Description"><a href="#Description" class="headerlink" title="Description"></a>Description</h1><p>给定一个不含重复数字的整数数组 nums ，返回其<strong>所有可能的全排列</strong> 。可以<strong>按任意顺序</strong>返回答案。</p><p>示例1：</p><figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs inform7">输入：nums = <span class="hljs-comment">[1,2,3]</span><br>输出：<span class="hljs-comment">[<span class="hljs-comment">[1,2,3]</span>,<span class="hljs-comment">[1,3,2]</span>,<span class="hljs-comment">[2,1,3]</span>,<span class="hljs-comment">[2,3,1]</span>,<span class="hljs-comment">[3,1,2]</span>,<span class="hljs-comment">[3,2,1]</span>]</span><br></code></pre></td></tr></table></figure><p>示例2：</p><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs lua">输入：nums = [<span class="hljs-number">0</span>,<span class="hljs-number">1</span>]<br>输出：<span class="hljs-string">[[0,1],[1,0]]</span><br></code></pre></td></tr></table></figure><p>提示：</p><ul><li><code>1 &lt;= nums.length &lt;= 6</code></li><li><code>-10 &lt;= nums[i] &lt;= 10</code></li><li><code>nums</code> 中的所有整数<strong>互不相同</strong></li></ul><h1 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h1><figure class="highlight java"><figcaption><span>[]</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs Java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><br>    List&lt;List&lt;Integer&gt;&gt; res = <span class="hljs-keyword">new</span> <span class="hljs-title class_">LinkedList</span>&lt;&gt;(); <span class="hljs-comment">// 全局变量记录答案</span><br>    LinkedList&lt;Integer&gt; path = <span class="hljs-keyword">new</span> <span class="hljs-title class_">LinkedList</span>&lt;&gt;(); <span class="hljs-comment">//记录每个排列</span><br><br>    <span class="hljs-keyword">public</span> List&lt;List&lt;Integer&gt;&gt; <span class="hljs-title function_">permute</span><span class="hljs-params">(<span class="hljs-type">int</span>[] nums)</span> &#123;<br>        dfs(nums, <span class="hljs-number">0</span>);<br>        <span class="hljs-keyword">return</span> res;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">dfs</span><span class="hljs-params">(<span class="hljs-type">int</span> []nums, <span class="hljs-type">int</span> u)</span> &#123; <span class="hljs-comment">//定义u记录递归深度</span><br>        <span class="hljs-keyword">if</span> (u == nums.length) &#123; <span class="hljs-comment">//到底了就说明生成了一个排列，加入答案List中</span><br>            res.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">LinkedList</span>(path)); <span class="hljs-comment">//注意不能把path直接加入res中，而是要新建一个对象。否则后续更新path会导致res中的path更改。</span><br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i : nums) &#123; <span class="hljs-comment">//遍历nums中的每个值</span><br>            <span class="hljs-keyword">if</span> (!path.contains(i)) &#123; <span class="hljs-comment">//若本次排列中不包含这个值,如i = 3,path = [1, 2, 4]</span><br>                path.add(i); <span class="hljs-comment">//将该值加入排列,path = [1, 2, 4, 3]</span><br>                dfs(nums, u + <span class="hljs-number">1</span>); <span class="hljs-comment">//递归添加排列的下一个位置,即寻找path = [1, 2, 4, 3, _]的空格处应该填入的值</span><br>                path.removeLast(); <span class="hljs-comment">//恢复现场，path = [1, 2, 4, _]</span><br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure><h1 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h1><p>时间复杂度:</p><blockquote><p>$ O(n! * n)$</p></blockquote><p>空间复杂度</p><blockquote><p>$ O(n!)$ </p></blockquote>]]></content>
+    
+    
+    <categories>
+      
+      <category>算法</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>回溯</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Java中equals和==的区别</title>
+    <link href="/2024/05/12/Java%E4%B8%ADequals%E5%92%8C-%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
+    <url>/2024/05/12/Java%E4%B8%ADequals%E5%92%8C-%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Java中equals和-的区别"><a href="#Java中equals和-的区别" class="headerlink" title="Java中equals和&#x3D;&#x3D;的区别"></a>Java中equals和&#x3D;&#x3D;的区别</h1><h3 id="1-基本数据类型和引用数据类型"><a href="#1-基本数据类型和引用数据类型" class="headerlink" title="1. 基本数据类型和引用数据类型"></a>1. 基本数据类型和引用数据类型</h3><h4 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h4><ul><li>int（4Byte）， double（8）， float（4）， long（8）， short（2）， byte（1）， char（2）， boolean（）</li></ul><h4 id="引用数据类型"><a href="#引用数据类型" class="headerlink" title="引用数据类型"></a>引用数据类型</h4><ul><li>类， 接口， 数组</li></ul><h3 id="2-equals和-的区别"><a href="#2-equals和-的区别" class="headerlink" title="2. equals和&#x3D;&#x3D;的区别"></a>2. equals和&#x3D;&#x3D;的区别</h3><ol><li>&#x3D;&#x3D; 比较值是否相等</li></ol><ul><li>作用于基本数据类型的变量，则直接比较其存储的值是否相等</li><li>作用于引用类型的变量，则比较的是所指向的对象的地址是否相等<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs abnf">其实<span class="hljs-operator">=</span><span class="hljs-operator">=</span>比较的不管是基本数据类型，还是引用数据类型的变量，比较的都是值，只是引用类型变量存的值是对象的地址.<br></code></pre></td></tr></table></figure></li></ul><ol start="2"><li>equals比较是否是同一个对象</li></ol><ul><li>equals()方法存在于Object类中，而Object类是所有类的直接或间接父类，所以说所有类中的equals()方法都继承自Object类，在没有重写equals()方法的类中，调用equals()方法其实和使用&#x3D;&#x3D;的效果一样，也是比较的是引用类型的变量所指向的对象的地址，不过，Java提供的类中，有些类都重写了equals()方法，重写后的equals()方法一般都是比较两个对象的值，比如String类。</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>Java</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Java基础</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>树的子结构</title>
+    <link href="/2024/05/11/%E6%A0%91%E7%9A%84%E5%AD%90%E7%BB%93%E6%9E%84/"/>
+    <url>/2024/05/11/%E6%A0%91%E7%9A%84%E5%AD%90%E7%BB%93%E6%9E%84/</url>
+    
+    <content type="html"><![CDATA[<ul><li>题目描述</li></ul><p><img src="/2024/05/11/%E6%A0%91%E7%9A%84%E5%AD%90%E7%BB%93%E6%9E%84/image.png"></p><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * Definition for a binary tree node.</span><br><span class="hljs-comment"> * public class TreeNode &#123;</span><br><span class="hljs-comment"> *     int val;</span><br><span class="hljs-comment"> *     TreeNode left;</span><br><span class="hljs-comment"> *     TreeNode right;</span><br><span class="hljs-comment"> *     TreeNode(int x) &#123; val = x; &#125;</span><br><span class="hljs-comment"> * &#125;</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-keyword">public</span> boolean hasSubtree(TreeNode pRoot1, TreeNode pRoot2) &#123;<br>        <span class="hljs-keyword">if</span> (pRoot1 == <span class="hljs-literal">null</span> || pRoot2 == <span class="hljs-literal">null</span>) &#123; <span class="hljs-comment">//遇到空节点直接返回false</span><br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>        &#125;<br>        <span class="hljs-keyword">if</span> (isPart(pRoot1, pRoot2)) &#123; <span class="hljs-comment">//遍历树A的所有非空节点，判断树A中以R为根的子树是否与树B有一样的结构</span><br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>        &#125;<br>        <span class="hljs-keyword">return</span> hasSubtree(pRoot1.left, pRoot2) || hasSubtree(pRoot1.right, pRoot2); <span class="hljs-comment">// 递归遍历A的所有子节点</span><br>    &#125;<br>    <br>    <span class="hljs-keyword">public</span> boolean isPart(TreeNode p1, TreeNode p2) &#123;<br>        <span class="hljs-keyword">if</span> (p2 == <span class="hljs-literal">null</span>) &#123; <span class="hljs-comment">//树B遍历到了空，说明当前分支匹配，返回true</span><br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>        &#125;<br>        <span class="hljs-keyword">if</span> (p1 == <span class="hljs-literal">null</span> || p1.<span class="hljs-keyword">val</span> != p2.<span class="hljs-keyword">val</span>) &#123; <span class="hljs-comment">//树A为空且树B不为空，或者两个节点都不为空但数值不同，均返回false</span><br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>        &#125;<br>        <span class="hljs-keyword">return</span> isPart(p1.left, p2.left) &amp;&amp; isPart(p1.right, p2.right); <span class="hljs-comment">// 否则说明当前这个点匹配，递归遍历左子树和右子树</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>算法</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>递归</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>MarkDown表格</title>
+    <link href="/2024/05/04/MarkDown%E8%A1%A8%E6%A0%BC/"/>
+    <url>/2024/05/04/MarkDown%E8%A1%A8%E6%A0%BC/</url>
+    
+    <content type="html"><![CDATA[<ol><li>表格居中<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs gherkin"><span class="hljs-variable">&lt;style&gt;</span><br>.center <br>&#123;<br>  width: auto;<br>  display: table;<br>  margin-left: auto;<br>  margin-right: auto;<br>&#125;<br><span class="hljs-variable">&lt;/style&gt;</span><br><br><span class="hljs-variable">&lt;div class=&quot;center&quot;&gt;</span><br>|<span class="hljs-string">数组下标 </span>|<span class="hljs-string"> 0 </span>|<span class="hljs-string"> 1 </span>|<span class="hljs-string"> 2 </span>|<span class="hljs-string"> 3  </span>|<span class="hljs-string"> 4 </span>|<br>|<span class="hljs-string">:----:</span>|<span class="hljs-string">:----:</span>|<span class="hljs-string">:----:</span>|<span class="hljs-string">:----:</span>|<span class="hljs-string">:----:</span>|<span class="hljs-string">:----:</span>|<br>|<span class="hljs-string"> h </span>|<span class="hljs-string"> -1 </span>|<span class="hljs-string"> 2 </span>|<span class="hljs-string"> 1 </span>|<span class="hljs-string"> 3 </span>|<span class="hljs-string"> -1 </span>|<br>|<span class="hljs-string"> e </span>|<span class="hljs-string"> 2 </span>|<span class="hljs-string"> 4 </span>|<span class="hljs-string"> 3 </span>|<span class="hljs-string"> 4 </span>||<br>|<span class="hljs-string"> ne </span>|<span class="hljs-string"> -1 </span>|<span class="hljs-string"> -1 </span>|<span class="hljs-string"> 0 </span>|<span class="hljs-string"> -1 </span>||<br><span class="hljs-variable">&lt;/div&gt;</span><br><br></code></pre></td></tr></table></figure></li></ol><ul><li>效果<style>.center {width: auto;display: table;margin-left: auto;margin-right: auto;}</style></li></ul><div class="center"><table><thead><tr><th align="center">数组下标</th><th align="center">0</th><th align="center">1</th><th align="center">2</th><th align="center">3</th><th align="center">4</th></tr></thead><tbody><tr><td align="center">h</td><td align="center">-1</td><td align="center">2</td><td align="center">1</td><td align="center">3</td><td align="center">-1</td></tr><tr><td align="center">e</td><td align="center">2</td><td align="center">4</td><td align="center">3</td><td align="center">4</td><td align="center"></td></tr><tr><td align="center">ne</td><td align="center">-1</td><td align="center">-1</td><td align="center">0</td><td align="center">-1</td><td align="center"></td></tr></tbody></table></div>]]></content>
+    
+    
+    <categories>
+      
+      <category>MarkDown</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>MarkDown语法</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>MarkDown插入图片</title>
+    <link href="/2024/04/27/MarkDown%E6%8F%92%E5%85%A5%E5%9B%BE%E7%89%87/"/>
+    <url>/2024/04/27/MarkDown%E6%8F%92%E5%85%A5%E5%9B%BE%E7%89%87/</url>
+    
+    <content type="html"><![CDATA[<ol><li>本地路径下的图片</li></ol><ul><li><p>本地相对路径</p><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs stylus">!<span class="hljs-selector-attr">[本地路径]</span>(image.png)         (图片在md文件的同一级)<br>!<span class="hljs-selector-attr">[本地路径]</span>(pic\image.png)     (图片在md文件的下一级)<br>或者：<br>&lt;<span class="hljs-selector-tag">img</span> <span class="hljs-attribute">src</span>=<span class="hljs-string">&quot;image.png&quot;</span>&gt;<br>&lt;<span class="hljs-selector-tag">img</span> <span class="hljs-attribute">src</span>=<span class="hljs-string">&quot;pic\image.png&quot;</span>&gt;<br></code></pre></td></tr></table></figure></li><li><p>本地绝对路径不建议使用，很多情况加载不出来</p></li></ul><ol start="2"><li>控制图片大小</li></ol><figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs abnf">设置图片的宽和高像素值：&lt;img src<span class="hljs-operator">=</span><span class="hljs-string">&quot;图片路径&quot;</span> width <span class="hljs-operator">=</span> <span class="hljs-number">300</span> height <span class="hljs-operator">=</span> <span class="hljs-number">200</span>&gt;<br>设置缩放的比例：&lt;img src<span class="hljs-operator">=</span><span class="hljs-string">&quot;图片路径&quot;</span> width <span class="hljs-operator">=</span> <span class="hljs-number">60</span>%&gt;<br></code></pre></td></tr></table></figure><ol start="3"><li>控制图片位置</li></ol><ul><li>有left、right、center等属性<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">&lt;div <span class="hljs-attribute">align</span>=center&gt;  &lt;img <span class="hljs-attribute">src</span>=<span class="hljs-string">&quot;image.png&quot;</span> <span class="hljs-attribute">width</span>=60%&gt;<br></code></pre></td></tr></table></figure></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>MarkDown</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>MarkDown语法</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>菜鸟一面</title>
+    <link href="/2024/04/23/%E8%8F%9C%E9%B8%9F%E4%B8%80%E9%9D%A2/"/>
+    <url>/2024/04/23/%E8%8F%9C%E9%B8%9F%E4%B8%80%E9%9D%A2/</url>
+    
+    <content type="html"><![CDATA[<h3 id="菜鸟实习生校招"><a href="#菜鸟实习生校招" class="headerlink" title="菜鸟实习生校招"></a>菜鸟实习生校招</h3><p><strong>首先</strong>：回答问题的时候不要表现得像在背八股文一样，眼睛瞟着一边做出思考的样子，非常像在背八股文。简历上的每一个条目都要弄懂，并且要思考为什么要用这个东西，比如阿里云（用他的优势是什么，为什么不用华为云）。</p><ol><li>自我介绍：老师您好！我叫fred，…..</li><li>项目：三个项目中你觉得最有意思的项目是哪个（意思是你最熟悉哪个），答RPC。</li><li>讲一下RPC</li></ol><ul><li>远程过程调用(Remote Procedure Call)，两个不同的服务器上的服务提供的方法不在同一个内存空间，通过RPC可以帮我们调用某个远程服务器上服务的某个方法，这个过程就像本地调用一样简单，同时我们不需要关注底层网络编程的具体细节。</li><li>RPC原理：①客户端、②客户端stub（代理类）主要做的事情很简单，就是把你调用方法、类、方法参数等信息传递到服务端、③网络传输（socket、Netty、Jetty）、④服务端stub（指接收到客户端执行方法的请求后，去执行对应的方法然后返回结果给客户端的类）、⑤服务端</li><li>本RPC项目的结构：<br><img src="/2024/04/23/%E8%8F%9C%E9%B8%9F%E4%B8%80%E9%9D%A2/image-1.png"></li></ul><ol start="4"><li>Netty是什么</li></ol><ul><li>Netty是 一个异步事件驱动的网络应用程序框架，用于快速开发可维护的高性能协议服务器和客户端。</li></ul><ol start="5"><li>Netty相比于其他网络传输优势在哪？</li></ol><ul><li>API使用简单，学习成本低。</li><li>功能强大，内置了多种解码编码器，支持多种协议。</li><li>性能高，对比其他主流的NIO框架，Netty的性能最优。</li><li>社区活跃，发现BUG会及时修复，迭代版本周期短，不断加入新的功能。</li><li>Dubbo、Elasticsearch都采用了Netty，质量得到验证。</li></ul><ol start="6"><li>Netty如何实现长连接，为什么不用短连接要用长连接，心跳包的收发过程。</li></ol><ul><li>减少连接建立和断开的开销: 建立和断开连接都需要消耗资源，包括网络带宽、CPU 时间和内存等。使用长连接可以减少这些开销，因为连接在一段时间内保持打开状态，而不需要频繁地进行建立和断开操作。</li><li>提高性能和效率: 长连接可以减少因连接建立和断开所带来的延迟，从而提高数据传输的效率和性能。特别是对于实时通信、推送服务等应用场景，长连接能够更快地实现消息的实时传输。</li><li>实现长连接的关键在于保持连接的活跃状态，以防止连接由于长时间没有数据传输而被关闭。在实际应用中，通常会采用心跳机制来维持连接的活跃状态。心跳包是定期发送的小型数据包，用于检测连接的状态和保持连接的活跃性。</li></ul><ol start="7"><li>TCP&#x2F;IP三次握手，四次挥手：见小林coding</li><li>序列化是什么，有哪些序列化方式，为什么用kryo，不用其他的</li></ol><ul><li>序列化：把对象转化为可传输的字节序列过程称为序列化。</li><li>序列化最终的目的是为了对象可以跨平台存储，和进行网络传输。而我们进行跨平台存储和网络传输的方式就是IO，而我们的IO支持的数据格式就是字节数组。</li><li>因为我们单方面的只把对象转成字节数组还不行，因为没有规则的字节数组我们是没办法把对象的本来面目还原回来的，所以我们必须在把对象转成字节数组的时候就制定一种规则（序列化），那么我们从IO流里面读出数据的时候再以这种规则把对象还原回来（反序列化）。</li><li>序列化的方式：JDK（不支持跨语言）、JSON、XML、Hessian、Kryo（不支持跨语言）、Thrift、Protobuff、FST（不支持跨语言）</li><li>kryo优势：高性能，序列化后数据量小，速度快，灵活性强，支持自定义序列化器</li><li>基于Json的序列化器缺陷：某个类的属性反序列化时，如果属性声明为Object，就会造成反序列化出错， 会把Object类型反序列化成String类型，并且，JSON 序列化器是基于字符串（JSON 串）的，占用空间较大且速度较慢。</li></ul><ol start="9"><li><p>为什么要把对象序列化成二进制发送，不序列化可以发送吗，一定要序列化成二进制吗<br><img src="/2024/04/23/%E8%8F%9C%E9%B8%9F%E4%B8%80%E9%9D%A2/image2.png"></p></li><li><p>同步阻塞调用</p></li><li><p>git的rebase操作</p></li><li><p>TreadLocal</p></li><li><p>深拷贝和浅拷贝：</p></li></ol><ul><li>浅拷贝创建一个新对象，但新对象内部的元素是对原始对象中元素的引用。也就是说，新对象与原始对象共享子对象或属性（共享同一块内存）。</li><li>深拷贝创建一个新对象，并递归地复制所有子对象或属性。新对象与原始对象完全独立，修改新对象不会影响原始对象。</li></ul><ol start="14"><li><p>无锁队列</p></li><li><p>中序遍历应用场景</p></li><li><p>一个请求从前端到后端的执行流程</p></li><li><p>线程池的参数<br><strong>总结</strong>：先搞清楚简历上的每一个关键词，并延伸，多思考为什么这么做，而不是这个东西的原理，比如使用kryo相比于JSON序列化的优势，之后再补充</p></li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>实习</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>面筋</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>MySQL从入门到入门</title>
+    <link href="/2024/04/11/MySQL%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E9%97%A8/"/>
+    <url>/2024/04/11/MySQL%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E9%97%A8/</url>
+    
+    <content type="html"><![CDATA[<h1 id="部署与启动MySQL"><a href="#部署与启动MySQL" class="headerlink" title="部署与启动MySQL"></a>部署与启动MySQL</h1><p><a href="https://blog.csdn.net/qq_45441466/article/details/109670194">阿里云安装MySQL</a></p><h3 id="启动MySQL服务"><a href="#启动MySQL服务" class="headerlink" title="启动MySQL服务"></a>启动MySQL服务</h3><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">service mysqld <span class="hljs-literal">start</span><br></code></pre></td></tr></table></figure><h3 id="登录MySQL"><a href="#登录MySQL" class="headerlink" title="登录MySQL"></a>登录MySQL</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css">mysql -uroot -<span class="hljs-selector-tag">p</span><br></code></pre></td></tr></table></figure><h1 id="MySQL基础"><a href="#MySQL基础" class="headerlink" title="MySQL基础"></a>MySQL基础</h1><h3 id="关系型数据库VS非关系型数据库"><a href="#关系型数据库VS非关系型数据库" class="headerlink" title="关系型数据库VS非关系型数据库"></a>关系型数据库VS非关系型数据库</h3><p>关系型：二维表格模型，ACID特性（Atomicity，Consistency，Isolation，    Durability）。有MySQL、Oracle、SQL Server。慢，海量数据读写，扩展性和可用性<br>非关系型：NoSQL，键值对存储，分布式，不保证ACID。有MongoDB、Redis、CouchDB。快，key-value查询，海量数据访问</p><h3 id="MySQL执行流程"><a href="#MySQL执行流程" class="headerlink" title="MySQL执行流程"></a>MySQL执行流程</h3><p><img src="/2024/04/11/MySQL%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E9%97%A8/mysql%E6%9F%A5%E8%AF%A2%E6%B5%81%E7%A8%8B.webp" alt="借用小林Coding的图"></p><p><strong>Server层</strong></p><p>1、连接器</p><ul><li>与客户端进行 TCP 三次握手建立连接</li><li>校验客户端的用户名和密码，如果用户名或密码不对，则会报错</li><li>如果用户名和密码都对了，会读取该用户的权限，然后后面的权限逻辑判断都基于此时读取到的权限</li></ul><p>2、查询缓存</p><ul><li>以key-value形式保存，key为SQL语句，value为SQL查询结果</li><li>MySQL 8.0已经删除</li></ul><p>3、解析器</p><ul><li>词法分析：把SQL语句分解成关键词</li><li>语法分析：构建SQL语法树，方便后续模块获取表名、字段名等</li></ul><p>4、执行SQL</p><ul><li>预处理器：检查 SQL 查询语句中的表或者字段是否存在、将 <code>select *</code> 中的 <code>*</code> 符号，扩展为表上的所有列</li><li>优化器：将 SQL 查询语句的执行方案确定下来，比如在表里面有多个索引的时候，优化器会基于查询成本的考虑，来决定选择使用哪个索引。</li><li>执行器：与存引擎交互，过程为：<ul><li>主键索引查询</li><li>全表扫描</li><li>索引下推</li></ul></li></ul><p>5、总结</p><p>执行一条 SQL 查询语句，期间发生了什么？</p><ul><li>连接器：建立连接，管理连接、校验用户身份；</li><li>查询缓存：查询语句如果命中查询缓存则直接返回，否则继续往下执行。MySQL 8.0 已删除该模块；</li><li>解析 SQL，通过解析器对 SQL 查询语句进行词法分析、语法分析，然后构建语法树，方便后续模块读取表名、字段、语句类型；</li><li>执行 SQL：执行 SQL 共有三个阶段：<ul><li>预处理阶段：检查表或字段是否存在；将 select * 中的 * 符号扩展为表上的所有列；</li><li>优化阶段：基于查询成本的考虑，选择查询成本最小的执行计划；</li><li>执行阶段：根据执行计划执行 SQL 查询语句，从存储引擎读取记录，返回给客户端；</li></ul></li></ul><h3 id="MySQL字段类型"><a href="#MySQL字段类型" class="headerlink" title="MySQL字段类型"></a>MySQL字段类型</h3><p>1、整数类型的UNSIGNED属性，表示不允许负值的无符号整数，可将正整数的上限提高一倍<br>2、字符串类型：CHAR和VARCHAR，CHAR是定长字符串，VARCHAR是变长字符串。</p><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">CHAR</span> 在存储时会在右边填充空格以达到指定的长度，检索时会去掉空格；VARCHAR 在存储时需要使用 <span class="hljs-number">1</span> 或 <span class="hljs-number">2</span> 个额外字节记录字符串的长度，检索时不需要处理。<br></code></pre></td></tr></table></figure><p>3、定点类型DECIMAL和浮点类型FLOAT&#x2F;DOUBLE: DECIMAL可以存储精确的小数值（货币相关），FLOAT&#x2F;DOUBLE只能存储近似的小数值<br>4、时间类型： </p><ul><li>DATETIME(8字节)：1000-01-01 00:00:00 ~ 9999-12-31 23:59:59 </li><li>TIMESTAMP(4字节)：1970-01-01 00:00:01 ~ 2037-12-31 23:59:59</li></ul><h3 id="MySQL存储引擎"><a href="#MySQL存储引擎" class="headerlink" title="MySQL存储引擎"></a>MySQL存储引擎</h3><p>1、MySQL存储引擎架构：采用插件式架构，支持多种存储引擎，我们甚至可以为不同的数据库表设置不同的存储引擎以适应不同场景的需要。存储引擎是基于表的，而不是数据库。目前MySQL默认使用InnoDB</p><h3 id="MySQL索引"><a href="#MySQL索引" class="headerlink" title="MySQL索引"></a>MySQL索引</h3><p>1、索引是一种用于快速查询和检索数据的数据结构，其本质可以看成是一种排序好的数据结构。索引底层数据结构存在很多种类型，常见的索引结构有: B 树， B+树 和 Hash、红黑树。在 MySQL 中，无论是 Innodb 还是 MyIsam，都使用了B+树作为索引结构。索引存储在文件系统中，占用物理空间。</p><p>2、索引结构优劣对比</p><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">对于树型索引结构，树的深度加深一层，意味着多一次查询，对于数据库磁盘而言，就是多一次IO操作，导致查询效率低下。<br></code></pre></td></tr></table></figure><ul><li>Hash：不支持范围查询</li><li>二叉搜索树：极端情况会成为一个链表</li><li>二叉平衡树（AVL）：频繁旋转降低性能、每个树节点存储一个数据，若查询的数据分布在多个节点，会进行多次磁盘IO</li><li>红黑树：平衡性较弱，可能导致树高变高。但插入删除操作仅需O(1)，因此TreeMap、TreeSet 以及 JDK1.8 的 HashMap 底层都用到了红黑树。</li><li>B 树：数据分布在整棵树中，检索的过程相当于对范围内的每个节点的关键字做二分查找</li><li>B+ 树：数据只存在于叶子结点，每一个叶子节点都包含指向下一个叶子节点的指针，从而方便叶子节点的范围遍历。</li></ul><p>3、索引分类</p><p>按功能（逻辑分类）</p><ul><li>主键索引：一张表只能有一个主键索引，不允许重复、不允许为 NULL。</li><li>唯一索引：数据列不允许重复，允许为 NULL 值，一张表可有多个唯一索引，索引列的值必须唯一，但允许有空值。如果是组合索引，则列值的组合必须唯一。</li><li>普通索引：一张表可以创建多个普通索引，一个普通索引可以包含多个字段，允许数据重复，允许 NULL 值插入。</li><li>全文索引：它查找的是文本中的关键词，主要用于全文检索。</li></ul><p>按列数（逻辑分类）</p><ul><li>单例索引：一个索引只包含一个列，一个表可以有多个单例索引。</li><li>组合索引：一个组合索引包含两个或两个以上的列。查询的时候遵循 mysql 组合索引的 “最左前缀”原则，即使用 where 时条件要按照建立索引的时候字段的排列方式放置索引才会生效。</li></ul><p>物理分类</p><ul><li>聚簇索引（clustered index）：数据和索引存储在一块，找到了索引就找到了需要的数据，那么这个索引就是聚簇索引。主键索引是聚簇索引。</li><li>二级索引：数据与索引分开存储，索引结构的叶子节点挂的是对应的主键<br><img src="/2024/04/11/MySQL%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E9%97%A8/%E7%B4%A2%E5%BC%95%E5%88%86%E7%B1%BB.png" alt="聚集索引和回表查询"></li></ul><h3 id="什么时候需要-不需要创建索引？"><a href="#什么时候需要-不需要创建索引？" class="headerlink" title="什么时候需要 &#x2F; 不需要创建索引？"></a>什么时候需要 &#x2F; 不需要创建索引？</h3><p>索引最大的好处是提高查询速度，但是索引也是有缺点的，比如：</p><ul><li>需要占用物理空间，数量越大，占用空间越大；</li><li>创建索引和维护索引要耗费时间，这种时间随着数据量的增加而增大；</li><li>会降低表的增删改的效率，因为每次增删改索引，B+ 树为了维护索引有序性，都需要进行动态维护。</li></ul><p>什么时候适用索引？</p><ul><li>字段有唯一性限制的，比如商品编码；</li><li>经常用于 <code>WHERE</code> 查询条件的字段，这样能够提高整个表的查询速度，如果查询条件不是一个字段，可以建立联合索引。</li><li>经常用于 <code>GROUP BY</code> 和 <code>ORDER BY</code> 的字段，这样在查询的时候就不需要再去做一次排序了，因为我们都已经知道了建立索引之后在 B+Tree 中的记录都是排序好的。</li></ul><p>什么时候不需要创建索引？</p><ul><li>字段中存在大量重复数据时，如性别；</li><li>表数据太少时；</li><li>经常更新的字段不需要创建索引，比如不要对电商项目的用户余额建立索引，因为索引字段频繁修改，由于要维护 B+Tree 的有序性，那么就需要频繁的重建索引，这个过程是会影响数据库性能的。</li><li><code>WHERE</code> 条件，<code>GROUP BY</code>，<code>ORDER BY</code> 里用不到的字段，索引的价值是快速定位，如果起不到定位的字段通常是不需要创建索引的，因为索引是会占用物理空间的。</li></ul><h3 id="索引语法"><a href="#索引语法" class="headerlink" title="索引语法"></a>索引语法</h3><ul><li>测试数据如下</li></ul><p><img src="/2024/04/11/MySQL%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E9%97%A8/1.png" alt="tb_user表"></p><ul><li><p>创建索引 </p><figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs oxygene"><span class="hljs-keyword">create</span> <span class="hljs-keyword">index</span> idx_user_name <span class="hljs-keyword">on</span> tb_user(name)<span class="hljs-punctuation">;</span><span class="hljs-comment">//普通索引</span><br><span class="hljs-keyword">create</span> UNIQUE <span class="hljs-keyword">index</span> idx_user_phone <span class="hljs-keyword">on</span> tb_user(phone)<span class="hljs-punctuation">;</span><span class="hljs-comment">//唯一索引</span><br><span class="hljs-keyword">create</span> <span class="hljs-keyword">index</span> idx_user_pro_age_sta <span class="hljs-keyword">on</span> tb_user(profession, age, status)<span class="hljs-punctuation">;</span><span class="hljs-comment">//联合索引</span><br></code></pre></td></tr></table></figure></li><li><p>查看索引 </p><figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">show</span> <span class="hljs-keyword">index</span> <span class="hljs-keyword">from</span> tb_user;<br></code></pre></td></tr></table></figure><p><img src="/2024/04/11/MySQL%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E9%97%A8/%E6%9F%A5%E7%9C%8B%E7%B4%A2%E5%BC%95.png" alt="查看索引"></p></li><li><p>删除索引 </p><figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs n1ql"><span class="hljs-keyword">drop</span> <span class="hljs-keyword">index</span> user_name <span class="hljs-keyword">on</span> tb_user;<br></code></pre></td></tr></table></figure></li></ul><h3 id="索引性能分析"><a href="#索引性能分析" class="headerlink" title="索引性能分析"></a>索引性能分析</h3><ul><li>explain<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs n1ql"><span class="hljs-keyword">explain</span> <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> tb_user;<br></code></pre></td></tr></table></figure><img src="/2024/04/11/MySQL%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E9%97%A8/explain.png" alt="explain语法"></li></ul><h3 id="最左前缀匹配法则"><a href="#最左前缀匹配法则" class="headerlink" title="最左前缀匹配法则"></a>最左前缀匹配法则</h3><p>使用上面创建的联合索引<code>idx_user_pro_age_sta</code></p><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">from</span> tb_user <span class="hljs-keyword">where</span> profession <span class="hljs-operator">=</span> &quot;软件工程&quot; <span class="hljs-keyword">and</span> age <span class="hljs-operator">=</span> <span class="hljs-number">31</span> <span class="hljs-keyword">and</span> status <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;0&#x27;</span>;<br><span class="hljs-comment">----或者----</span><br><span class="hljs-keyword">select</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">from</span> tb_user <span class="hljs-keyword">where</span> age <span class="hljs-operator">=</span> <span class="hljs-number">31</span> <span class="hljs-keyword">and</span> status <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">and</span> profession <span class="hljs-operator">=</span> &quot;软件工程&quot;;<br>查询语句中profession的位置不影响使用索引<br></code></pre></td></tr></table></figure><p>索引会从创建索引时最左边的字段<code>profession</code>开始匹配，若存在就走索引，依次匹配下去，下图就是三个索引均用到了</p><p><img src="/2024/04/11/MySQL%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E9%97%A8/%E6%9C%80%E5%B7%A6%E5%89%8D%E7%BC%80.png" alt="使用全部索引"></p><figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs axapta"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> tb_user <span class="hljs-keyword">where</span> profession = <span class="hljs-string">&quot;软件工程&quot;</span> and status = <span class="hljs-string">&#x27;0&#x27;</span>;<br></code></pre></td></tr></table></figure><p><code>age</code>没有匹配，则<code>status</code>也无法匹配</p><p><img src="/2024/04/11/MySQL%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E9%97%A8/5.png" alt="仅用到profession索引"></p><figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs axapta"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> tb_user <span class="hljs-keyword">where</span> age = <span class="hljs-number">31</span> and status = <span class="hljs-string">&#x27;0&#x27;</span>;<br></code></pre></td></tr></table></figure><p>最左前缀<code>profession</code>没有匹配，此条查询未走索引</p><p><img src="/2024/04/11/MySQL%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E9%97%A8/6.png" alt="未走索引"></p><h3 id="索引失效原则"><a href="#索引失效原则" class="headerlink" title="索引失效原则"></a>索引失效原则</h3><ul><li>使用函数</li></ul><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-comment">//查询手机号后两位等于15的user</span><br> <span class="hljs-keyword">select</span> * <span class="hljs-function"><span class="hljs-keyword">from</span> tb_user <span class="hljs-keyword">where</span> <span class="hljs-title">substring</span>(<span class="hljs-params">phone, <span class="hljs-number">10</span>, <span class="hljs-number">2</span></span>)</span> = <span class="hljs-string">&#x27;15&#x27;</span>; <span class="hljs-comment">//phone索引失效</span><br></code></pre></td></tr></table></figure><ul><li><p>字符串未加引号</p><figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs axapta"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> tb_user <span class="hljs-keyword">where</span> phone = <span class="hljs-number">17799990015</span>; <span class="hljs-comment">//查询是能查询出来的，但是没走phone的索引</span><br></code></pre></td></tr></table></figure></li><li><p>模糊查询</p><figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs axapta"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> tb_user <span class="hljs-keyword">where</span> profession <span class="hljs-keyword">like</span> <span class="hljs-string">&#x27;软件%&#x27;</span>; <span class="hljs-comment">//尾部模糊匹配，索引不失效</span><br><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> tb_user <span class="hljs-keyword">where</span> profession <span class="hljs-keyword">like</span> <span class="hljs-string">&#x27;%工程&#x27;</span>; <span class="hljs-comment">//头部模糊匹配，索引失效</span><br></code></pre></td></tr></table></figure></li><li><p>or 连接的条件</p></li></ul><figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs axapta"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> tb_user <span class="hljs-keyword">where</span> id = <span class="hljs-string">&#x27;10&#x27;</span> or age = <span class="hljs-string">&#x27;30&#x27;</span>; <span class="hljs-comment">//若or前面的条件有索引，后面的条件没有索引，索引失效</span><br></code></pre></td></tr></table></figure><ul><li>数据分布情况</li></ul><p>MySQL视情况决定走不走索引</p><h3 id="SQL提示"><a href="#SQL提示" class="headerlink" title="SQL提示"></a>SQL提示</h3><figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs axapta"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> tb_user use <span class="hljs-keyword">index</span>(idx_user_pro) <span class="hljs-keyword">where</span> profession = <span class="hljs-string">&#x27;软件工程&#x27;</span>; <span class="hljs-comment">//建议数据库使用该索引</span><br><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> tb_user ignore <span class="hljs-keyword">index</span>(idx_user_pro_age_sta) <span class="hljs-keyword">where</span> profession = <span class="hljs-string">&#x27;软件工程&#x27;</span>; <span class="hljs-comment">//让数据库忽略该索引</span><br><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> tb_user force <span class="hljs-keyword">index</span>(idx_user_pro) <span class="hljs-keyword">where</span> profession = <span class="hljs-string">&#x27;软件工程&#x27;</span>; <span class="hljs-comment">//强制数据库使用该索引</span><br></code></pre></td></tr></table></figure><h3 id="前缀索引"><a href="#前缀索引" class="headerlink" title="前缀索引"></a>前缀索引</h3><figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs oxygene"><span class="hljs-keyword">create</span> <span class="hljs-keyword">index</span> idx_email_5 <span class="hljs-keyword">on</span> tb_user(email(<span class="hljs-number">5</span>))<span class="hljs-punctuation">;</span><span class="hljs-comment">//数字5代表取email的前五个字符作为前缀索引，节省索引空间，降低建立索引的消耗</span><br></code></pre></td></tr></table></figure><h3 id="覆盖索引和回表查询"><a href="#覆盖索引和回表查询" class="headerlink" title="覆盖索引和回表查询"></a>覆盖索引和回表查询</h3><p>创建一个 phone 和 name 的联合索引，表中目前索引有：</p><p><img src="/2024/04/11/MySQL%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E9%97%A8/7.png" alt="查看索引"></p><figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">select</span> id,phone,<span class="hljs-type">name</span> <span class="hljs-keyword">from</span> tb_user <span class="hljs-keyword">where</span> phone = <span class="hljs-string">&#x27;17799990010&#x27;</span> <span class="hljs-keyword">and</span> <span class="hljs-type">name</span> = <span class="hljs-string">&#x27;韩信&#x27;</span>;<br></code></pre></td></tr></table></figure><p><img src="/2024/04/11/MySQL%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E9%97%A8/8.png" alt="分析索引执行情况"></p><ul><li><p>回表查询：由于 phone 和 name 均有唯一索引，而当前查询只走了 idx_user_phone 这条索引，故会根据 idx_user_phone 下的 id 值进行回表查询，查询 name </p></li><li><p>覆盖索引：<code>select id,name from tb_user wherename = &#39;韩信&#39;;</code>，idx_user_name 这条索引的叶子结点下挂的就是 id 值， 不需要回表查询，就叫覆盖索引</p></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>数据库</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>MySQL</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>java导出word文档--XWPFDocument使用总结</title>
+    <link href="/2024/04/05/java%E5%AF%BC%E5%87%BAword%E6%96%87%E6%A1%A3-XWPFDocument%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/"/>
+    <url>/2024/04/05/java%E5%AF%BC%E5%87%BAword%E6%96%87%E6%A1%A3-XWPFDocument%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/</url>
+    
+    <content type="html"><![CDATA[<h3 id="依赖导入"><a href="#依赖导入" class="headerlink" title="依赖导入"></a>依赖导入</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.poi<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>poi-ooxml<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>5.2.3<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br></code></pre></td></tr></table></figure><h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs arduino">XWPFDocument document = <span class="hljs-keyword">new</span> <span class="hljs-built_in">XWPFDocument</span>(); <span class="hljs-comment">//创建了一个新的空白 Word 文档</span><br>XWPFParagraph Paragraph = document.<span class="hljs-built_in">createParagraph</span>(); <span class="hljs-comment">//这行代码创建了一个新的段落对象，并将其添加到刚刚创建的 Word 文档中</span><br>Paragraph.<span class="hljs-built_in">setAlignment</span>(ParagraphAlignment.CENTER); <span class="hljs-comment">//设置对齐方式</span><br>XWPFRun run = Paragraph.<span class="hljs-built_in">createRun</span>(); <span class="hljs-comment">//XWPFRun 对象代表 Word 文档中的一个文本运行（run）,可以通过操作这个文本运行对象来设置文本内容、样式、字体等属性。</span><br>run.<span class="hljs-built_in">setText</span>(<span class="hljs-string">&quot;hello world&quot;</span>); <span class="hljs-comment">//这里是输入到word的文本</span><br>run.<span class="hljs-built_in">setBold</span>(<span class="hljs-literal">true</span>); <span class="hljs-comment">//设置字体加粗</span><br>run.<span class="hljs-built_in">setFontSize</span>(<span class="hljs-number">20</span>); <span class="hljs-comment">//设置字体大小（12磅对应小四）</span><br><br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>Java</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Java基础</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>如何使用数组模拟邻接表</title>
+    <link href="/2024/04/03/%E6%95%B0%E7%BB%84%E6%A8%A1%E6%8B%9F%E9%82%BB%E6%8E%A5%E8%A1%A8/"/>
+    <url>/2024/04/03/%E6%95%B0%E7%BB%84%E6%A8%A1%E6%8B%9F%E9%82%BB%E6%8E%A5%E8%A1%A8/</url>
+    
+    <content type="html"><![CDATA[<h2 id="数组模拟邻接表的难点"><a href="#数组模拟邻接表的难点" class="headerlink" title="数组模拟邻接表的难点"></a>数组模拟邻接表的难点</h2><p>看了一圈博客、ACwing的解释仍然云里雾里，大多数同学都在绞尽脑汁想给大家讲明白每个数组代表什么含义，什么 <strong>e[]</strong> 数组啊，<strong>ne[]</strong> 数组等等。其实差的只是最后一步，就是模拟完add(a, b)建表之后，再带着大家走一遍顺着邻接表读取的过程，瞬间就会豁然开朗，此篇文章适合已经了解了数组模拟邻接表的基本代码和原理但仍然云里雾里的同学。</p><h4 id="一、建表"><a href="#一、建表" class="headerlink" title="一、建表"></a>一、建表</h4><ul><li><p>补充一点初始条件：idx初值为0，h[]数组中的每个值已被初始化为-1，即：h[-1, -1, -1, -1, -1]。你先不管为什么初始化为-1，看到后面就明白了。</p></li><li><p>先贴代码</p><figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs inform7">void add(a, b) &#123;<br>    e<span class="hljs-comment">[idx]</span> = b;<br>    ne<span class="hljs-comment">[idx]</span> = h<span class="hljs-comment">[a]</span>;<br>    h<span class="hljs-comment">[a]</span> = idx ++;<br>&#125;<br></code></pre></td></tr></table></figure></li><li><p>如下图，请按照add(1, 2)、add(2, 4)、add(1, 3)、add(3, 4)的顺序构建邻接表，现在你不用管那些数组是什么意思，只需要按照add方法往几个数组中更新值就行<br><img src="/2024/04/03/%E6%95%B0%E7%BB%84%E6%A8%A1%E6%8B%9F%E9%82%BB%E6%8E%A5%E8%A1%A8/image.png"></p></li><li><p>最后得到和我一样的几个数组就算胜利：</p><style>.center {width: auto;display: table;margin-left: auto;margin-right: auto;}</style></li></ul><div class="center"><table><thead><tr><th align="center">数组下标</th><th align="center">0</th><th align="center">1</th><th align="center">2</th><th align="center">3</th><th align="center">4</th></tr></thead><tbody><tr><td align="center">h</td><td align="center">-1</td><td align="center">2</td><td align="center">1</td><td align="center">3</td><td align="center">-1</td></tr><tr><td align="center">e</td><td align="center">2</td><td align="center">4</td><td align="center">3</td><td align="center">4</td><td align="center"></td></tr><tr><td align="center">ne</td><td align="center">-1</td><td align="center">-1</td><td align="center">0</td><td align="center">-1</td><td align="center"></td></tr></tbody></table></div><ul><li><p>此时idx的值为3</p></li><li><p>再次补充前置知识：初始情况下，邻接表为中元素1后面没有连接任何元素，可以理解为 <strong>1 -&gt; -1</strong>，这里-1代表后面没有元素。<strong>add(1, 2)</strong> 后，即在1后面插入2，就变成 <strong>1 -&gt; 2 -&gt; -1</strong>，<strong>add(1, 3)<strong>后，变成</strong>1 -&gt; 3 -&gt; 2 -&gt; -1</strong>，可以发现add操作是在表头后面插入新元素的，而不是在链表的尾部插入。</p></li></ul><h4 id="二、开始模拟"><a href="#二、开始模拟" class="headerlink" title="二、开始模拟"></a>二、开始模拟</h4><ul><li>只需一遍，你就会明白</li><li>如果我们想获取结点1对应的这个链表，即获取 <strong>1 -&gt; 3 -&gt; 2</strong>，首先找到 <strong>h[1] &#x3D; 2</strong>，那么 <strong>e[2] &#x3D; 3</strong> 就是结点1的在表中的下一个结点，即 <strong>1 -&gt; 3</strong>；接着<strong>ne[2] &#x3D; 0</strong>就代表再下一个结点在<strong>e[0]<strong>处，</strong>e[0] &#x3D; 2</strong>， 即<strong>1 -&gt; 3 -&gt; 2</strong>；接着<strong>ne[0] &#x3D; -1</strong>就代表没有下一个结点了，即<strong>1 -&gt; 3 -&gt; 2 -&gt; -1</strong>，怎么样是不是很简单。</li><li>所以可以总结出：e数组就是存放下一个结点的数组，而ne数组是存放去e数组的哪个位置找结点的数组</li></ul><p><img src="/2024/04/03/%E6%95%B0%E7%BB%84%E6%A8%A1%E6%8B%9F%E9%82%BB%E6%8E%A5%E8%A1%A8/image-1.png"></p><ul><li>再看这张图，可以发现，我们调用add()函数建表时就是用idx来给每条边编号的，同时<strong>h</strong>数组中存放的就是每个结点到它的下一个第一个结点的边的编号，例如 <strong>2 -&gt; 4</strong>，查询<strong>h[2] &#x3D; 1</strong>，即为图中对应边的编号。</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>算法</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>图论</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  
+</search>

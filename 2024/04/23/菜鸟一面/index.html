@@ -1,0 +1,721 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="fu1sh">
+  <meta name="keywords" content="java">
+  
+    <meta name="description" content="菜鸟实习生校招首先：回答问题的时候不要表现得像在背八股文一样，眼睛瞟着一边做出思考的样子，非常像在背八股文。简历上的每一个条目都要弄懂，并且要思考为什么要用这个东西，比如阿里云（用他的优势是什么，为什么不用华为云）。  自我介绍：老师您好！我叫fred，….. 项目：三个项目中你觉得最有意思的项目是哪个（意思是你最熟悉哪个），答RPC。 讲一下RPC   远程过程调用(Remote Procedu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="菜鸟一面">
+<meta property="og:url" content="https://payfish.github.io/2024/04/23/%E8%8F%9C%E9%B8%9F%E4%B8%80%E9%9D%A2/index.html">
+<meta property="og:site_name" content="Fu1sh&#39;s BLOG">
+<meta property="og:description" content="菜鸟实习生校招首先：回答问题的时候不要表现得像在背八股文一样，眼睛瞟着一边做出思考的样子，非常像在背八股文。简历上的每一个条目都要弄懂，并且要思考为什么要用这个东西，比如阿里云（用他的优势是什么，为什么不用华为云）。  自我介绍：老师您好！我叫fred，….. 项目：三个项目中你觉得最有意思的项目是哪个（意思是你最熟悉哪个），答RPC。 讲一下RPC   远程过程调用(Remote Procedu">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://payfish.github.io/2024/04/23/%E8%8F%9C%E9%B8%9F%E4%B8%80%E9%9D%A2/image-1.png">
+<meta property="og:image" content="https://payfish.github.io/2024/04/23/%E8%8F%9C%E9%B8%9F%E4%B8%80%E9%9D%A2/image2.png">
+<meta property="article:published_time" content="2024-04-23T08:37:12.000Z">
+<meta property="article:modified_time" content="2024-06-01T14:11:42.568Z">
+<meta property="article:author" content="fu1sh">
+<meta property="article:tag" content="面筋">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://payfish.github.io/2024/04/23/%E8%8F%9C%E9%B8%9F%E4%B8%80%E9%9D%A2/image-1.png">
+  
+  
+  
+  <title>菜鸟一面 - Fu1sh&#39;s BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"payfish.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"Java"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fu1sh</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="菜鸟一面"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-04-23 16:37" pubdate>
+          2024年4月23日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">菜鸟一面</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="菜鸟实习生校招"><a href="#菜鸟实习生校招" class="headerlink" title="菜鸟实习生校招"></a>菜鸟实习生校招</h3><p><strong>首先</strong>：回答问题的时候不要表现得像在背八股文一样，眼睛瞟着一边做出思考的样子，非常像在背八股文。简历上的每一个条目都要弄懂，并且要思考为什么要用这个东西，比如阿里云（用他的优势是什么，为什么不用华为云）。</p>
+<ol>
+<li>自我介绍：老师您好！我叫fred，…..</li>
+<li>项目：三个项目中你觉得最有意思的项目是哪个（意思是你最熟悉哪个），答RPC。</li>
+<li>讲一下RPC</li>
+</ol>
+<ul>
+<li>远程过程调用(Remote Procedure Call)，两个不同的服务器上的服务提供的方法不在同一个内存空间，通过RPC可以帮我们调用某个远程服务器上服务的某个方法，这个过程就像本地调用一样简单，同时我们不需要关注底层网络编程的具体细节。</li>
+<li>RPC原理：①客户端、②客户端stub（代理类）主要做的事情很简单，就是把你调用方法、类、方法参数等信息传递到服务端、③网络传输（socket、Netty、Jetty）、④服务端stub（指接收到客户端执行方法的请求后，去执行对应的方法然后返回结果给客户端的类）、⑤服务端</li>
+<li>本RPC项目的结构：<br><img src="/2024/04/23/%E8%8F%9C%E9%B8%9F%E4%B8%80%E9%9D%A2/image-1.png" srcset="/img/loading.gif" lazyload></li>
+</ul>
+<ol start="4">
+<li>Netty是什么</li>
+</ol>
+<ul>
+<li>Netty是 一个异步事件驱动的网络应用程序框架，用于快速开发可维护的高性能协议服务器和客户端。</li>
+</ul>
+<ol start="5">
+<li>Netty相比于其他网络传输优势在哪？</li>
+</ol>
+<ul>
+<li>API使用简单，学习成本低。</li>
+<li>功能强大，内置了多种解码编码器，支持多种协议。</li>
+<li>性能高，对比其他主流的NIO框架，Netty的性能最优。</li>
+<li>社区活跃，发现BUG会及时修复，迭代版本周期短，不断加入新的功能。</li>
+<li>Dubbo、Elasticsearch都采用了Netty，质量得到验证。</li>
+</ul>
+<ol start="6">
+<li>Netty如何实现长连接，为什么不用短连接要用长连接，心跳包的收发过程。</li>
+</ol>
+<ul>
+<li>减少连接建立和断开的开销: 建立和断开连接都需要消耗资源，包括网络带宽、CPU 时间和内存等。使用长连接可以减少这些开销，因为连接在一段时间内保持打开状态，而不需要频繁地进行建立和断开操作。</li>
+<li>提高性能和效率: 长连接可以减少因连接建立和断开所带来的延迟，从而提高数据传输的效率和性能。特别是对于实时通信、推送服务等应用场景，长连接能够更快地实现消息的实时传输。</li>
+<li>实现长连接的关键在于保持连接的活跃状态，以防止连接由于长时间没有数据传输而被关闭。在实际应用中，通常会采用心跳机制来维持连接的活跃状态。心跳包是定期发送的小型数据包，用于检测连接的状态和保持连接的活跃性。</li>
+</ul>
+<ol start="7">
+<li>TCP&#x2F;IP三次握手，四次挥手：见小林coding</li>
+<li>序列化是什么，有哪些序列化方式，为什么用kryo，不用其他的</li>
+</ol>
+<ul>
+<li>序列化：把对象转化为可传输的字节序列过程称为序列化。</li>
+<li>序列化最终的目的是为了对象可以跨平台存储，和进行网络传输。而我们进行跨平台存储和网络传输的方式就是IO，而我们的IO支持的数据格式就是字节数组。</li>
+<li>因为我们单方面的只把对象转成字节数组还不行，因为没有规则的字节数组我们是没办法把对象的本来面目还原回来的，所以我们必须在把对象转成字节数组的时候就制定一种规则（序列化），那么我们从IO流里面读出数据的时候再以这种规则把对象还原回来（反序列化）。</li>
+<li>序列化的方式：JDK（不支持跨语言）、JSON、XML、Hessian、Kryo（不支持跨语言）、Thrift、Protobuff、FST（不支持跨语言）</li>
+<li>kryo优势：高性能，序列化后数据量小，速度快，灵活性强，支持自定义序列化器</li>
+<li>基于Json的序列化器缺陷：某个类的属性反序列化时，如果属性声明为Object，就会造成反序列化出错， 会把Object类型反序列化成String类型，并且，JSON 序列化器是基于字符串（JSON 串）的，占用空间较大且速度较慢。</li>
+</ul>
+<ol start="9">
+<li><p>为什么要把对象序列化成二进制发送，不序列化可以发送吗，一定要序列化成二进制吗<br><img src="/2024/04/23/%E8%8F%9C%E9%B8%9F%E4%B8%80%E9%9D%A2/image2.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>同步阻塞调用</p>
+</li>
+<li><p>git的rebase操作</p>
+</li>
+<li><p>TreadLocal</p>
+</li>
+<li><p>深拷贝和浅拷贝：</p>
+</li>
+</ol>
+<ul>
+<li>浅拷贝创建一个新对象，但新对象内部的元素是对原始对象中元素的引用。也就是说，新对象与原始对象共享子对象或属性（共享同一块内存）。</li>
+<li>深拷贝创建一个新对象，并递归地复制所有子对象或属性。新对象与原始对象完全独立，修改新对象不会影响原始对象。</li>
+</ul>
+<ol start="14">
+<li><p>无锁队列</p>
+</li>
+<li><p>中序遍历应用场景</p>
+</li>
+<li><p>一个请求从前端到后端的执行流程</p>
+</li>
+<li><p>线程池的参数<br><strong>总结</strong>：先搞清楚简历上的每一个关键词，并延伸，多思考为什么这么做，而不是这个东西的原理，比如使用kryo相比于JSON序列化的优势，之后再补充</p>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%AE%9E%E4%B9%A0/" class="category-chain-item">实习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E9%9D%A2%E7%AD%8B/" class="print-no-link">#面筋</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>菜鸟一面</div>
+      <div>https://payfish.github.io/2024/04/23/菜鸟一面/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>fu1sh</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年4月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/04/27/MarkDown%E6%8F%92%E5%85%A5%E5%9B%BE%E7%89%87/" title="MarkDown插入图片">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MarkDown插入图片</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/04/11/MySQL%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E9%97%A8/" title="MySQL从入门到入门">
+                        <span class="hidden-mobile">MySQL从入门到入门</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
