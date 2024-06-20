@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://payfish.github.io/2024/04/11/MySQL%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E9%97%A8/7.png">
 <meta property="og:image" content="https://payfish.github.io/2024/04/11/MySQL%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E9%97%A8/8.png">
 <meta property="article:published_time" content="2024-04-11T13:43:27.000Z">
-<meta property="article:modified_time" content="2024-06-01T14:09:49.378Z">
+<meta property="article:modified_time" content="2024-06-13T14:53:59.306Z">
 <meta property="article:author" content="fu1sh">
 <meta property="article:tag" content="MySQL">
 <meta name="twitter:card" content="summary_large_image">
@@ -231,7 +231,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.6k 字
+          2.7k 字
         
       </span>
     
@@ -242,7 +242,7 @@
         
         
         
-          22 分钟
+          23 分钟
         
       </span>
     
@@ -338,8 +338,8 @@
 <li>DATETIME(8字节)：1000-01-01 00:00:00 ~ 9999-12-31 23:59:59 </li>
 <li>TIMESTAMP(4字节)：1970-01-01 00:00:01 ~ 2037-12-31 23:59:59</li>
 </ul>
-<h3 id="MySQL存储引擎"><a href="#MySQL存储引擎" class="headerlink" title="MySQL存储引擎"></a>MySQL存储引擎</h3><p>1、MySQL存储引擎架构：采用插件式架构，支持多种存储引擎，我们甚至可以为不同的数据库表设置不同的存储引擎以适应不同场景的需要。存储引擎是基于表的，而不是数据库。目前MySQL默认使用InnoDB</p>
-<h3 id="MySQL索引"><a href="#MySQL索引" class="headerlink" title="MySQL索引"></a>MySQL索引</h3><p>1、索引是一种用于快速查询和检索数据的数据结构，其本质可以看成是一种排序好的数据结构。索引底层数据结构存在很多种类型，常见的索引结构有: B 树， B+树 和 Hash、红黑树。在 MySQL 中，无论是 Innodb 还是 MyIsam，都使用了B+树作为索引结构。索引存储在文件系统中，占用物理空间。</p>
+<h1 id="MySQL存储引擎"><a href="#MySQL存储引擎" class="headerlink" title="MySQL存储引擎"></a>MySQL存储引擎</h1><p>1、MySQL存储引擎架构：采用插件式架构，支持多种存储引擎，我们甚至可以为不同的数据库表设置不同的存储引擎以适应不同场景的需要。存储引擎是基于表的，而不是数据库。目前MySQL默认使用InnoDB</p>
+<h1 id="MySQL索引"><a href="#MySQL索引" class="headerlink" title="MySQL索引"></a>MySQL索引</h1><p>1、索引是一种用于快速查询和检索数据的数据结构，其本质可以看成是一种排序好的数据结构。索引底层数据结构存在很多种类型，常见的索引结构有: B 树， B+树 和 Hash、红黑树。在 MySQL 中，无论是 Innodb 还是 MyIsam，都使用了B+树作为索引结构。索引存储在文件系统中，占用物理空间。</p>
 <p>2、索引结构优劣对比</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">对于树型索引结构，树的深度加深一层，意味着多一次查询，对于数据库磁盘而言，就是多一次IO操作，导致查询效率低下。<br></code></pre></td></tr></table></figure>
 <ul>
@@ -449,6 +449,13 @@
 </li>
 <li><p>覆盖索引：<code>select id,name from tb_user wherename = &#39;韩信&#39;;</code>，idx_user_name 这条索引的叶子结点下挂的就是 id 值， 不需要回表查询，就叫覆盖索引</p>
 </li>
+</ul>
+<h1 id="MySQL日志"><a href="#MySQL日志" class="headerlink" title="MySQL日志"></a>MySQL日志</h1><h3 id="慢查询日志"><a href="#慢查询日志" class="headerlink" title="慢查询日志"></a>慢查询日志</h3><p>通过 long_query_time 参数定义一个SQL耗时多长才被定义为慢查询，默认10s</p>
+<h3 id="二进制日志"><a href="#二进制日志" class="headerlink" title="二进制日志"></a>二进制日志</h3><p>日志格式</p>
+<ul>
+<li>STATEMENT：记录对数据进行修改的SQL语句，如update，insert</li>
+<li>ROW：基于行的日志，记录每一行的数据变更</li>
+<li>MIXED：混合statement和row，默认statement</li>
 </ul>
 
                 

@@ -16,20 +16,22 @@
   <meta name="author" content="fu1sh">
   <meta name="keywords" content="java">
   
-    <meta property="og:type" content="article">
-<meta property="og:title" content="Synchronized关键字">
-<meta property="og:url" content="https://payfish.github.io/2024/05/22/Synchronized%E5%85%B3%E9%94%AE%E5%AD%97/index.html">
+    <meta name="description" content="RedisRedis的数据格式Redis生产问题缓存穿透定义：客户端请求的数据在缓存和数据库中都找不到，缓存永不生效，请求全打到数据库。 解决方法  缓存空对象 优点： 实现简单，维护方便 缺点： 额外的内存消耗，且可能造成短期的数据不一致问题   布隆过滤器 优点：内存占用少，没有多余的key 缺点：实现复杂，且存在误判可能    缓存雪崩定义：同一时段大量的缓存key同时失效或者Redis服务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis">
+<meta property="og:url" content="https://payfish.github.io/2024/06/17/Redis/index.html">
 <meta property="og:site_name" content="Fu1sh&#39;s BLOG">
+<meta property="og:description" content="RedisRedis的数据格式Redis生产问题缓存穿透定义：客户端请求的数据在缓存和数据库中都找不到，缓存永不生效，请求全打到数据库。 解决方法  缓存空对象 优点： 实现简单，维护方便 缺点： 额外的内存消耗，且可能造成短期的数据不一致问题   布隆过滤器 优点：内存占用少，没有多余的key 缺点：实现复杂，且存在误判可能    缓存雪崩定义：同一时段大量的缓存key同时失效或者Redis服务">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-05-22T13:34:09.000Z">
-<meta property="article:modified_time" content="2024-05-30T09:51:22.731Z">
+<meta property="article:published_time" content="2024-06-17T08:18:09.000Z">
+<meta property="article:modified_time" content="2024-06-18T13:18:34.683Z">
 <meta property="article:author" content="fu1sh">
-<meta property="article:tag" content="Java并发">
+<meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>Synchronized关键字 - Fu1sh&#39;s BLOG</title>
+  <title>Redis - Fu1sh&#39;s BLOG</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -195,7 +197,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Synchronized关键字"></span>
+            <span id="subtitle" data-typed-text="Redis"></span>
           
         </div>
 
@@ -206,8 +208,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-05-22 21:34" pubdate>
-          2024年5月22日 晚上
+        <time datetime="2024-06-17 16:18" pubdate>
+          2024年6月17日 下午
         </time>
       </span>
     
@@ -218,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          0 字
+          425 字
         
       </span>
     
@@ -229,7 +231,7 @@
         
         
         
-          1 分钟
+          4 分钟
         
       </span>
     
@@ -266,12 +268,50 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Synchronized关键字</h1>
+            <h1 id="seo-header">Redis</h1>
             
             
               <div class="markdown-body">
                 
-                
+                <h1 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h1><h3 id="Redis的数据格式"><a href="#Redis的数据格式" class="headerlink" title="Redis的数据格式"></a>Redis的数据格式</h3><h3 id="Redis生产问题"><a href="#Redis生产问题" class="headerlink" title="Redis生产问题"></a>Redis生产问题</h3><h4 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h4><p>定义：客户端请求的数据在缓存和数据库中都找不到，缓存永不生效，请求全打到数据库。</p>
+<p>解决方法</p>
+<ul>
+<li>缓存空对象<ul>
+<li>优点： 实现简单，维护方便</li>
+<li>缺点： 额外的内存消耗，且可能造成短期的数据不一致问题</li>
+</ul>
+</li>
+<li>布隆过滤器<ul>
+<li>优点：内存占用少，没有多余的key</li>
+<li>缺点：实现复杂，且存在误判可能</li>
+</ul>
+</li>
+</ul>
+<h4 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h4><p>定义：同一时段大量的缓存key同时失效或者Redis服务宕机，导致大量请求到达数据库，带来巨大压力。</p>
+<p>解决方案</p>
+<ul>
+<li>给不同key的TTL添加随机值</li>
+<li>搭建Redis集群提高服务的可用性</li>
+<li>给缓存业务添加降级限流策略</li>
+<li>给业务添加多级缓存</li>
+</ul>
+<h4 id="缓存击穿（热点key问题）"><a href="#缓存击穿（热点key问题）" class="headerlink" title="缓存击穿（热点key问题）"></a>缓存击穿（热点key问题）</h4><p>定义：一个被高并发访问并且缓存重建业务较复杂的key突然失效了，无数的请求访问会在瞬间给数据库带来巨大的冲击。</p>
+<p>解决方案</p>
+<ul>
+<li><p>互斥锁</p>
+<ul>
+<li>优点：简单方便，没有多余的内存消耗，保证强一致性</li>
+<li>缺点：线程等待获取锁的时间过长，可能有死锁风险</li>
+</ul>
+</li>
+<li><p>逻辑过期</p>
+<ul>
+<li>不设置TTL，加一个expire time，当前线程查询缓存发现逻辑过期时间已经过期后，获取互斥锁，开启一个新线程来为自己执行重建数据库的操作。其他线程查询这个缓存均返回过期数据就行，无需等待</li>
+<li>缺点：不保证一致性，有额外的内存消耗，实现复杂</li>
+</ul>
+</li>
+</ul>
+
                 
               </div>
             
@@ -289,7 +329,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="category-chain-item">多线程</a>
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
   
   
 
@@ -304,7 +344,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Java%E5%B9%B6%E5%8F%91/" class="print-no-link">#Java并发</a>
+        <a href="/tags/Redis/" class="print-no-link">#Redis</a>
       
     </div>
   
@@ -316,8 +356,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Synchronized关键字</div>
-      <div>https://payfish.github.io/2024/05/22/Synchronized关键字/</div>
+      <div>Redis</div>
+      <div>https://payfish.github.io/2024/06/17/Redis/</div>
     </div>
     <div class="license-meta">
       
@@ -329,7 +369,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年5月22日</div>
+          <div>2024年6月17日</div>
         </div>
       
       
@@ -361,9 +401,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/06/17/Redis/" title="Redis">
+                      <a href="/2024/06/20/JUC%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" title="JUC并发编程">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Redis</span>
+                        <span class="hidden-mobile">JUC并发编程</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -371,8 +411,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/05/18/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" title="线程池">
-                        <span class="hidden-mobile">线程池</span>
+                      <a href="/2024/05/22/Synchronized%E5%85%B3%E9%94%AE%E5%AD%97/" title="Synchronized关键字">
+                        <span class="hidden-mobile">Synchronized关键字</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
