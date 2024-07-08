@@ -1,0 +1,833 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="fu1sh">
+  <meta name="keywords" content="java">
+  
+    <meta name="description" content="爬楼梯假设你正在爬楼梯。需要 n 阶你才能到达楼顶。 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？ 示例 1： 123456输入：n &#x3D; 3输出：3解释：有三种方法可以爬到楼顶。1. 1 阶 + 1 阶 + 1 阶2. 1 阶 + 2 阶3. 2 阶 + 1 阶     递归  dfs(i)表示从0爬到第i阶楼梯一共有多少种方法。最后一步可以爬1阶或者2阶，则dfs(i)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="动态规划-递归到记忆化搜索">
+<meta property="og:url" content="https://payfish.github.io/2024/07/06/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92-%E9%80%92%E5%BD%92%E5%88%B0%E8%AE%B0%E5%BF%86%E5%8C%96%E6%90%9C%E7%B4%A2/index.html">
+<meta property="og:site_name" content="Fu1sh&#39;s BLOG">
+<meta property="og:description" content="爬楼梯假设你正在爬楼梯。需要 n 阶你才能到达楼顶。 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？ 示例 1： 123456输入：n &#x3D; 3输出：3解释：有三种方法可以爬到楼顶。1. 1 阶 + 1 阶 + 1 阶2. 1 阶 + 2 阶3. 2 阶 + 1 阶     递归  dfs(i)表示从0爬到第i阶楼梯一共有多少种方法。最后一步可以爬1阶或者2阶，则dfs(i)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://payfish.github.io/2024/07/06/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92-%E9%80%92%E5%BD%92%E5%88%B0%E8%AE%B0%E5%BF%86%E5%8C%96%E6%90%9C%E7%B4%A2/%E7%88%AC%E6%A5%BC%E6%A2%AF.png">
+<meta property="article:published_time" content="2024-07-06T09:50:38.000Z">
+<meta property="article:modified_time" content="2024-07-08T07:41:32.960Z">
+<meta property="article:author" content="fu1sh">
+<meta property="article:tag" content="动态规划">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://payfish.github.io/2024/07/06/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92-%E9%80%92%E5%BD%92%E5%88%B0%E8%AE%B0%E5%BF%86%E5%8C%96%E6%90%9C%E7%B4%A2/%E7%88%AC%E6%A5%BC%E6%A2%AF.png">
+  
+  
+  
+  <title>动态规划-递归到记忆化搜索 - Fu1sh&#39;s BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"payfish.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"Java"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fu1sh</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="动态规划-递归到记忆化搜索"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-06 17:50" pubdate>
+          2024年7月6日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          27 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">动态规划-递归到记忆化搜索</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="爬楼梯"><a href="#爬楼梯" class="headerlink" title="爬楼梯"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/climbing-stairs/">爬楼梯</a></h3><p>假设你正在爬楼梯。需要 <code>n</code> 阶你才能到达楼顶。</p>
+<p>每次你可以爬 <code>1</code> 或 <code>2</code> 个台阶。你有多少种不同的方法可以爬到楼顶呢？</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs tap">输入：n = 3<br>输出：3<br>解释：有三种方法可以爬到楼顶。<br>1.<span class="hljs-number"> 1 </span>阶 +<span class="hljs-number"> 1 </span>阶 +<span class="hljs-number"> 1 </span>阶<br>2.<span class="hljs-number"> 1 </span>阶 +<span class="hljs-number"> 2 </span>阶<br>3.<span class="hljs-number"> 2 </span>阶 +<span class="hljs-number"> 1 </span>阶<br></code></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>递归</p>
+</blockquote>
+<p><code>dfs(i)</code>表示从<code>0</code>爬到第<code>i</code>阶楼梯一共有多少种方法。最后一步可以爬1阶或者2阶，则<code>dfs(i)</code>等于<code>dfs(i - 1)</code> 和<code>dfs(i - 2)</code>之和</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">climbStairs</span><span class="hljs-params">(<span class="hljs-type">int</span> n)</span> &#123;<br>        <span class="hljs-keyword">return</span> dfs(n);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">dfs</span><span class="hljs-params">(<span class="hljs-type">int</span> i)</span> &#123;<br>        <span class="hljs-keyword">if</span> (i &lt;= <span class="hljs-number">1</span>) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>        &#125;<br>        <span class="hljs-keyword">return</span> dfs(i - <span class="hljs-number">1</span>) + dfs(i - <span class="hljs-number">2</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/06/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92-%E9%80%92%E5%BD%92%E5%88%B0%E8%AE%B0%E5%BF%86%E5%8C%96%E6%90%9C%E7%B4%A2/%E7%88%AC%E6%A5%BC%E6%A2%AF.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>dfs</strong> 的搜索过程为一颗二叉树，树高为$n$，节点个数为$2^n$，故搜索时间为$O(2^n)$，空间复杂度为$O(n)$，递归需要$O(n)$个栈空间</p>
+<blockquote>
+<p>记忆化搜索</p>
+</blockquote>
+<p>上面的做法会超时，太慢了，可以引入记忆化数组优化</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">climbStairs</span><span class="hljs-params">(<span class="hljs-type">int</span> n)</span> &#123;<br>        <span class="hljs-type">int</span> []memo = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[n + <span class="hljs-number">1</span>];<br>        <span class="hljs-keyword">return</span> dfs(n, memo);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">dfs</span><span class="hljs-params">(<span class="hljs-type">int</span> i, <span class="hljs-type">int</span> []memo)</span> &#123;<br>        <span class="hljs-keyword">if</span> (i &lt;= <span class="hljs-number">1</span>) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>        &#125;<br>        <span class="hljs-keyword">if</span> (memo[i] != <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-keyword">return</span> memo[i];<br>        &#125;<br>        <span class="hljs-keyword">return</span> memo[i] = dfs(i - <span class="hljs-number">1</span>, memo) + dfs(i - <span class="hljs-number">2</span>, memo);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>因为递归是由上至下展开、由下至上收敛的过程。当递归到最小的问题（<code>i &lt;= 1</code>）时，逐步返回计算结果，并将这些结果存储在 <code>memo</code> 数组中。当递归回到较高层级时，已经计算过的结果保存在 <code>memo</code> 中，可以直接访问，避免重复计算。</p>
+<blockquote>
+<p>递推</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">climbStairs</span><span class="hljs-params">(<span class="hljs-type">int</span> n)</span> &#123;<br>        <span class="hljs-type">int</span>[] f = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[n + <span class="hljs-number">1</span>];<br>        f[<span class="hljs-number">0</span>] = f[<span class="hljs-number">1</span>] = <span class="hljs-number">1</span>;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">2</span>; i &lt;= n; i++) &#123;<br>            f[i] = f[i - <span class="hljs-number">1</span>] + f[i - <span class="hljs-number">2</span>];<br>        &#125;<br>        <span class="hljs-keyword">return</span> f[n];<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>我们可以去掉递归中的「递」，只保留「归」的部分，即自底向上计算。具体来说，$f[i]$ 的定义和 $dfs(i)$ 的定义是一样的，都表示从 0 爬到 i 有多少种不同的方法。</p>
+<p>相应的递推式（状态转移方程）也和 $dfs$ 一样：$f[i]&#x3D;f[i−1]+f[i−2]$</p>
+<p>递推方法的核心在于通过自底向上的迭代计算，避免了递归中的重复计算和函数调用开销，达到了高效解决问题的目的。</p>
+<p>当然，转换为三个变量滚动计算这里就不写了</p>
+<h3 id="打家劫舍"><a href="#打家劫舍" class="headerlink" title="打家劫舍"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/house-robber/">打家劫舍</a></h3><p>你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，<strong>如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警</strong>。</p>
+<p>给定一个代表每个房屋存放金额的非负整数数组，计算你 <strong>不触动警报装置的情况下</strong> ，一夜之内能够偷窃到的最高金额。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs tap">输入：[1,2,3,1]<br>输出：4<br>解释：偷窃<span class="hljs-number"> 1 </span>号房屋 (金额 = 1) ，然后偷窃<span class="hljs-number"> 3 </span>号房屋 (金额 = 3)。<br>     偷窃到的最高金额 =<span class="hljs-number"> 1 </span>+<span class="hljs-number"> 3 </span>=<span class="hljs-number"> 4 </span>。<br></code></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>递归</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">rob</span><span class="hljs-params">(<span class="hljs-type">int</span>[] nums)</span> &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">n</span> <span class="hljs-operator">=</span> nums.length;<br>        <span class="hljs-keyword">return</span> dfs(n - <span class="hljs-number">1</span>, nums);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">dfs</span><span class="hljs-params">(<span class="hljs-type">int</span> i, <span class="hljs-type">int</span> []nums)</span> &#123;<br>        <span class="hljs-keyword">if</span> (i &lt; <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>        &#125;<br>        <span class="hljs-keyword">return</span> Math.max(dfs(i - <span class="hljs-number">1</span>, nums), dfs(i - <span class="hljs-number">2</span>, nums) + nums[i]);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>超时，记忆化搜索</p>
+<blockquote>
+<p>记忆化搜索</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">rob</span><span class="hljs-params">(<span class="hljs-type">int</span>[] nums)</span> &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">n</span> <span class="hljs-operator">=</span> nums.length;<br>        <span class="hljs-type">int</span> []memo = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[n];<br>        Arrays.fill(memo, -<span class="hljs-number">1</span>);<br>        <span class="hljs-keyword">return</span> dfs(n - <span class="hljs-number">1</span>, nums, memo);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">dfs</span><span class="hljs-params">(<span class="hljs-type">int</span> i, <span class="hljs-type">int</span> []nums, <span class="hljs-type">int</span>[] memo)</span> &#123;<br>        <span class="hljs-keyword">if</span> (i &lt; <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>        &#125;<br>        <span class="hljs-keyword">if</span> (memo[i] != -<span class="hljs-number">1</span>) &#123;<br>            <span class="hljs-keyword">return</span> memo[i];<br>        &#125;<br>        <span class="hljs-keyword">return</span> memo[i] = Math.max(dfs(i - <span class="hljs-number">1</span>, nums, memo), dfs(i - <span class="hljs-number">2</span>, nums, memo) + nums[i]);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><em>memo</em> 数组的<strong>初始值</strong>一定不能等于要记忆化的值！上一题的方案数不可能为0，故没有初始化数组，但是这道题要记忆化的值是金额可以为0，故要初始化数组为-1</p>
+<blockquote>
+<p>递推</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">rob</span><span class="hljs-params">(<span class="hljs-type">int</span>[] nums)</span> &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">n</span> <span class="hljs-operator">=</span> nums.length;<br>        <span class="hljs-type">int</span> []f = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[n + <span class="hljs-number">2</span>];<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; n; ++ i) &#123;<br>            f[i + <span class="hljs-number">2</span>] = Math.max(f[i + <span class="hljs-number">1</span>], f[i] + nums[i]);<br>        &#125;<br>        <span class="hljs-keyword">return</span> f[n + <span class="hljs-number">1</span>];<br>    &#125;<br>&#125;<span class="hljs-comment">//f下标加2，即可避免越界</span><br><br><span class="hljs-comment">//换成三个变量滚动，节约空间</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">rob</span><span class="hljs-params">(<span class="hljs-type">int</span>[] nums)</span> &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">n</span> <span class="hljs-operator">=</span> nums.length;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">pre</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>, cur = pre;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; n; ++ i) &#123;<br>            <span class="hljs-type">int</span> <span class="hljs-variable">t</span> <span class="hljs-operator">=</span> Math.max(cur, pre + nums[i]);<br>            pre = cur;<br>            cur = t;<br>        &#125;<br>        <span class="hljs-keyword">return</span> cur;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="使用最小花费爬楼梯"><a href="#使用最小花费爬楼梯" class="headerlink" title="使用最小花费爬楼梯"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/min-cost-climbing-stairs/">使用最小花费爬楼梯</a></h3><p>给你一个整数数组 <code>cost</code> ，其中 <code>cost[i]</code> 是从楼梯第 <code>i</code> 个台阶向上爬需要支付的费用。一旦你支付此费用，即可选择向上爬一个或者两个台阶。</p>
+<p>你可以选择从下标为 <code>0</code> 或下标为 <code>1</code> 的台阶开始爬楼梯。</p>
+<p>请你计算并返回达到楼梯顶部的最低花费。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dns">输入：cost = [<span class="hljs-number">1,100,1,1</span>,<span class="hljs-number">1,100,1,1</span>,<span class="hljs-number">100</span>,<span class="hljs-number">1</span>]<br>输出：<span class="hljs-number">6</span><br>解释：你将从下标为 <span class="hljs-number">0</span> 的台阶开始。<br></code></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>递归+记忆化搜索</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-type">int</span> []cost; <span class="hljs-type">int</span> []memo;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">minCostClimbingStairs</span><span class="hljs-params">(<span class="hljs-type">int</span>[] cost)</span> &#123;<br>        <span class="hljs-built_in">this</span>.cost = cost;<br>        memo = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[cost.length + <span class="hljs-number">1</span>];<br>        Arrays.fill(memo, -<span class="hljs-number">1</span>);<br>        <span class="hljs-keyword">return</span> dfs(cost.length);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">dfs</span><span class="hljs-params">(<span class="hljs-type">int</span> i)</span> &#123;<br>        <span class="hljs-keyword">if</span> (i &lt;= <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">if</span> (memo[i] != -<span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> memo[i];<br>        <span class="hljs-keyword">return</span> memo[i] = Math.min(dfs(i - <span class="hljs-number">1</span>) + cost[i - <span class="hljs-number">1</span>], dfs(i - <span class="hljs-number">2</span>) + cost[i - <span class="hljs-number">2</span>]);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>递推</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">minCostClimbingStairs</span><span class="hljs-params">(<span class="hljs-type">int</span>[] cost)</span> &#123;<br>    <span class="hljs-type">int</span> <span class="hljs-variable">n</span> <span class="hljs-operator">=</span> cost.length;<br>    <span class="hljs-type">int</span> []f = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[n + <span class="hljs-number">2</span>];<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; n - <span class="hljs-number">1</span>; ++ i) &#123;<br>        f[i + <span class="hljs-number">2</span>] = Math.min(f[i + <span class="hljs-number">1</span>] + cost[i + <span class="hljs-number">1</span>], f[i] + cost[i]);<br>    &#125;<br>    <span class="hljs-keyword">return</span> f[n];<br>&#125;<br><span class="hljs-comment">//滚动</span><br><span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">minCostClimbingStairs</span><span class="hljs-params">(<span class="hljs-type">int</span>[] cost)</span> &#123;<br>    <span class="hljs-type">int</span> <span class="hljs-variable">n</span> <span class="hljs-operator">=</span> cost.length;<br>    <span class="hljs-type">int</span> <span class="hljs-variable">pre</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>, cur = pre;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; n - <span class="hljs-number">1</span>; ++ i) &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">t</span> <span class="hljs-operator">=</span> Math.min(cur + cost[i + <span class="hljs-number">1</span>], pre + cost[i]);<br>        pre = cur;<br>        cur = t;<br>    &#125;<br>    <span class="hljs-keyword">return</span> cur;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="组合总和-Ⅳ"><a href="#组合总和-Ⅳ" class="headerlink" title="组合总和 Ⅳ"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/combination-sum-iv/">组合总和 Ⅳ</a></h3><p>给你一个由 <strong>不同</strong> 整数组成的数组 <code>nums</code> ，和一个目标整数 <code>target</code> 。请你从 <code>nums</code> 中找出并返回总和为 <code>target</code> 的元素组合的个数。</p>
+<p>题目数据保证答案符合 32 位整数范围。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs aspectj">输入：nums = [<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>], <span class="hljs-keyword">target</span> = <span class="hljs-number">4</span><br>输出：<span class="hljs-number">7</span><br>解释：<br>所有可能的组合为：<br>(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>)<br>(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>)<br>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>)<br>(<span class="hljs-number">1</span>, <span class="hljs-number">3</span>)<br>(<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>)<br>(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>)<br>(<span class="hljs-number">3</span>, <span class="hljs-number">1</span>)<br>请注意，顺序不同的序列被视作不同的组合。<br></code></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>dfs + 记忆化搜索</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">combinationSum4</span><span class="hljs-params">(<span class="hljs-type">int</span>[] nums, <span class="hljs-type">int</span> target)</span> &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">n</span> <span class="hljs-operator">=</span> nums.length;<br>        <span class="hljs-type">int</span> []memo = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[target + <span class="hljs-number">1</span>];<br>        Arrays.fill(memo, -<span class="hljs-number">1</span>);<br>        <span class="hljs-keyword">return</span> dfs(nums, target, memo);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">dfs</span><span class="hljs-params">(<span class="hljs-type">int</span>[] nums, <span class="hljs-type">int</span> target, <span class="hljs-type">int</span>[] memo)</span> &#123;<br>        <span class="hljs-keyword">if</span> (target &lt; <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">if</span> (target == <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>        &#125;<br>        <span class="hljs-keyword">if</span> (memo[target] != -<span class="hljs-number">1</span>) &#123;<br>            <span class="hljs-keyword">return</span> memo[target];<br>        &#125;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">res</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i : nums) &#123;   <br>            res += dfs(nums, target - i, memo);<br>        &#125;<br>        <span class="hljs-keyword">return</span> memo[target] = res;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>递推</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">combinationSum4</span><span class="hljs-params">(<span class="hljs-type">int</span>[] nums, <span class="hljs-type">int</span> target)</span> &#123;<br>    <span class="hljs-type">int</span> <span class="hljs-variable">n</span> <span class="hljs-operator">=</span> nums.length;<br>    <span class="hljs-type">int</span> f[] = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[target + <span class="hljs-number">1</span>];<br>    f[<span class="hljs-number">0</span>] = <span class="hljs-number">1</span>;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">1</span>; i &lt;= target; i ++) &#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> x : nums) &#123;<br>            <span class="hljs-keyword">if</span> (x &lt;= i) &#123;<br>                f[i] += f[i - x];<br>            &#125;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> f[target];<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="统计构造”好”字符串的方案数"><a href="#统计构造”好”字符串的方案数" class="headerlink" title="统计构造”好”字符串的方案数"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/count-ways-to-build-good-strings/">统计构造”好”字符串的方案数</a></h3><blockquote>
+<p>递推</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">countGoodStrings</span><span class="hljs-params">(<span class="hljs-type">int</span> low, <span class="hljs-type">int</span> high, <span class="hljs-type">int</span> zero, <span class="hljs-type">int</span> one)</span> &#123;<br>    <span class="hljs-type">int</span> f[] = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[high + <span class="hljs-number">1</span>];<br>    <span class="hljs-type">int</span> <span class="hljs-variable">mod</span> <span class="hljs-operator">=</span> <span class="hljs-number">1_000_000_007</span>, ans = <span class="hljs-number">0</span>;<br>    f[<span class="hljs-number">0</span>] = <span class="hljs-number">1</span>;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">1</span>; i &lt;= high; i ++) &#123;<br>        <span class="hljs-keyword">if</span> (i &gt;= zero) f[i] = (f[i] + f[i - zero]) % mod;<br>        <span class="hljs-keyword">if</span> (i &gt;= one) f[i] = (f[i] + f[i - one]) % mod;<br>        <span class="hljs-keyword">if</span> (i &gt;= low) ans = (ans + f[i]) % mod;<br>    &#125;<br>    <span class="hljs-keyword">return</span> ans;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="统计打字方案数"><a href="#统计打字方案数" class="headerlink" title="统计打字方案数"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/count-number-of-texts/">统计打字方案数</a></h3><blockquote>
+<p>分段 dfs + 记忆化搜索</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">mod</span> <span class="hljs-operator">=</span> <span class="hljs-number">1_000_000_007</span>;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">countTexts</span><span class="hljs-params">(String pressedKeys)</span> &#123;<br>        <span class="hljs-type">int</span> []index = &#123;<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>&#125;; <span class="hljs-comment">//每个号码对应的字符串长度</span><br>        <span class="hljs-type">long</span> <span class="hljs-variable">res</span> <span class="hljs-operator">=</span> <span class="hljs-number">1</span>; <span class="hljs-comment">//debug半天，res必须为long，不然乘法过程中可能溢出</span><br>        <span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>, n = pressedKeys.length(); <br>        <span class="hljs-keyword">while</span> (i &lt; n) &#123;<br>            <span class="hljs-type">int</span> <span class="hljs-variable">len</span> <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;<br>            <span class="hljs-keyword">while</span> (i + <span class="hljs-number">1</span> &lt; n &amp;&amp; pressedKeys.charAt(i) == pressedKeys.charAt(i + <span class="hljs-number">1</span>)) &#123;<br>                i ++; <br>                len ++; <span class="hljs-comment">//统计每一段相同操作的长度，例如22255中222长度为3</span><br>            &#125;<br>            <span class="hljs-type">int</span> []memo = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[len + <span class="hljs-number">1</span>];<br>            <span class="hljs-type">int</span> <span class="hljs-variable">s</span> <span class="hljs-operator">=</span> index[pressedKeys.charAt(i) - <span class="hljs-string">&#x27;0&#x27;</span>];<br>            res = (res * dfs(s, len, memo)) % mod; <span class="hljs-comment">//乘法原理，222和55是独立的，分别统计222和55各自的可能，再相乘即为答案</span><br>            i ++;<br>        &#125;<br>        <span class="hljs-keyword">return</span> (<span class="hljs-type">int</span>) res;<br>    &#125;<br><br>    <span class="hljs-comment">// 常规dfs记忆化搜索</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">dfs</span><span class="hljs-params">(<span class="hljs-type">int</span> s, <span class="hljs-type">int</span> len, <span class="hljs-type">int</span> []memo)</span> &#123;<br>        <span class="hljs-keyword">if</span> (len == <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>        &#125;<br>        <span class="hljs-keyword">if</span> (memo[len] != <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> memo[len];<br>        <span class="hljs-type">long</span> <span class="hljs-variable">res</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">1</span>; i &lt;= s; i ++) &#123;<br>            <span class="hljs-keyword">if</span> (len &gt;= i) &#123;<br>                res = (res + dfs(s, len - i, memo)) % mod;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> memo[len] = (<span class="hljs-type">int</span>) res;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="删除并获得点数"><a href="#删除并获得点数" class="headerlink" title="删除并获得点数"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/delete-and-earn/">删除并获得点数</a></h3><p>给你一个整数数组 <code>nums</code> ，你可以对它进行一些操作。</p>
+<p>每次操作中，选择任意一个 <code>nums[i]</code> ，删除它并获得 <code>nums[i]</code> 的点数。之后，你必须删除 <strong>所有</strong> 等于 <code>nums[i] - 1</code> 和 <code>nums[i] + 1</code> 的元素。</p>
+<p>开始你拥有 <code>0</code> 个点数。返回你能通过这些操作获得的最大点数。</p>
+<p><strong>示例 2：</strong></p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs tap">输入：nums = [2,2,3,3,3,4]<br>输出：9<br>解释：<br>删除<span class="hljs-number"> 3 </span>获得<span class="hljs-number"> 3 </span>个点数，接着要删除两个<span class="hljs-number"> 2 </span>和<span class="hljs-number"> 4 </span>。<br>之后，再次删除<span class="hljs-number"> 3 </span>获得<span class="hljs-number"> 3 </span>个点数，再次删除<span class="hljs-number"> 3 </span>获得<span class="hljs-number"> 3 </span>个点数。<br>总共获得<span class="hljs-number"> 9 </span>个点数。<br></code></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>dfs + 记忆化搜索</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">deleteAndEarn</span><span class="hljs-params">(<span class="hljs-type">int</span>[] nums)</span> &#123;<br>        Map&lt;Integer, Integer&gt; mp = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i : nums) &#123;<br>            mp.put(i, mp.getOrDefault(i, <span class="hljs-number">0</span>) + <span class="hljs-number">1</span>);<br>            <span class="hljs-comment">//mp.merge(i, 1, Integer::sum);</span><br>        &#125;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">n</span> <span class="hljs-operator">=</span> mp.size(), k = <span class="hljs-number">0</span>;<br>        <span class="hljs-type">int</span> []a = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[n];<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> x : mp.keySet()) &#123;<br>            a[k ++] = x;<br>        &#125;        <br>        Arrays.sort(a);<br>        <span class="hljs-type">int</span> []memo = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[n];<br>        <span class="hljs-keyword">return</span> dfs(a, n - <span class="hljs-number">1</span>, mp, memo);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">dfs</span><span class="hljs-params">(<span class="hljs-type">int</span> []a, <span class="hljs-type">int</span> i, Map&lt;Integer, Integer&gt; mp, <span class="hljs-type">int</span>[]memo)</span> &#123;<br>        <span class="hljs-keyword">if</span> (i &lt; <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">if</span> (memo[i] != <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> memo[i];<br>        <span class="hljs-type">int</span> <span class="hljs-variable">j</span> <span class="hljs-operator">=</span> i; <br>        <span class="hljs-keyword">while</span> (j &gt; <span class="hljs-number">0</span> &amp;&amp; a[j - <span class="hljs-number">1</span>] &gt;= a[i] - <span class="hljs-number">1</span>) -- j;<br>        <span class="hljs-keyword">return</span> memo[i] = Math.max(dfs(a, i - <span class="hljs-number">1</span>, mp, memo), a[i] * mp.get(a[i]) + dfs(a, j - <span class="hljs-number">1</span>, mp, memo));<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>一个细节：<code>a[j - 1] &gt;= a[i] - 1</code>  和 <code>dfs(a, j - 1, mp, memo)</code> 这里的 j - 1 不能为 j ，否则可能因为 j 未减小导致无限递归。</p>
+<blockquote>
+<p>递推</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">deleteAndEarn</span><span class="hljs-params">(<span class="hljs-type">int</span>[] nums)</span> &#123;<br>        Map&lt;Integer, Integer&gt; mp = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i : nums) &#123;<br>            mp.put(i, mp.getOrDefault(i, <span class="hljs-number">0</span>) + <span class="hljs-number">1</span>);<br>        &#125;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">n</span> <span class="hljs-operator">=</span> mp.size(), k = <span class="hljs-number">0</span>;<br>        <span class="hljs-type">int</span> []a = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[n];<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> x : mp.keySet()) &#123;<br>            a[k ++] = x;<br>        &#125;        <br>        Arrays.sort(a);<br>        <span class="hljs-type">int</span> []f = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[n + <span class="hljs-number">1</span>];<br>        <span class="hljs-type">int</span> <span class="hljs-variable">j</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; n; ++ i) &#123;<br>            <span class="hljs-keyword">while</span> (a[j] &lt; a[i] - <span class="hljs-number">1</span>) ++ j;<br>            f[i + <span class="hljs-number">1</span>] = Math.max(f[i], f[j] + a[i] * mp.get(a[i]));<br>        &#125;<br>        <span class="hljs-keyword">return</span> f[n];<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="施咒的最大总伤害"><a href="#施咒的最大总伤害" class="headerlink" title="施咒的最大总伤害"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-total-damage-with-spell-casting/">施咒的最大总伤害</a></h3><p>一个魔法师有许多不同的咒语。</p>
+<p>给你一个数组 <code>power</code> ，其中每个元素表示一个咒语的伤害值，可能会有多个咒语有相同的伤害值。</p>
+<p>已知魔法师使用伤害值为 <code>power[i]</code> 的咒语时，他们就 <strong>不能</strong> 使用伤害为 <code>power[i] - 2</code> ，<code>power[i] - 1</code> ，<code>power[i] + 1</code> 或者 <code>power[i] + 2</code> 的咒语。</p>
+<p>每个咒语最多只能被使用 <strong>一次</strong> 。</p>
+<p>请你返回这个魔法师可以达到的伤害值之和的 <strong>最大值</strong> 。</p>
+<blockquote>
+<p>dfs + 记忆化搜索</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">long</span> <span class="hljs-title function_">maximumTotalDamage</span><span class="hljs-params">(<span class="hljs-type">int</span>[] nums)</span> &#123;<br>        Map&lt;Integer, Integer&gt; mp = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i : nums) &#123;<br>            mp.put(i, mp.getOrDefault(i, <span class="hljs-number">0</span>) + <span class="hljs-number">1</span>); <span class="hljs-comment">// 去重</span><br>        &#125;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">n</span> <span class="hljs-operator">=</span> mp.size(), k = <span class="hljs-number">0</span>;<br>        <span class="hljs-type">int</span> []a = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[n];<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> x : mp.keySet()) &#123;<br>            a[k ++] = x;<br>        &#125;        <br>        Arrays.sort(a);  <span class="hljs-comment">// 排序</span><br>        <span class="hljs-type">long</span> []memo = <span class="hljs-keyword">new</span> <span class="hljs-title class_">long</span>[n];<br>        <span class="hljs-keyword">return</span> dfs(a, n - <span class="hljs-number">1</span>, mp, memo);<br>    &#125;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">long</span> <span class="hljs-title function_">dfs</span><span class="hljs-params">(<span class="hljs-type">int</span> []a, <span class="hljs-type">int</span> i, Map&lt;Integer, Integer&gt; mp, <span class="hljs-type">long</span>[]memo)</span> &#123;<br>        <span class="hljs-keyword">if</span> (i &lt; <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">if</span> (memo[i] != <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> memo[i];<br>        <span class="hljs-type">int</span> <span class="hljs-variable">j</span> <span class="hljs-operator">=</span> i; <br>        <span class="hljs-keyword">while</span> (j &gt; <span class="hljs-number">0</span> &amp;&amp; a[j - <span class="hljs-number">1</span>] &gt;= a[i] - <span class="hljs-number">2</span>) -- j;  <span class="hljs-comment">// 找到第一个能使用咒语的位置（第一个小于power[i] - 2的位置）</span><br>        <span class="hljs-keyword">return</span> memo[i] = Math.max(dfs(a, i - <span class="hljs-number">1</span>, mp, memo), (<span class="hljs-type">long</span>) a[i] * mp.get(a[i]) + dfs(a, j - <span class="hljs-number">1</span>, mp, memo));<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>递推</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">long</span> <span class="hljs-title function_">maximumTotalDamage</span><span class="hljs-params">(<span class="hljs-type">int</span>[] nums)</span> &#123;<br>        Map&lt;Integer, Integer&gt; mp = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i : nums) &#123;<br>            mp.merge(i, <span class="hljs-number">1</span>, Integer::sum);<br>        &#125;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">n</span> <span class="hljs-operator">=</span> mp.size(), k = <span class="hljs-number">0</span>;<br>        <span class="hljs-type">int</span> []a = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[n];<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> x : mp.keySet()) &#123;<br>            a[k ++] = x;<br>        &#125;        <br>        Arrays.sort(a);<br>        <span class="hljs-type">long</span> []f = <span class="hljs-keyword">new</span> <span class="hljs-title class_">long</span>[n + <span class="hljs-number">1</span>];<br>        <span class="hljs-type">int</span> <span class="hljs-variable">j</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; n; ++ i) &#123;<br>            <span class="hljs-keyword">while</span> (a[j] &lt; a[i] - <span class="hljs-number">2</span>) ++ j;<br>            f[i + <span class="hljs-number">1</span>] = Math.max(f[i], f[j] + (<span class="hljs-type">long</span>) a[i] * mp.get(a[i]));<br>        &#125;<br>        <span class="hljs-keyword">return</span> f[n];<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="统计放置房子的方式数"><a href="#统计放置房子的方式数" class="headerlink" title="统计放置房子的方式数"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/count-number-of-ways-to-place-houses/">统计放置房子的方式数</a></h3><blockquote>
+<p>dfs + 记忆化搜索</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">mod</span> <span class="hljs-operator">=</span> <span class="hljs-number">1_000_000_007</span>;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">countHousePlacements</span><span class="hljs-params">(<span class="hljs-type">int</span> n)</span> &#123;<br>        <span class="hljs-type">long</span> []memo = <span class="hljs-keyword">new</span> <span class="hljs-title class_">long</span>[n + <span class="hljs-number">1</span>];<br>        <span class="hljs-type">long</span> <span class="hljs-variable">res</span> <span class="hljs-operator">=</span> dfs(n, memo);<br>        <span class="hljs-keyword">return</span> (<span class="hljs-type">int</span>) (res % mod * res % mod) % mod;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">long</span> <span class="hljs-title function_">dfs</span> <span class="hljs-params">(<span class="hljs-type">int</span> i, <span class="hljs-type">long</span> []memo)</span> &#123;<br>        <span class="hljs-keyword">if</span> (i == <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>        <span class="hljs-keyword">if</span> (i == <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">2</span>;<br>        <span class="hljs-keyword">if</span> (memo[i] != <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> memo[i];<br>        <span class="hljs-keyword">return</span> memo[i] = (dfs(i - <span class="hljs-number">1</span>, memo) + dfs(i - <span class="hljs-number">2</span>, memo)) % mod;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>递推</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">mod</span> <span class="hljs-operator">=</span> <span class="hljs-number">1_000_000_007</span>;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">countHousePlacements</span><span class="hljs-params">(<span class="hljs-type">int</span> n)</span> &#123;<br>        <span class="hljs-keyword">if</span> (n == <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">4</span>;<br>        <span class="hljs-type">long</span> []f = <span class="hljs-keyword">new</span> <span class="hljs-title class_">long</span>[n + <span class="hljs-number">1</span>];<br>        f[<span class="hljs-number">0</span>] = <span class="hljs-number">1</span>;<br>        f[<span class="hljs-number">1</span>] = <span class="hljs-number">2</span>;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">2</span>; i &lt;= n; ++ i) &#123;<br>            f[i] = (f[i - <span class="hljs-number">1</span>]  + f[i - <span class="hljs-number">2</span>]) % mod;<br>        &#125;<br>        <span class="hljs-keyword">return</span> (<span class="hljs-type">int</span>) (f[n] % mod * f[n] % mod) % mod;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>优化空间</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">countHousePlacements</span><span class="hljs-params">(<span class="hljs-type">int</span> n)</span> &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">mod</span> <span class="hljs-operator">=</span> <span class="hljs-number">1_000_000_007</span>;<br>        <span class="hljs-keyword">if</span> (n == <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">4</span>;<br>        <span class="hljs-type">long</span> <span class="hljs-variable">pre</span> <span class="hljs-operator">=</span> <span class="hljs-number">1</span>, cur = <span class="hljs-number">2</span>;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">1</span>; i &lt; n; i ++) &#123;<br>            <span class="hljs-type">long</span> <span class="hljs-variable">t</span> <span class="hljs-operator">=</span> (pre + cur) % mod;<br>            pre = cur;<br>            cur = t;<br>        &#125;<br>        <span class="hljs-keyword">return</span> (<span class="hljs-type">int</span>) (cur % mod * cur % mod) % mod;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="打家劫舍-II"><a href="#打家劫舍-II" class="headerlink" title="打家劫舍 II"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/house-robber-ii/">打家劫舍 II</a></h3><p>你是一个专业的小偷，计划偷窃沿街的房屋，每间房内都藏有一定的现金。这个地方所有的房屋都 <strong>围成一圈</strong> ，这意味着第一个房屋和最后一个房屋是紧挨着的。同时，相邻的房屋装有相互连通的防盗系统，<strong>如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警</strong> 。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-type">int</span> []memo;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">rob</span><span class="hljs-params">(<span class="hljs-type">int</span>[] nums)</span> &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">n</span> <span class="hljs-operator">=</span> nums.length;<br>        memo = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[n];<br>        Arrays.fill(memo, -<span class="hljs-number">1</span>);<br>        <span class="hljs-keyword">return</span> Math.max(nums[<span class="hljs-number">0</span>] + dfs(nums, <span class="hljs-number">2</span>, n - <span class="hljs-number">2</span>), dfs(nums, <span class="hljs-number">1</span>, n - <span class="hljs-number">1</span>)); <span class="hljs-comment">//考虑第1间和不考虑第一间</span><br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">dfs</span><span class="hljs-params">(<span class="hljs-type">int</span> []nums, <span class="hljs-type">int</span> k, <span class="hljs-type">int</span> i)</span> &#123;<br>        <span class="hljs-keyword">if</span> (i &lt; k) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">if</span> (memo[i] != -<span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> memo[i];<br>        <span class="hljs-keyword">return</span> Math.max(dfs(nums, k, i - <span class="hljs-number">1</span>), dfs(nums, k, i - <span class="hljs-number">2</span>) + nums[i]);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>递推（按照上面一比一翻译）</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-type">int</span> []memo;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">rob</span><span class="hljs-params">(<span class="hljs-type">int</span>[] nums)</span> &#123;<br>        <span class="hljs-keyword">return</span> Math.max(nums[<span class="hljs-number">0</span>] + dfs(nums, <span class="hljs-number">2</span>), dfs(nums, <span class="hljs-number">1</span>));<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">dfs</span><span class="hljs-params">(<span class="hljs-type">int</span> []nums, <span class="hljs-type">int</span> start)</span> &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">n</span> <span class="hljs-operator">=</span> nums.length;<br>        <span class="hljs-type">int</span> []f = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[n + <span class="hljs-number">2</span>];<br>        <br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> start; i &lt; n; i ++) &#123;<br>            f[i + <span class="hljs-number">2</span>] = Math.max(f[i + <span class="hljs-number">1</span>], f[i] + nums[i]);<br>        &#125;<br>        <span class="hljs-keyword">return</span> f[n - start+ <span class="hljs-number">2</span>];<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>空间优化</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">rob</span><span class="hljs-params">(<span class="hljs-type">int</span>[] nums)</span> &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">n</span> <span class="hljs-operator">=</span> nums.length;<br>        <span class="hljs-keyword">return</span> Math.max(nums[<span class="hljs-number">0</span>] + dfs(nums, <span class="hljs-number">2</span>, n - <span class="hljs-number">1</span>), dfs(nums, <span class="hljs-number">1</span>, n));<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">dfs</span><span class="hljs-params">(<span class="hljs-type">int</span> []nums, <span class="hljs-type">int</span> start, <span class="hljs-type">int</span> end)</span> &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">n</span> <span class="hljs-operator">=</span> nums.length;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">pre</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>, cur = pre;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> start; i &lt; end; i ++) &#123;<br>            <span class="hljs-type">int</span> <span class="hljs-variable">t</span> <span class="hljs-operator">=</span> Math.max(nums[i] + pre, cur);<br>            pre = cur;<br>            cur = t;<br>        &#125;<br>        <span class="hljs-keyword">return</span> cur;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%AE%97%E6%B3%95/" class="category-chain-item">算法</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="print-no-link">#动态规划</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>动态规划-递归到记忆化搜索</div>
+      <div>https://payfish.github.io/2024/07/06/动态规划-递归到记忆化搜索/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>fu1sh</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/03/Netty%E5%AE%9E%E7%8E%B0RPC%E6%A1%86%E6%9E%B6%E5%AE%9E%E6%88%98/" title="Netty实现RPC框架实战">
+                        <span class="hidden-mobile">Netty实现RPC框架实战</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

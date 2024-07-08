@@ -1,0 +1,707 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="fu1sh">
+  <meta name="keywords" content="java">
+  
+    <meta name="description" content="深入NettyByteBufNetty并未使用NIO中的ByteBuffer来作为缓冲区，而是自定义了一个ByteBuf，相比于ByteBuffer有如下区别：  写操作完成后无需filp 比ByteBuffer响应更快 动态扩容  1234567public abstract class AbstractByteBuf extends ByteBuf &#123;    ...    int r">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Netty实现RPC框架实战">
+<meta property="og:url" content="https://payfish.github.io/2024/07/03/Netty%E5%AE%9E%E7%8E%B0RPC%E6%A1%86%E6%9E%B6%E5%AE%9E%E6%88%98/index.html">
+<meta property="og:site_name" content="Fu1sh&#39;s BLOG">
+<meta property="og:description" content="深入NettyByteBufNetty并未使用NIO中的ByteBuffer来作为缓冲区，而是自定义了一个ByteBuf，相比于ByteBuffer有如下区别：  写操作完成后无需filp 比ByteBuffer响应更快 动态扩容  1234567public abstract class AbstractByteBuf extends ByteBuf &#123;    ...    int r">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://payfish.github.io/2024/07/03/Netty%E5%AE%9E%E7%8E%B0RPC%E6%A1%86%E6%9E%B6%E5%AE%9E%E6%88%98/%E7%8A%B6%E6%80%81%E5%88%87%E6%8D%A2.png">
+<meta property="og:image" content="https://payfish.github.io/2024/07/03/Netty%E5%AE%9E%E7%8E%B0RPC%E6%A1%86%E6%9E%B6%E5%AE%9E%E6%88%98/%E6%96%87%E4%BB%B6IO.png">
+<meta property="article:published_time" content="2024-07-03T13:53:48.000Z">
+<meta property="article:modified_time" content="2024-07-08T07:41:41.652Z">
+<meta property="article:author" content="fu1sh">
+<meta property="article:tag" content="Netty">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://payfish.github.io/2024/07/03/Netty%E5%AE%9E%E7%8E%B0RPC%E6%A1%86%E6%9E%B6%E5%AE%9E%E6%88%98/%E7%8A%B6%E6%80%81%E5%88%87%E6%8D%A2.png">
+  
+  
+  
+  <title>Netty实现RPC框架实战 - Fu1sh&#39;s BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"payfish.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"Java"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fu1sh</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Netty实现RPC框架实战"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-03 21:53" pubdate>
+          2024年7月3日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Netty实现RPC框架实战</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="深入Netty"><a href="#深入Netty" class="headerlink" title="深入Netty"></a>深入Netty</h3><h4 id="ByteBuf"><a href="#ByteBuf" class="headerlink" title="ByteBuf"></a>ByteBuf</h4><p>Netty并未使用NIO中的ByteBuffer来作为缓冲区，而是自定义了一个ByteBuf，相比于ByteBuffer有如下区别：</p>
+<ul>
+<li>写操作完成后无需filp</li>
+<li>比ByteBuffer响应更快</li>
+<li>动态扩容</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AbstractByteBuf</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ByteBuf</span> &#123;<br>    ...<br>    <span class="hljs-type">int</span> readerIndex;   <span class="hljs-comment">//index被分为了读和写，是两个指针在同时工作</span><br>    <span class="hljs-type">int</span> writerIndex; <span class="hljs-comment">//双指针取代position指针，无需flip将position置0</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> markedReaderIndex;    <span class="hljs-comment">//mark操作也分两种</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> markedWriterIndex;<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> maxCapacity;    <span class="hljs-comment">//最大容量，没错，这玩意能动态扩容</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">ByteBuf</span> <span class="hljs-variable">buffer</span> <span class="hljs-operator">=</span> Unpooled.buffer(<span class="hljs-number">10</span>); <span class="hljs-comment">//非池化缓冲区</span><br><span class="hljs-type">ByteBufAllocator</span> <span class="hljs-variable">allocator</span> <span class="hljs-operator">=</span> PooledByteBufAllocator.DEFAULT;<span class="hljs-comment">//池化技术可以复用buffer</span><br><span class="hljs-type">ByteBuf</span> <span class="hljs-variable">buffer</span> <span class="hljs-operator">=</span> allocator.buffer(<span class="hljs-number">256</span>);<br>byteBuf.writeBytes(<span class="hljs-string">&quot;abcdefgrfrfrf&quot;</span>.getBytes()); <span class="hljs-comment">//超过缓冲区大小动态扩容，先到64，之后再每次X2</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="零拷贝"><a href="#零拷贝" class="headerlink" title="零拷贝"></a>零拷贝</h4><p>零拷贝允许在计算机内部传输数据时快速高效地将数据从文件系统移动到网络接口，避免将数据从一个存储区域复制到另一个存储区域，从而减少 CPU 负载和内存带宽的消耗。</p>
+<p>其实早期操作系统是不区分内核空间和用户空间的，但是应用程序能访问任意内存空间，程序很容易不稳定，常常把系统搞崩溃，比如清除操作系统的内存数据。实际上让应用程序随便访问内存真的太危险了，于是就按照CPU 指令的重要程度对指令进行了分级，指令分为四个级别：Ring0 ~ Ring3，Linux 下只使用了 Ring0 和 Ring3 两个运行级别，进程运行在 Ring3 级别时运行在用户态，指令只访问用户空间，而运行在 Ring0 级别时被称为运行在内核态，可以访问任意内存空间。</p>
+<p><img src="/2024/07/03/Netty%E5%AE%9E%E7%8E%B0RPC%E6%A1%86%E6%9E%B6%E5%AE%9E%E6%88%98/%E7%8A%B6%E6%80%81%E5%88%87%E6%8D%A2.png" srcset="/img/loading.gif" lazyload></p>
+<p>比如Java创建线程，实际上是通过调用本地方法<code>private native void start0();</code>来启动线程，它使用 JNI 调用操作系统的线程创建函数 <code>CreateThread</code> （这个就叫系统调用），这个过程就涉及到用户态到内核态的切换，操作系统内核负责分配资源（如栈、线程控制块等），并将新线程加入调度队列。</p>
+<p>我们的文件操作也是如此，操作系统帮我们从磁盘读取到文件中的数据发给网络，流程如下</p>
+<p><img src="/2024/07/03/Netty%E5%AE%9E%E7%8E%B0RPC%E6%A1%86%E6%9E%B6%E5%AE%9E%E6%88%98/%E6%96%87%E4%BB%B6IO.png" srcset="/img/loading.gif" lazyload></p>
+<p>DMA控制器就是Direct Memory Access，CSGO经常听到的DMA硬件外挂就是通过FPGA硬件设备直接访问内存，修改内存数据达到控制游戏操作的效果。图中经历了两次CPU拷贝两次DMA拷贝，拷贝略多，可以使用零拷贝优化。</p>
+<p><strong>使用零拷贝技术</strong></p>
+<ul>
+<li><p><strong>mmap&#x2F;munmap</strong>：通过内存映射文件，可以将文件内容映射到进程的地址空间，这样读写文件就像读写内存一样，无需经过用户态的缓冲区。</p>
+</li>
+<li><p><strong>sendfile</strong>：系统调用 <code>sendfile</code> 允许直接将数据从一个文件描述符传输到另一个文件描述符（例如，从文件到网络套接字），避免在用户态和内核态之间进行数据拷贝。在内核空间中直接由CPU把数据拷贝到Socket。</p>
+</li>
+<li><p><strong>虚拟内存</strong>：现在的操作系统基本都是支持虚拟内存的，我们可以让内核空间和用户空间的虚拟地址指向同一个物理地址，这样就相当于是直接共用了这一块区域，也就谈不上拷贝操作了：</p>
+</li>
+</ul>
+<h3 id="基于Netty的RPC框架"><a href="#基于Netty的RPC框架" class="headerlink" title="基于Netty的RPC框架"></a>基于Netty的RPC框架</h3><h4 id="NettyServer和NettyClient"><a href="#NettyServer和NettyClient" class="headerlink" title="NettyServer和NettyClient"></a>NettyServer和NettyClient</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">NettyServer</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">RpcServer</span>&#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">logger</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(NettyServer.class);<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">start</span><span class="hljs-params">(<span class="hljs-type">int</span> port)</span> &#123;<br>        <span class="hljs-type">EventLoopGroup</span> <span class="hljs-variable">bossGroup</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">NioEventLoopGroup</span>();<br>        <span class="hljs-type">EventLoopGroup</span> <span class="hljs-variable">workerGroup</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">NioEventLoopGroup</span>();<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-type">ServerBootstrap</span> <span class="hljs-variable">bootstrap</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ServerBootstrap</span>();<br>            bootstrap.group(bossGroup, workerGroup)<br>                    .channel(NioServerSocketChannel.class)<br>                    .handler(<span class="hljs-keyword">new</span> <span class="hljs-title class_">LoggingHandler</span>(LogLevel.INFO))<br>                    .childHandler(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ChannelInitializer</span>&lt;SocketChannel&gt;() &#123;<br>                        <span class="hljs-meta">@Override</span><br>                        <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">initChannel</span><span class="hljs-params">(SocketChannel ch)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>                            ch.pipeline().addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">CommonDecoder</span>())<br>                                    .addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">CommonEncoder</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">JsonSerializer</span>()))<br>                                    .addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">NettyServerHandler</span>());<br>                        &#125;<br>                    &#125;)<br>                    .option(ChannelOption.SO_BACKLOG, <span class="hljs-number">128</span>)<br>                    .childOption(ChannelOption.SO_KEEPALIVE, <span class="hljs-literal">true</span>);<br>            <span class="hljs-type">ChannelFuture</span> <span class="hljs-variable">future</span> <span class="hljs-operator">=</span> bootstrap.bind(port).sync();<br>            future.channel().closeFuture().sync();<br>        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(e);<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>            bossGroup.shutdownGracefully();<br>            workerGroup.shutdownGracefully();<br>        &#125;<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">NettyClient</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">RpcClient</span>&#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">logger</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(NettyClient.class);<br><br>    <span class="hljs-keyword">private</span> String host;<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> port;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Bootstrap bootstrap;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">NettyClient</span><span class="hljs-params">(String host, <span class="hljs-type">int</span> port)</span> &#123;<br>        <span class="hljs-built_in">this</span>.host = host;<br>        <span class="hljs-built_in">this</span>.port = port;<br>    &#125;<br><br>    <span class="hljs-keyword">static</span> &#123; <span class="hljs-comment">//在静态代码块中先配置好客户端</span><br>        bootstrap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Bootstrap</span>();<br>        bootstrap.group(<span class="hljs-keyword">new</span> <span class="hljs-title class_">NioEventLoopGroup</span>())<br>        .channel(NioSocketChannel.class)<br><br>        .handler(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ChannelInitializer</span>&lt;SocketChannel&gt;() &#123;<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">initChannel</span><span class="hljs-params">(SocketChannel ch)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>                ch.pipeline().addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">CommonDecoder</span>())<br>                        .addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">CommonEncoder</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">JsonSerializer</span>()))<br>                        .addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">NettyClientHandler</span>());<br>            &#125;<br>        &#125;);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Object <span class="hljs-title function_">sendRequest</span><span class="hljs-params">(RpcRequest request)</span> &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-type">ChannelFuture</span> <span class="hljs-variable">future</span> <span class="hljs-operator">=</span> bootstrap.connect(host, port).sync();<br>            logger.info(<span class="hljs-string">&quot;客户端连接到服务器：&#123;&#125;，&#123;&#125;&quot;</span>, host, port);<br>            <span class="hljs-type">Channel</span> <span class="hljs-variable">channel</span> <span class="hljs-operator">=</span> future.channel();<br>            <span class="hljs-keyword">if</span> (channel.isActive()) &#123;<br>                channel.writeAndFlush(request).addListener(future1 -&gt; &#123;<br>                    <span class="hljs-keyword">if</span> (future1.isSuccess()) &#123;<br>                        logger.info(<span class="hljs-string">&quot;客户端发送消息：&#123;&#125;&quot;</span>, request.toString());<br>                    &#125; <span class="hljs-keyword">else</span> &#123;<br>                        logger.error(<span class="hljs-string">&quot;发送消息时有错误发生，&#123;&#125;&quot;</span>, future1.cause().getMessage());<br>                    &#125;<br>                &#125;);<br>            &#125;<br>            <span class="hljs-comment">//阻塞等待直到channel关闭</span><br>            channel.closeFuture().sync();<br>            AttributeKey&lt;RpcResponse&gt; attributeKey = AttributeKey.valueOf(<span class="hljs-string">&quot;rpcResponse&quot;</span>);<br>            <span class="hljs-type">RpcResponse</span> <span class="hljs-variable">rpcResponse</span> <span class="hljs-operator">=</span> channel.attr(attributeKey).get();<br>            <span class="hljs-keyword">return</span> rpcResponse.getData();<br>        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>            logger.error(<span class="hljs-string">&quot;发送消息时有错误发生：&quot;</span>, e);<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="编码与解码"><a href="#编码与解码" class="headerlink" title="编码与解码"></a>编码与解码</h4><p>首先自定义通信协议</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs angelscript">魔数（<span class="hljs-built_in">int</span>）<span class="hljs-number">4</span>字节|数据包类型（<span class="hljs-built_in">int</span>）<span class="hljs-number">4</span>字节|序列化器类型（<span class="hljs-built_in">int</span>）<span class="hljs-number">4</span>字节|消息长度（<span class="hljs-built_in">int</span>）<span class="hljs-number">4</span>字节|消息体<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CommonEncoder</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">MessageToByteEncoder</span> &#123; <span class="hljs-comment">//编码器</span><br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">MAGIC_NUMBER</span> <span class="hljs-operator">=</span> <span class="hljs-number">0xCAFEBABE</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> CommonSerializer serializer;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">CommonEncoder</span><span class="hljs-params">(CommonSerializer serializer)</span> &#123;<br>        <span class="hljs-built_in">this</span>.serializer = serializer;<br>    &#125;<br><br>    <span class="hljs-comment">//自定义协议：魔数（int）4字节|数据包类型|序列化器类型|消息长度|消息体</span><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">encode</span><span class="hljs-params">(ChannelHandlerContext ctx, Object o, ByteBuf byteBuf)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        byteBuf.writeInt(MAGIC_NUMBER);<br>        <span class="hljs-keyword">if</span> (o <span class="hljs-keyword">instanceof</span> RpcRequest) &#123;<br>            byteBuf.writeInt(PackageType.REQUEST_PACK.getCode());<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            byteBuf.writeInt(PackageType.RESPONSE_PACK.getCode());<br>        &#125;<br>        byteBuf.writeInt(serializer.getCode());<br>        <span class="hljs-type">byte</span>[] bytes = serializer.serialize(o);<br>        <span class="hljs-type">int</span> <span class="hljs-variable">len</span> <span class="hljs-operator">=</span> bytes.length;<br>        byteBuf.writeInt(len);<br>        byteBuf.writeBytes(bytes);<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CommonDecoder</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ReplayingDecoder</span> &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">logger</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(CommonDecoder.class);<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">MAGIC_NUMBER</span> <span class="hljs-operator">=</span> <span class="hljs-number">0xCAFEBABE</span>;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">decode</span><span class="hljs-params">(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List&lt;Object&gt; list)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">magic</span> <span class="hljs-operator">=</span> byteBuf.readInt();<br>        <span class="hljs-keyword">if</span> (magic != MAGIC_NUMBER) &#123;<br>            logger.error(<span class="hljs-string">&quot;Invalid magic number! &#123;&#125;&quot;</span>, magic);<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RpcException</span>(RpcError.UNKNOWN_MAGIC_NUMBER);<br>        &#125;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">packageCode</span> <span class="hljs-operator">=</span> byteBuf.readInt();<br>        Class&lt;?&gt; packageClass;<br>        <span class="hljs-keyword">if</span> (packageCode == PackageType.REQUEST_PACK.getCode()) &#123;<br>            packageClass = RpcRequest.class;<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (packageCode == PackageType.RESPONSE_PACK.getCode()) &#123;<br>            packageClass = RpcResponse.class;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            logger.error(<span class="hljs-string">&quot;Invalid package type! &#123;&#125;&quot;</span>, packageCode);<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RpcException</span>(RpcError.UNKNOWN_PACK_TYPE);<br>        &#125;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">serializeCode</span> <span class="hljs-operator">=</span> byteBuf.readInt();<br>        <span class="hljs-type">CommonSerializer</span> <span class="hljs-variable">serializer</span> <span class="hljs-operator">=</span> CommonSerializer.getByCode(serializeCode);<br>        <span class="hljs-keyword">if</span> (serializer == <span class="hljs-literal">null</span>) &#123;<br>            logger.error(<span class="hljs-string">&quot;Invalid serialize code! &#123;&#125;&quot;</span>, serializeCode);<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RpcException</span>(RpcError.UNKNOWN_SERIAL_CODE);<br>        &#125;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">len</span> <span class="hljs-operator">=</span> byteBuf.readInt();<br>        <span class="hljs-type">byte</span>[] data = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[len];<br>        byteBuf.readBytes(data);<br>        <span class="hljs-type">Object</span> <span class="hljs-variable">o</span> <span class="hljs-operator">=</span> serializer.deserialize(data, packageClass);<br>        list.add(o);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>编码器解码器都是继承自<code>ChannelInboundHandlerAdapter</code>入站处理器类。其中解码器继承的ReplayingDecoder是<code>ByteToMessageDecoder</code>的子类，简化了数据解码的逻辑，可以自动处理缓冲区的读取操作，如果数据不足，它会自动暂停解码并等待更多的数据。而<code>ByteToMessageDecoder</code>需要手动检查可读字节，并决定是否有足够的数据来解码一条完整的消息。</p>
+<h4 id="序列化"><a href="#序列化" class="headerlink" title="序列化"></a>序列化</h4><h5 id="Json序列化器"><a href="#Json序列化器" class="headerlink" title="Json序列化器"></a>Json序列化器</h5><p>基于JSON字符串，占用空间大，速度慢</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">JsonSerializer</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">CommonSerializer</span>&#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">logger</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(JsonSerializer.class);<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">ObjectMapper</span> <span class="hljs-variable">mapper</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectMapper</span>();<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">byte</span>[] serialize(Object obj) &#123;<br>        <span class="hljs-type">byte</span>[] bytes;<br>        <span class="hljs-keyword">try</span> &#123;<br>            bytes = mapper.writeValueAsBytes(obj);<br>        &#125; <span class="hljs-keyword">catch</span> (JsonProcessingException e) &#123;<br>            logger.error(<span class="hljs-string">&quot;Json serialize error&quot;</span>, e);<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>        &#125;<br>        <span class="hljs-keyword">return</span> bytes;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Object <span class="hljs-title function_">deserialize</span><span class="hljs-params">(<span class="hljs-type">byte</span>[] bytes, Class&lt;?&gt; clazz)</span> &#123;<br>        Object obj;<br>        <span class="hljs-keyword">try</span> &#123;<br>            obj = mapper.readValue(bytes, clazz);<br>            <span class="hljs-keyword">if</span> (obj <span class="hljs-keyword">instanceof</span> RpcRequest) &#123;<br>                obj = handleRequest(obj);<br>            &#125;<br>            <span class="hljs-keyword">return</span> obj;<br>        &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;<br>            logger.error(<span class="hljs-string">&quot;Json deserialize error&quot;</span>, e);<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>        &#125;<br>    &#125;<br>    <br>	 <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 解决反序列化RpcRequest的Object[] params数组中的元素前后不一致的问题</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> obj</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     * <span class="hljs-doctag">@throws</span> IOException</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> Object <span class="hljs-title function_">handleRequest</span><span class="hljs-params">(Object obj)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-type">RpcRequest</span> <span class="hljs-variable">rpcRequest</span> <span class="hljs-operator">=</span> (RpcRequest) obj;<br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; rpcRequest.getParamTypes().length; i ++) &#123;<br>            Class&lt;?&gt; clazz = rpcRequest.getParamTypes()[i];<br>            <span class="hljs-keyword">if</span>(!clazz.isAssignableFrom(rpcRequest.getParams()[i].getClass())) &#123;<br>                <span class="hljs-type">byte</span>[] bytes = mapper.writeValueAsBytes(rpcRequest.getParams()[i]);<br>                rpcRequest.getParams()[i] = mapper.readValue(bytes, clazz);<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> rpcRequest;<br>    &#125;<br>    <br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">getCode</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> SerializerCode.JSON_SERIALIZER.getCode();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>RpcRequest 反序列化时，由于其中有一个字段是 Object 数组，在反序列化时序列化器会根据字段类型进行反序列化，而 Object 就是一个十分模糊的类型，会出现反序列化失败的现象, 通常会直接反序列化成string类型：</p>
+<p>客户端日志：</p>
+<blockquote>
+<p>[com.fu1sh.rpc.client.NettyClient]-客户端发送消息：RpcRequest(interfaceName&#x3D;com.fu1sh.rpc.api.Animal, methodName&#x3D;eat, params&#x3D;[<strong>Food</strong>(name&#x3D;猪食, price&#x3D;30)], paramTypes&#x3D;[class com.fu1sh.rpc.api.Food])</p>
+</blockquote>
+<p>服务端日志：可见反序列化搞丢了Food类型</p>
+<blockquote>
+<p>[com.fu1sh.rpc.handler.NettyServerHandler]-接收到客户端请求：RpcRequest(interfaceName&#x3D;com.fu1sh.rpc.api.Animal, methodName&#x3D;eat, params&#x3D;[{name&#x3D;猪食, price&#x3D;30}], paramTypes&#x3D;[class com.fu1sh.rpc.api.Food])</p>
+</blockquote>
+<p>这时就需要 RpcRequest 中的另一个字段 ParamTypes 来获取到 Object 数组中的每个实例的实际类，辅助反序列化。</p>
+<h5 id="Kryo序列化器"><a href="#Kryo序列化器" class="headerlink" title="Kryo序列化器"></a>Kryo序列化器</h5><p>基于字节，空间利用率高；序列化时记录属性对象的类型信息</p>
+<p>kryo使用 Input 和 Output 类来操作数据进出Kryo， 这些类并不是线程安全的。所以通常使用ThreadLocal来为每个需要序列化操作的线程存储一个kryo变量。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> ThreadLocal&lt;Kryo&gt; kryoThreadLocal = ThreadLocal.withInitial(() -&gt; &#123;<br>    <span class="hljs-type">Kryo</span> <span class="hljs-variable">kryo</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Kryo</span>();<br>    kryo.register(RpcRequest.class);<br>    kryo.register(RpcResponse.class);<br>    <span class="hljs-keyword">return</span> kryo;<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> <span class="hljs-type">byte</span>[] serialize(Object obj) &#123;<br>    <span class="hljs-keyword">try</span> (<span class="hljs-type">ByteArrayOutputStream</span> <span class="hljs-variable">baos</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ByteArrayOutputStream</span>();<br>    <span class="hljs-type">Output</span> <span class="hljs-variable">output</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Output</span>(baos)) &#123;<br>        <span class="hljs-type">Kryo</span> <span class="hljs-variable">kryo</span> <span class="hljs-operator">=</span> kryoThreadLocal.get();<br>        kryo.writeObject(output, obj);<br>        kryoThreadLocal.remove(); <span class="hljs-comment">//移除当前线程kryo局部变量防止内存泄漏</span><br>        <span class="hljs-keyword">return</span> output.toBytes();<br>    &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;<br>        logger.error(<span class="hljs-string">&quot;kryo serialize error&quot;</span>, e);<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>    &#125;<br>&#125;<br><br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> Object <span class="hljs-title function_">deserialize</span><span class="hljs-params">(<span class="hljs-type">byte</span>[] bytes, Class&lt;?&gt; clazz)</span> &#123;<br>    <span class="hljs-keyword">try</span> (<span class="hljs-type">ByteArrayInputStream</span> <span class="hljs-variable">bais</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ByteArrayInputStream</span>(bytes);<br>    <span class="hljs-type">Input</span> <span class="hljs-variable">input</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Input</span>(bais)) &#123;<br>        <span class="hljs-type">Kryo</span> <span class="hljs-variable">kryo</span> <span class="hljs-operator">=</span> kryoThreadLocal.get();<br>        <span class="hljs-type">Object</span> <span class="hljs-variable">o</span> <span class="hljs-operator">=</span> kryo.readObject(input, clazz);<br>        kryoThreadLocal.remove();<br>        <span class="hljs-keyword">return</span> o;<br>    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>        logger.error(<span class="hljs-string">&quot;kryo deserialize error&quot;</span>, e);<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">RpcClientProxy</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">InvocationHandler</span> &#123;<br><br>    <span class="hljs-keyword">private</span> RpcClient rpcClient;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">RpcClientProxy</span><span class="hljs-params">(RpcClient rpcClient)</span> &#123;<br>        <span class="hljs-built_in">this</span>.rpcClient = rpcClient;<br>    &#125;<br>    <br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Object <span class="hljs-title function_">invoke</span><span class="hljs-params">(Object proxy, Method method, Object[] args)</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>        <span class="hljs-type">RpcRequest</span> <span class="hljs-variable">request</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RpcRequest</span>(method.getDeclaringClass().getName(), method.getName()<br>                ,args ,method.getParameterTypes());<br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.rpcClient.sendRequest(request);<br>    &#125;<br><br>    <span class="hljs-meta">@SuppressWarnings(&quot;unchecked&quot;)</span><br>    <span class="hljs-keyword">public</span> &lt;T&gt; T <span class="hljs-title function_">getProxy</span><span class="hljs-params">(Class&lt;T&gt; clazz)</span> &#123;<br>        <span class="hljs-keyword">return</span> (T) Proxy.newProxyInstance(clazz.getClassLoader(), <span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;clazz&#125;, <span class="hljs-built_in">this</span>);<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>动态代理的 <code>invoke</code> 方法封装了对接口方法的调用，将这些调用统一封装成 <code>RpcRequest</code> 对象，然后通过 <code>rpcClient.sendRequest</code> 发送，调用者不需要关注底层实现细节</p>
+<p>动态代理同时提供了灵活性，能够在运行时动态地创建代理对象并处理接口方法的调用，可以方便地扩展和修改请求的处理逻辑，例如在 <code>invoke</code> 方法中添加日志记录、性能监控、权限检查等。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Netty/" class="category-chain-item">Netty</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Netty/" class="print-no-link">#Netty</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Netty实现RPC框架实战</div>
+      <div>https://payfish.github.io/2024/07/03/Netty实现RPC框架实战/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>fu1sh</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月3日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/06/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92-%E9%80%92%E5%BD%92%E5%88%B0%E8%AE%B0%E5%BF%86%E5%8C%96%E6%90%9C%E7%B4%A2/" title="动态规划-递归到记忆化搜索">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">动态规划-递归到记忆化搜索</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/01/NIO/" title="NIO">
+                        <span class="hidden-mobile">NIO</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
