@@ -16,20 +16,21 @@
   <meta name="author" content="fu1sh">
   <meta name="keywords" content="java">
   
-    <meta name="description" content="HTTP基本概念1、HTTP是什么？HTTP 是超文本传输协议，也就是HyperText Transfer Protocol。  超文本：它就是超越了普通文本的文本，它是文字、图片、视频等的混合体，最关键有超链接，能从一个超文本跳转到另外一个超文本。 传输：HTTP 是一个在计算机世界里专门用来在两点之间传输数据的约定和规范。 协议：它使用计算机能够理解的语言确立了一种计算机之间交流通信的规范（两">
+    <meta name="description" content="HTTP基本概念一个完整的HTTP请求长什么样子？123456789101112131415+---------------------------------------------------------------+|                     请求行 (Request Line)                     ||--------------------------">
 <meta property="og:type" content="article">
 <meta property="og:title" content="HTTP总结">
 <meta property="og:url" content="https://payfish.github.io/2024/05/16/HTTP%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="Fu1sh&#39;s BLOG">
-<meta property="og:description" content="HTTP基本概念1、HTTP是什么？HTTP 是超文本传输协议，也就是HyperText Transfer Protocol。  超文本：它就是超越了普通文本的文本，它是文字、图片、视频等的混合体，最关键有超链接，能从一个超文本跳转到另外一个超文本。 传输：HTTP 是一个在计算机世界里专门用来在两点之间传输数据的约定和规范。 协议：它使用计算机能够理解的语言确立了一种计算机之间交流通信的规范（两">
+<meta property="og:description" content="HTTP基本概念一个完整的HTTP请求长什么样子？123456789101112131415+---------------------------------------------------------------+|                     请求行 (Request Line)                     ||--------------------------">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://payfish.github.io/2024/05/16/HTTP%E6%80%BB%E7%BB%93/DispatcherServlet.png">
 <meta property="og:image" content="https://payfish.github.io/2024/05/16/HTTP%E6%80%BB%E7%BB%93/1-HTTP3.webp">
 <meta property="article:published_time" content="2024-05-16T12:41:50.000Z">
-<meta property="article:modified_time" content="2024-05-16T13:32:23.692Z">
+<meta property="article:modified_time" content="2024-07-27T07:52:51.639Z">
 <meta property="article:author" content="fu1sh">
 <meta property="article:tag" content="计算机网络">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://payfish.github.io/2024/05/16/HTTP%E6%80%BB%E7%BB%93/1-HTTP3.webp">
+<meta name="twitter:image" content="https://payfish.github.io/2024/05/16/HTTP%E6%80%BB%E7%BB%93/DispatcherServlet.png">
   
   
   
@@ -222,7 +223,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.2k 字
+          1.5k 字
         
       </span>
     
@@ -233,7 +234,7 @@
         
         
         
-          10 分钟
+          13 分钟
         
       </span>
     
@@ -275,27 +276,43 @@
             
               <div class="markdown-body">
                 
-                <h1 id="HTTP基本概念"><a href="#HTTP基本概念" class="headerlink" title="HTTP基本概念"></a>HTTP基本概念</h1><p>1、HTTP是什么？<br>HTTP 是超文本传输协议，也就是HyperText Transfer Protocol。</p>
+                <h3 id="HTTP基本概念"><a href="#HTTP基本概念" class="headerlink" title="HTTP基本概念"></a>HTTP基本概念</h3><h4 id="一个完整的HTTP请求长什么样子？"><a href="#一个完整的HTTP请求长什么样子？" class="headerlink" title="一个完整的HTTP请求长什么样子？"></a>一个完整的HTTP请求长什么样子？</h4><figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs gherkin">+---------------------------------------------------------------+<br>|<span class="hljs-string">                     请求行 (Request Line)                     </span>|<br>|<span class="hljs-string">---------------------------------------------------------------</span>|<br>|<span class="hljs-string"> HTTP Method (GET, POST, etc.) / Request-URI / HTTP Version    </span>|<span class="hljs-string">                          </span><br><span class="hljs-string"></span>|<span class="hljs-string">---------------------------------------------------------------</span>|<br>|<span class="hljs-string">                    请求头部 (Request Headers)                 </span>|<br>|<span class="hljs-string">---------------------------------------------------------------</span>|<br>|<span class="hljs-string"> Header-Name: Header-Value                                    </span>|<span class="hljs-string">                          </span><br><span class="hljs-string"></span>|<span class="hljs-string">---------------------------------------------------------------</span>|<br>|<span class="hljs-string"> 空行：请求头部和请求体之间用一个空行分隔，表示头部的结束。             </span>|<br>|<span class="hljs-string">---------------------------------------------------------------</span>|<br>|<span class="hljs-string">                      请求体 (Request Body)                    </span>|<br>|<span class="hljs-string">---------------------------------------------------------------</span>|<br>|<span class="hljs-string"> Body Content (for POST, PUT, etc.)                           </span>|<br>+---------------------------------------------------------------+<br></code></pre></td></tr></table></figure>
+
+<p><strong>POST请求示例</strong></p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs http">POST /items HTTP/1.1   #请求行#<br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>example.com      #请求头#<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/json<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>34     #请求体#	<br>&#123;<br>  &quot;itemId&quot;: 123,<br>  &quot;itemName&quot;: &quot;Example Item&quot;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="DispatcherServlet"><a href="#DispatcherServlet" class="headerlink" title="DispatcherServlet"></a>DispatcherServlet</h4><p>前端控制器，具体见下图</p>
+<p><img src="/2024/05/16/HTTP%E6%80%BB%E7%BB%93/DispatcherServlet.png" srcset="/img/loading.gif" lazyload alt="DispatcherServlet扮演的角色"></p>
+<h4 id="响应长什么样"><a href="#响应长什么样" class="headerlink" title="响应长什么样"></a>响应长什么样</h4><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-meta">HTTP/1.1</span> <span class="hljs-number">200</span> OK 	                       #状态行#<br><span class="hljs-attribute">Date</span><span class="hljs-punctuation">: </span>Tue, 20 Jul 2021 20:00:00 GMT        #响应头#<br><span class="hljs-attribute">Server</span><span class="hljs-punctuation">: </span>Apache/2.4.41 (Ubuntu)<br><span class="hljs-attribute">Last-Modified</span><span class="hljs-punctuation">: </span>Tue, 20 Jul 2021 18:00:00 GMT<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/json<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>85<br><span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>close<br>&#123; 											#响应体#<br>    &quot;status&quot;: &quot;success&quot;,<br>    &quot;data&quot;: &#123;<br>        &quot;id&quot;: 1,<br>        &quot;name&quot;: &quot;John Doe&quot;,<br>        &quot;email&quot;: &quot;john.doe@example.com&quot;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h4 id="一条URL（Uniform-Resource-Locator）"><a href="#一条URL（Uniform-Resource-Locator）" class="headerlink" title="一条URL（Uniform Resource Locator）"></a>一条URL（Uniform Resource Locator）</h4><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">http://localhost:8080/users?ids=1,2,3,4,5&amp;name=John&amp;money=100<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>http：协议</li>
+<li>localhost:8080：主机名（ip）和端口号</li>
+<li>&#x2F;users：资源路径（URI，Uniform Resource Identifier）</li>
+<li>?：标志查询参数的开始。</li>
+<li>&amp;：多个查询参数之间用 <code>&amp;</code> 符号分隔。</li>
+</ul>
+<h4 id="HTTP是什么？"><a href="#HTTP是什么？" class="headerlink" title="HTTP是什么？"></a>HTTP是什么？</h4><p>HTTP 是超文本传输协议，也就是HyperText Transfer Protocol。</p>
 <ul>
 <li>超文本：它就是超越了普通文本的文本，它是文字、图片、视频等的混合体，最关键有超链接，能从一个超文本跳转到另外一个超文本。</li>
 <li>传输：HTTP 是一个在计算机世界里专门用来在<strong>两点之间传输数据</strong>的约定和规范。</li>
 <li>协议：它使用计算机能够理解的语言确立了一种计算机之间交流通信的规范（两个以上的参与者），以及相关的各种控制和错误处理方式（行为约定和规范）。</li>
 </ul>
-<p>2、HTTP状态码</p>
-<ul>
+<h4 id="HTTP状态码"><a href="#HTTP状态码" class="headerlink" title="HTTP状态码"></a>HTTP状态码</h4><ul>
 <li>200 OK：成功</li>
 <li>3xx：表示客户端请求的资源发生了变动，需要客户端用新的 URL 重新发送请求获取资源，也就是<strong>重定向</strong>。</li>
 <li>4xx：表示客户端发送的报文有误，服务器无法处理，属于客户端的错误码。</li>
 <li>5xx：表示客户端请求报文正确，但是服务器处理时内部发生了错误，属于服务器端的错误码。</li>
 </ul>
-<p>3、HTTP字段</p>
-<ul>
+<h4 id="HTTP字段"><a href="#HTTP字段" class="headerlink" title="HTTP字段"></a>HTTP字段</h4><ul>
 <li>Host：客户端发送请求时，用来指定服务器的域名。<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-symbol">Host:</span> www.A.com<br></code></pre></td></tr></table></figure></li>
 <li>Content-Length 字段：服务器返回数据的长度。</li>
 <li>Connection 字段：客户端要求服务器使用「HTTP 长连接」机制，<code>Connection: Keep-Alive</code></li>
 <li>Content-Encoding 字段：服务器返回的数据使用了什么压缩格式。</li>
 </ul>
-<h1 id="GET-POST"><a href="#GET-POST" class="headerlink" title="GET&#x2F;POST"></a>GET&#x2F;POST</h1><p>1、GET 和 POST 方法都是安全和幂等的吗？</p>
+<h3 id="GET-POST"><a href="#GET-POST" class="headerlink" title="GET&#x2F;POST"></a>GET&#x2F;POST</h3><p>1、GET 和 POST 方法都是安全和幂等的吗？</p>
 <ul>
 <li>在 HTTP 协议里，所谓的「安全」是指请求方法不会「破坏」服务器上的资源。</li>
 <li>所谓的「幂等」，意思是多次执行相同的操作，结果都是「相同」的。</li>
@@ -307,7 +324,7 @@
 <li><p>POST 因为是「新增或提交数据」的操作，会修改服务器上的资源，所以是不安全的，且多次提交数据就会创建多个资源，所以不是幂等的。所以，浏览器一般不会缓存 POST 请求，也不能把 POST 请求保存为书签。</p>
 </li>
 </ul>
-<h1 id="HTTP缓存"><a href="#HTTP缓存" class="headerlink" title="HTTP缓存"></a>HTTP缓存</h1><p>把重复性的 HTTP「请求-响应」的数据缓存在本地</p>
+<h3 id="HTTP缓存"><a href="#HTTP缓存" class="headerlink" title="HTTP缓存"></a>HTTP缓存</h3><p>把重复性的 HTTP「请求-响应」的数据缓存在本地</p>
 <p>1、强制缓存</p>
 <ul>
 <li>只要浏览器判断缓存没有过期，则直接使用浏览器的本地缓存，决定是否使用缓存的主动性在于浏览器这边。通过HTTP 响应头部（Response Header）的字段<code>Cache-Control</code>和<code>Expires</code>控制</li>
@@ -316,7 +333,7 @@
 <ul>
 <li>通过服务端告知客户端是否可以使用缓存的方式被称为协商缓存。与服务端协商之后，通过协商结果来判断是否使用本地缓存。</li>
 </ul>
-<h1 id="HTTP特性"><a href="#HTTP特性" class="headerlink" title="HTTP特性"></a>HTTP特性</h1><h2 id="HTTP-1-1-相比-HTTP-1-0-提高了什么性能？"><a href="#HTTP-1-1-相比-HTTP-1-0-提高了什么性能？" class="headerlink" title="HTTP&#x2F;1.1 相比 HTTP&#x2F;1.0 提高了什么性能？"></a>HTTP&#x2F;1.1 相比 HTTP&#x2F;1.0 提高了什么性能？</h2><p>优化：</p>
+<h3 id="HTTP特性"><a href="#HTTP特性" class="headerlink" title="HTTP特性"></a>HTTP特性</h3><h4 id="HTTP-1-1-相比-HTTP-1-0-提高了什么性能？"><a href="#HTTP-1-1-相比-HTTP-1-0-提高了什么性能？" class="headerlink" title="HTTP&#x2F;1.1 相比 HTTP&#x2F;1.0 提高了什么性能？"></a>HTTP&#x2F;1.1 相比 HTTP&#x2F;1.0 提高了什么性能？</h4><p>优化：</p>
 <ul>
 <li>使用长连接的方式改善了 HTTP&#x2F;1.0 短连接造成的性能开销。</li>
 <li>支持管道（pipeline）网络传输，只要第一个请求发出去了，不必等其回来，就可以发第二个请求出去，可以减少整体的响应时间。</li>
@@ -328,7 +345,7 @@
 <li>请求只能从客户端开始，服务器只能被动响应；</li>
 <li>没有请求优先级控制。</li>
 </ul>
-<h2 id="HTTP-2-相比-HTTP-1-1-性能上的改进"><a href="#HTTP-2-相比-HTTP-1-1-性能上的改进" class="headerlink" title="HTTP&#x2F;2 相比 HTTP&#x2F;1.1 性能上的改进"></a>HTTP&#x2F;2 相比 HTTP&#x2F;1.1 性能上的改进</h2><ul>
+<h4 id="HTTP-2-相比-HTTP-1-1-性能上的改进"><a href="#HTTP-2-相比-HTTP-1-1-性能上的改进" class="headerlink" title="HTTP&#x2F;2 相比 HTTP&#x2F;1.1 性能上的改进"></a>HTTP&#x2F;2 相比 HTTP&#x2F;1.1 性能上的改进</h4><ul>
 <li>头部压缩</li>
 <li>二进制格式</li>
 <li>并发传输</li>
@@ -338,8 +355,7 @@
 <ul>
 <li>一旦发生丢包，就会阻塞住所有的 HTTP 请求，这属于 TCP 层队头阻塞。<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">HTTP</span>/<span class="hljs-number">2</span> 是基于 TCP 协议来传输数据的，TCP 是字节流协议，TCP 层必须保证收到的字节数据是完整且连续的，这样内核才会将缓冲区里的数据返回给 HTTP 应用，那么当「前 <span class="hljs-number">1</span> 个字节数据」没有到达时，后收到的字节数据只能存放在内核缓冲区里，只有等到这 <span class="hljs-number">1</span> 个字节数据到达时，HTTP/<span class="hljs-number">2</span> 应用层才能从内核中拿到数据，这就是 HTTP/<span class="hljs-number">2</span> 队头阻塞问题。<br></code></pre></td></tr></table></figure></li>
 </ul>
-<h2 id="HTTP-3-做了哪些优化？"><a href="#HTTP-3-做了哪些优化？" class="headerlink" title="HTTP&#x2F;3 做了哪些优化？"></a>HTTP&#x2F;3 做了哪些优化？</h2><p> HTTP&#x2F;3 把 HTTP 下层的 TCP 协议改成了 UDP！<br> <img src="/2024/05/16/HTTP%E6%80%BB%E7%BB%93/1-HTTP3.webp" srcset="/img/loading.gif" lazyload alt="小林Coding">
- </p>
+<h4 id="HTTP-3-做了哪些优化？"><a href="#HTTP-3-做了哪些优化？" class="headerlink" title="HTTP&#x2F;3 做了哪些优化？"></a>HTTP&#x2F;3 做了哪些优化？</h4><p> HTTP&#x2F;3 把 HTTP 下层的 TCP 协议改成了 UDP！<br> <img src="/2024/05/16/HTTP%E6%80%BB%E7%BB%93/1-HTTP3.webp" srcset="/img/loading.gif" lazyload alt="小林Coding"></p>
 
                 
               </div>
