@@ -13,7 +13,7 @@
     
     <categories>
       
-      <category>微服务</category>
+      <category>微服务组件</category>
       
     </categories>
     
@@ -63,7 +63,7 @@
     
     <categories>
       
-      <category>微服务</category>
+      <category>微服务组件</category>
       
     </categories>
     
@@ -88,14 +88,14 @@
     
     <categories>
       
-      <category>Java</category>
+      <category>微服务组件</category>
       
     </categories>
     
     
     <tags>
       
-      <tag>MyBatis</tag>
+      <tag>MyBatis-plus</tag>
       
     </tags>
     
@@ -138,7 +138,7 @@
     
     <categories>
       
-      <category>SpringCloud</category>
+      <category>微服务组件</category>
       
     </categories>
     
@@ -213,7 +213,7 @@
     
     <categories>
       
-      <category>Java</category>
+      <category>Spring</category>
       
     </categories>
     
