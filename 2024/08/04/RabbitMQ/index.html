@@ -16,22 +16,22 @@
   <meta name="author" content="fu1sh">
   <meta name="keywords" content="java">
   
-    <meta name="description" content="前言SpringBoot注解让我们摆脱了繁琐的Spring XML配置，让我们的开发更加高效，这里对常见的SpringBoot注解做个总结。 启动类上SpringBootApplication：申明让spring boot自动给程序进行必要的配置，等同于 @Configuration ，@EnableAutoConfiguration 和 @ComponentScan 三个配置。  Configu">
+    <meta name="description" content="简介消息队列，提供异步通信，解决同步通信问题 Docker部署1234567891011docker run \ -e RABBITMQ_DEFAULT_USER&#x3D;fuish \ -e RABBITMQ_DEFAULT_PASS&#x3D;123321 \ -v mq-plugins:&#x2F;plugins \ --name mq \ --hostname mq \ -p 15672:15672 \ -p 567">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SpringBoot注解大全">
-<meta property="og:url" content="https://payfish.github.io/2024/07/21/Springboot%E6%B3%A8%E8%A7%A3%E5%A4%A7%E5%85%A8/index.html">
+<meta property="og:title" content="RabbitMQ">
+<meta property="og:url" content="https://payfish.github.io/2024/08/04/RabbitMQ/index.html">
 <meta property="og:site_name" content="Fu1sh&#39;s BLOG">
-<meta property="og:description" content="前言SpringBoot注解让我们摆脱了繁琐的Spring XML配置，让我们的开发更加高效，这里对常见的SpringBoot注解做个总结。 启动类上SpringBootApplication：申明让spring boot自动给程序进行必要的配置，等同于 @Configuration ，@EnableAutoConfiguration 和 @ComponentScan 三个配置。  Configu">
+<meta property="og:description" content="简介消息队列，提供异步通信，解决同步通信问题 Docker部署1234567891011docker run \ -e RABBITMQ_DEFAULT_USER&#x3D;fuish \ -e RABBITMQ_DEFAULT_PASS&#x3D;123321 \ -v mq-plugins:&#x2F;plugins \ --name mq \ --hostname mq \ -p 15672:15672 \ -p 567">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-07-21T12:44:34.000Z">
-<meta property="article:modified_time" content="2024-08-02T12:37:40.789Z">
+<meta property="article:published_time" content="2024-08-04T07:26:19.000Z">
+<meta property="article:modified_time" content="2024-08-04T14:35:13.041Z">
 <meta property="article:author" content="fu1sh">
-<meta property="article:tag" content="Annotation">
+<meta property="article:tag" content="消息队列">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>SpringBoot注解大全 - Fu1sh&#39;s BLOG</title>
+  <title>RabbitMQ - Fu1sh&#39;s BLOG</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -197,7 +197,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="SpringBoot注解大全"></span>
+            <span id="subtitle" data-typed-text="RabbitMQ"></span>
           
         </div>
 
@@ -208,8 +208,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-07-21 20:44" pubdate>
-          2024年7月21日 晚上
+        <time datetime="2024-08-04 15:26" pubdate>
+          2024年8月4日 下午
         </time>
       </span>
     
@@ -220,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.7k 字
+          42 字
         
       </span>
     
@@ -231,7 +231,7 @@
         
         
         
-          15 分钟
+          1 分钟
         
       </span>
     
@@ -268,95 +268,14 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">SpringBoot注解大全</h1>
+            <h1 id="seo-header">RabbitMQ</h1>
             
             
               <div class="markdown-body">
                 
-                <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>SpringBoot注解让我们摆脱了繁琐的Spring XML配置，让我们的开发更加高效，这里对常见的SpringBoot注解做个总结。</p>
-<h3 id="启动类上"><a href="#启动类上" class="headerlink" title="启动类上"></a>启动类上</h3><p><strong>SpringBootApplication</strong>：申明让spring boot自动给程序进行必要的配置，等同于 <code>@Configuration</code> ，<code>@EnableAutoConfiguration</code> 和 <code>@ComponentScan</code> 三个配置。</p>
-<ul>
-<li><p><strong>Configuration</strong>：用在类上，声明该类是配置类，等同于 Spring 的  XML 文件。</p>
-</li>
-<li><p><strong>EnableAutoConfiguration</strong>：启用 SpringBoot 的自动化配置，会根据你在 <code>pom.xml</code> 添加的依赖和 <code>application-dev.yml</code> 中的配置自动创建你需要的配置。</p>
-</li>
-<li><p><strong>ComponentScan</strong>：启用SpringBoot的组件扫描功能，将自动装配和注入指定包下的Bean实例。</p>
-</li>
-</ul>
-<p><strong>MapperScan</strong>(“mapper接口包路径信息”)：扫描指定包下所有的接口类，然后所有接口在编译之后都会生成相应的实现类，也就是针对Mapper进行一个声明。加上这个注解之后，就不用在每个Mapper接口上使用@Mapper注解。</p>
-<p><strong>EnableFeignClients</strong>：扫描指定包下（如果声明了）的使用了注解<code>@FeignClient</code>定义的Feign客户端。如 :</p>
-<blockquote>
-<p> <code>@EnableFeignClients(basePackages = &quot;com.hmall.api.client&quot;)</code></p>
-</blockquote>
-<p><strong>EnableCaching</strong>：添加Spring Data Redis依赖之后，可用该注解开启Spring基于注解的缓存管理功能。</p>
-<p><strong>EnableOpenApi</strong> ：Swagger 3.0 的启用注解，添加上这个注解之后就可以使用Swagger3.0的Api文档。</p>
-<p><strong>EnableScheduling</strong> ：开启项目对定时任务的支持，此添加该注解之后，Spring容器会自动扫描被 <code>@Scheduled </code>注解的方法，被 <code>@Scheduled</code> 注解声明的方法为定时任务，在指定的时间进行自动的执行。</p>
-<p><strong>EnableAsync</strong> ：表示项目支持异步方法调用。此添加该注解之后，Spring容器会自动扫描被 <code>@Async</code> 注解的方法或者类，对该方法进行异步操作。即该方法和调用者不在一个线程中进行。</p>
-<p><strong>EnableTransactionManagement</strong> ：开启注解方式的事务管理。添加该注解后，Spring容器会自动扫描被 <code>@Transactional</code> 注解的方法和类。</p>
-<blockquote>
-<p> 所有的数据访问技术都有事务处理机制，这些技术提供了API用来开启事务、提交事务以完成数据操纵，或者在发生错误的时候回滚数据。&#x2F;&#x2F;TODO: Spring支持声明式事务，这是基于AOP实现的。</p>
-</blockquote>
-<h3 id="组件相关"><a href="#组件相关" class="headerlink" title="组件相关"></a>组件相关</h3><p><strong>Component</strong>：用于修饰SpringBoot中的组件，会被组件扫描并生成实例化对象。<code>@Controller</code>、<code>@Service</code>、<code>@Repository</code>都是特殊的组件注解。</p>
-<p><strong>Controller</strong> ：用于修饰MVC中 <code>controller</code> 层的组件，SpringBoot中的组件扫描功能会识别到该注解，并为修饰的类实例化对象，通常与 <code>@RequestMapping</code> 联用，当SpringMVC获取到请求时会转发到指定路径的方法进行处理。</p>
-<p><strong>Service</strong>：用于修饰 <code>service</code> 层的组件，<code>service</code> 层组件专注于系统业务逻辑的处理，同样会被组件扫描并生成实例化对象。</p>
-<p><strong>Repository</strong>：用于修饰 <code>dao</code>层的组件，<code>dao </code>层组件专注于系统数据的处理，例如数据库中的数据，同样会被组件扫描并生成实例化对象。</p>
-<p><strong>RestController</strong> ：<code>@Controller</code> 和 <code>@ResponseBody</code> 两个注解的结合体。将类标记为 Spring MVC 控制器，所有的请求处理方法的返回值直接写入 HTTP 响应体中，而不是解析为视图名。</p>
-<blockquote>
-<p><strong>ResponseBody</strong>：表示方法将返回JSON格式的数据，会自动将返回的对象转化为JSON数据。</p>
-</blockquote>
-<p><strong>ConfigurationProperties</strong>：用于配置类上，用来拿配置文件中的属性。例如 <code>@ConfigurationProperties(prefix = &quot;hm.jwt&quot;)</code></p>
-<h3 id="实例相关"><a href="#实例相关" class="headerlink" title="实例相关"></a>实例相关</h3><p><strong>Bean</strong>：用于修饰方法，标识该方法会创建一个Bean实例，并交给Spring容器来管理。</p>
-<h4 id="Component-和-Bean-的区别"><a href="#Component-和-Bean-的区别" class="headerlink" title="Component 和 Bean 的区别"></a>Component 和 Bean 的区别</h4><ul>
-<li><p>Component作用在类上，Bean作用在方法上</p>
-</li>
-<li><p>Component注解表明一个类会作为组件类，并告知Spring要为这个类创建bean。</p>
-</li>
-<li><p>Bean注解告诉Spring这个方法将会返回一个对象，这个对象要注册为Spring应用上下文中的bean。通常方法体中包含了最终产生bean实例的逻辑。</p>
-</li>
-<li><p><code>@Bean</code> 必须声明在 <code>@Configuration</code> 注解修饰的类中的方法上 </p>
-</li>
-<li><p><code>@Bean</code> 注解比 <code>@Component</code> 注解的自定义性更强，而且很多地方只能通过 <code>@Bean</code> 注解来注册bean。比如当引用第三方库的类需要装配到Spring容器的时候，就只能通过 <code>@Bean</code> 注解来实现。</p>
-</li>
-</ul>
-<h3 id="依赖注入"><a href="#依赖注入" class="headerlink" title="依赖注入"></a>依赖注入</h3><p><strong>Autowired</strong>：会根据对象的<strong>类型</strong>自动注入依赖对象，默认要求注入对象实例必须存在，可以配置 <code>required = false</code> 来注入不一定存在的对象。</p>
-<p><strong>Resource</strong>：默认会根据对象的<strong>名称</strong>自动注入依赖对象，如果想要根据类型进行注入，可以设置 <code>type</code> 属性。</p>
-<p><strong>Qualifier</strong>：当同一个对象有多个实例可以注入时，使用 <code>@Autowired </code>注解无法进行注入，这时可以使用 <code>@Qualifier</code> 注解指定实例的名称进行精确注入。</p>
-<h3 id="SpringMVC相关"><a href="#SpringMVC相关" class="headerlink" title="SpringMVC相关"></a>SpringMVC相关</h3><p>**PathVariable(“id”)**：处理请求 url 路径中的参数 &#x2F;user&#x2F;5</p>
-<p><strong>RequestParam</strong>：处理问号后面的参数，可以是如下三种形式：</p>
-<ul>
-<li>query param：GET请求拼接在地址里的参数。</li>
-<li>form data：POST表单提交的参数。</li>
-<li>multipart：文件上传请求的部分参数。</li>
-</ul>
-<p><strong>RequestBody</strong>：表示方法的请求参数为JSON格式，从Body中传入，将自动绑定到方法参数对象中。</p>
-<blockquote>
-<p>@Valid注解用于数据验证，可以确保传入对象或返回对象符合预定义的约束规则</p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ApiOperation(&quot;添加商品到购物车&quot;)</span><br><span class="hljs-meta">@PostMapping</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addItem2Cart</span><span class="hljs-params">(<span class="hljs-meta">@Valid</span> <span class="hljs-meta">@RequestBody</span> CartFormDTO cartFormDTO)</span>&#123;<br>    cartService.addItem2Cart(cartFormDTO);<br>&#125;<br><br><span class="hljs-meta">@Data</span><br><span class="hljs-meta">@ApiModel(description = &quot;新增购物车商品表单实体&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CartFormDTO</span> &#123;<br>    <span class="hljs-meta">@ApiModelProperty(&quot;商品id&quot;)</span><br>    <span class="hljs-keyword">private</span> Long itemId;<br>    <span class="hljs-meta">@ApiModelProperty(&quot;商品标题&quot;)</span><br>    <span class="hljs-keyword">private</span> String name;<br>    <span class="hljs-meta">@ApiModelProperty(&quot;商品动态属性键值集&quot;)</span><br>    <span class="hljs-keyword">private</span> String spec;<br>    <span class="hljs-meta">@ApiModelProperty(&quot;价格,单位：分&quot;)</span><br>    <span class="hljs-keyword">private</span> Integer price;<br>    <span class="hljs-meta">@ApiModelProperty(&quot;商品图片&quot;)</span><br>    <span class="hljs-keyword">private</span> String image;<br>&#125;<br></code></pre></td></tr></table></figure>
+                <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>消息队列，提供异步通信，解决同步通信问题</p>
+<h3 id="Docker部署"><a href="#Docker部署" class="headerlink" title="Docker部署"></a>Docker部署</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run \<br> -e RABBITMQ_DEFAULT_USER=fuish \<br> -e RABBITMQ_DEFAULT_PASS=123321 \<br> -v mq-plugins:/plugins \<br> --name mq \<br> --hostname mq \<br> -p 15672:15672 \<br> -p 5672:5672 \<br> --network baima\<br> -d \<br> rabbitmq:3.8-management<br></code></pre></td></tr></table></figure>
 
-<p><strong>ResponseBody</strong>：表示方法将返回JSON格式的数据，会自动将返回的对象转化为JSON数据。</p>
-<p><strong>RequestMapping</strong>：当作用于类上时，可以统一类中所有方法的路由路径，当作用于方法上时，可单独指定方法的路由路径。</p>
-<blockquote>
-<p><code>method</code>属性可以指定请求的方式，如GET、POST、PUT、DELETE等。</p>
-</blockquote>
-<p><strong>PostMapping</strong>：主要用于创建资源。</p>
-<p><strong>PutMapping</strong>：主要用于更新资源。</p>
-<blockquote>
-<p><strong>幂等性</strong>：</p>
-</blockquote>
-<ul>
-<li><code>POST</code> 请求不是幂等的，重复相同的 POST 请求可能会创建多个资源。</li>
-<li><code>PUT</code> 请求是幂等的，重复相同的 PUT 请求不会改变资源的状态。</li>
-<li><code>GET</code> 请求是幂等的，重复相同的 GET 请求不会改变资源的状态。</li>
-</ul>
-<blockquote>
-<p>可以对所有幂等的请求做缓存</p>
-</blockquote>
-<ul>
-<li>通常只对GET请求的响应做缓存，因为PUT和DELETE均涉及到修改操作，缓存其响应没有太大意义</li>
-<li>缓存需要有合适的过期策略，以确保数据的新鲜度。</li>
-<li>当资源更新时，需要确保缓存的数据也及时更新，以避免缓存不一致的问题。</li>
-</ul>
 
                 
               </div>
@@ -375,7 +294,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/SpringBoot/" class="category-chain-item">SpringBoot</a>
+  <a href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BB%84%E4%BB%B6/" class="category-chain-item">微服务组件</a>
   
   
 
@@ -390,7 +309,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Annotation/" class="print-no-link">#Annotation</a>
+        <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" class="print-no-link">#消息队列</a>
       
     </div>
   
@@ -402,8 +321,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>SpringBoot注解大全</div>
-      <div>https://payfish.github.io/2024/07/21/Springboot注解大全/</div>
+      <div>RabbitMQ</div>
+      <div>https://payfish.github.io/2024/08/04/RabbitMQ/</div>
     </div>
     <div class="license-meta">
       
@@ -415,7 +334,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年7月21日</div>
+          <div>2024年8月4日</div>
         </div>
       
       
@@ -447,9 +366,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/07/22/MyBatisPlus/" title="MyBatis-Plus">
+                      <a href="/2024/08/07/Dubbo%E5%BA%8F%E5%88%97%E5%8C%96%E9%97%AE%E9%A2%98%E4%B8%8E%E8%A7%A3%E5%86%B3%E8%AE%B0%E5%BD%95/" title="Dubbo序列化问题与解决记录">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">MyBatis-Plus</span>
+                        <span class="hidden-mobile">Dubbo序列化问题与解决记录</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -457,8 +376,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/07/21/OpenFeign%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" title="OpenFeign最佳实践">
-                        <span class="hidden-mobile">OpenFeign最佳实践</span>
+                      <a href="/2024/08/02/nacos/" title="nacos">
+                        <span class="hidden-mobile">nacos</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
