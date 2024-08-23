@@ -16,15 +16,17 @@
   <meta name="author" content="fu1sh">
   <meta name="keywords" content="java">
   
-    <meta property="og:type" content="article">
+    <meta name="description" content="安装 数据库：nacos默认的数据库是derby，可以配置MySQL作为nacos的数据库，去官方仓库下载mysql-schema.sql脚本，配置到数据库中  环境变量：使用docker部署，只需要将下面的环境变量文件挂载到nacos容器的env-file下，见启动docker命令 123456789PREFER_HOST_MODE&#x3D;hostnameMODE&#x3D;standaloneSPRING_D">
+<meta property="og:type" content="article">
 <meta property="og:title" content="nacos">
 <meta property="og:url" content="https://payfish.github.io/2024/08/02/nacos/index.html">
 <meta property="og:site_name" content="Fu1sh&#39;s BLOG">
+<meta property="og:description" content="安装 数据库：nacos默认的数据库是derby，可以配置MySQL作为nacos的数据库，去官方仓库下载mysql-schema.sql脚本，配置到数据库中  环境变量：使用docker部署，只需要将下面的环境变量文件挂载到nacos容器的env-file下，见启动docker命令 123456789PREFER_HOST_MODE&#x3D;hostnameMODE&#x3D;standaloneSPRING_D">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-08-02T08:25:24.000Z">
-<meta property="article:modified_time" content="2024-08-02T08:25:24.220Z">
+<meta property="article:modified_time" content="2024-08-08T08:38:49.827Z">
 <meta property="article:author" content="fu1sh">
-<meta property="article:tag" content="java">
+<meta property="article:tag" content="nacos">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -218,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          0 字
+          482 字
         
       </span>
     
@@ -229,7 +231,7 @@
         
         
         
-          1 分钟
+          5 分钟
         
       </span>
     
@@ -271,7 +273,27 @@
             
               <div class="markdown-body">
                 
-                
+                <h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><ol>
+<li><p>数据库：nacos默认的数据库是derby，可以配置MySQL作为nacos的数据库，去<a target="_blank" rel="noopener" href="https://github.com/alibaba/nacos/blob/develop/distribution/conf/mysql-schema.sql">官方仓库</a>下载mysql-schema.sql脚本，配置到数据库中</p>
+</li>
+<li><p>环境变量：使用docker部署，只需要将下面的环境变量文件挂载到nacos容器的env-file下，见启动docker命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs mysql">PREFER_HOST_MODE=hostname<br>MODE=standalone<br>SPRING_DATASOURCE_PLATFORM=mysql<br>MYSQL_SERVICE_HOST=##MySQL地址##<br>MYSQL_SERVICE_DB_NAME=nacos<br>MYSQL_SERVICE_PORT=3306<br>MYSQL_SERVICE_USER=root<br>MYSQL_SERVICE_PASSWORD=**<br>MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&amp;connectTimeout=1000&amp;socketTimeout=3000&amp;autoReconnect=true&amp;useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=Asia/Shanghai<br></code></pre></td></tr></table></figure>
+
+<p>3.docker启动</p>
+<figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs docker">docker <span class="hljs-keyword">run</span><span class="language-bash"> -d \</span><br><span class="language-bash">--name nacos \</span><br><span class="language-bash">--env-file ./nacos/custom.env \</span><br><span class="language-bash">-p 8848:8848 \</span><br><span class="language-bash">-p 9848:9848 \</span><br><span class="language-bash">-p 9849:9849 \</span><br><span class="language-bash">--restart=always \</span><br><span class="language-bash">nacos/nacos-server:v2.1.0-slim</span><br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!--nacos 服务注册发现--&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alibaba.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-nacos-discovery<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-comment">&lt;!--nacos配置管理--&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alibaba.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-nacos-config<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-comment">&lt;!--读取bootstrap文件--&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-bootstrap<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="配置中心"><a href="#配置中心" class="headerlink" title="配置中心"></a>配置中心</h3><p>设置Bootstrap.yaml文件，这样SpringCloud启动时便可以自动读取Bootstrap文件中的nacos地址，从而去nacos的配置中心拉去各种共享配置，以及实现配置的热更新。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span><br>  <span class="hljs-attr">application:</span><br>    <span class="hljs-attr">name:</span> <span class="hljs-string">cart-service</span> <span class="hljs-comment"># 服务名称</span><br>  <span class="hljs-attr">profiles:</span><br>    <span class="hljs-attr">active:</span> <span class="hljs-string">dev</span><br>  <span class="hljs-attr">cloud:</span><br>    <span class="hljs-attr">nacos:</span><br>      <span class="hljs-attr">server-addr:</span> <span class="hljs-string">*ip*:8848</span> <span class="hljs-comment"># nacos地址</span><br>      <span class="hljs-attr">config:</span><br>        <span class="hljs-attr">file-extension:</span> <span class="hljs-string">yaml</span> <span class="hljs-comment"># 文件后缀名</span><br>        <span class="hljs-attr">shared-configs:</span> <span class="hljs-comment"># 共享配置</span><br>          <span class="hljs-bullet">-</span> <span class="hljs-attr">dataId:</span> <span class="hljs-string">shared-jdbc.yaml</span> <span class="hljs-comment"># 共享mybatis配置</span><br>          <span class="hljs-bullet">-</span> <span class="hljs-attr">dataId:</span> <span class="hljs-string">shared-log.yaml</span> <span class="hljs-comment"># 共享日志配置</span><br>          <span class="hljs-bullet">-</span> <span class="hljs-attr">dataId:</span> <span class="hljs-string">shared-swagger.yaml</span> <span class="hljs-comment"># 共享日志配置</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="热更新"><a href="#热更新" class="headerlink" title="热更新"></a>热更新</h3><p>业务需要对购物车的最大容量限制做热更新，新增配置文件，<code>@ConfigurationProperties</code> 用于将配置文件中的属性绑定到一个 Java Bean 上。相当于<code>@RefreshScope</code> + <code>@Value</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Data</span><br><span class="hljs-meta">@Component</span><br><span class="hljs-meta">@ConfigurationProperties(prefix = &quot;hm.cart&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CartProperties</span> &#123;<br>    <span class="hljs-keyword">private</span> Integer maxAmount;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在nacos的控制台配置中心中新增cart-service.yaml文件，从而可以通过修改控制台中的属性值实现无需重启服务自动更新maxAmount值</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">hm:</span><br>  <span class="hljs-attr">cart:</span><br>    <span class="hljs-attr">maxAmount:</span> <span class="hljs-number">6</span> <span class="hljs-comment"># 购物车商品数量上限</span><br></code></pre></td></tr></table></figure>
+
+
                 
               </div>
             
@@ -279,6 +301,34 @@
             <div>
               <div class="post-metas my-3">
   
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BB%84%E4%BB%B6/" class="category-chain-item">微服务组件</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/nacos/" class="print-no-link">#nacos</a>
+      
+    </div>
   
 </div>
 

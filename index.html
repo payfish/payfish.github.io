@@ -225,6 +225,330 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2024/08/22/docker%E5%AE%B9%E5%99%A8%E4%B8%80%E7%9B%B4%E9%87%8D%E5%90%AF%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/" target="_self">
+          docker容器一直重启的解决办法
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/08/22/docker%E5%AE%B9%E5%99%A8%E4%B8%80%E7%9B%B4%E9%87%8D%E5%90%AF%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/" target="_self">
+        <div>
+          项目通过docker compose部署上线时，出现了容器疯狂重启的情况，昨天是nacos不断挂掉重启，连带着seata也一直重启，排查发现是内存不足的原因，重新分配内存后得以解决。 今天seata和Sentinel又开始了，我寻思内存已经够用了啊，nacos都没事了，怎么这两个又出问题了，搜索一番终于解决，记录一下原因和解决方案。 错误信息使用docker logs seata查看日志，只有一行
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-08-22 14:19" pubdate>
+              2024-08-22
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Bugs/" class="category-chain-item">Bugs</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/docker/">#docker</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/08/19/docker%E5%AE%89%E8%A3%85%E6%9C%80%E6%96%B0%E7%89%88redis%E4%BB%A5%E5%8F%8A%E6%AD%A3%E7%A1%AE%E9%85%8D%E7%BD%AE/" target="_self">
+          docker安装最新版redis以及正确配置
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/08/19/docker%E5%AE%89%E8%A3%85%E6%9C%80%E6%96%B0%E7%89%88redis%E4%BB%A5%E5%8F%8A%E6%AD%A3%E7%A1%AE%E9%85%8D%E7%BD%AE/" target="_self">
+        <div>
+          安装最近docker数据源大量失效，拉不下来镜像不是你的问题，可以自己检索还能用的镜像源  docker pull redis  启动redis创建目录首先需要手动创建&#x2F;docker&#x2F;redis&#x2F;conf&#x2F;redis.conf这个文件，命令如下： 1mkdir -p /docker/redis/conf &amp;&amp; touch /docker/re
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-08-19 16:54" pubdate>
+              2024-08-19
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/docker/" class="category-chain-item">docker</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/docker-redis/">#docker/redis</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/08/18/Feed%E6%B5%81/" target="_self">
+          Feed流
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/08/18/Feed%E6%B5%81/" target="_self">
+        <div>
+          什么是Feed流完成了一个需求，展示关注的人发布的博文，这里面就涉及到feed流系统的设计。Feed 流产品在我们手机APP中几乎无处不在，比如微信朋友圈、新浪微博、今日头条等。只要大拇指不停地往下划手机屏幕，就有一条条的信息不断涌现出来。就像给宠物喂食一样，只要它吃光了就要不断再往里加，故此得名Feed（饲养）。 定义 Feed：Feed流中的每一条消息或者状态都是Feed，比如你微博关注的明星
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-08-18 14:28" pubdate>
+              2024-08-18
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Feed%E6%B5%81/">#Feed流</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/08/15/ThreadLocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/" target="_self">
+          ThreadLocal内存泄漏
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/08/15/ThreadLocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/" target="_self">
+        <div>
+          原理一个简单的例子 123456789101112131415public class UserHolder &#123;    private static final ThreadLocal&lt;UserDTO&gt; tl = new ThreadLocal&lt;&gt;();    public static void saveUser(UserDTO user)&#123;
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-08-15 21:42" pubdate>
+              2024-08-15
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/ThreadLocal/">#ThreadLocal</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/08/13/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" target="_self">
+          nginx反向代理
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/08/13/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" target="_self">
+        <div>
+          正向代理VPN（Virtual Private Network），代理服务器位于香港等，充当客户端的代理，你对于国外服务器的访问实际上是先到代理服务器，由代理服务器帮你完成请求，并将结果转发给你。 反向代理代理服务端 负载均衡IP哈希session共享问题，一般使用redis实现 动静分离
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-08-13 10:51" pubdate>
+              2024-08-13
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/nginx/">#nginx</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/08/10/%E5%85%A8%E5%B1%80%E5%94%AF%E4%B8%80ID%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88%E6%8E%A2%E7%A9%B6/" target="_self">
+          全局唯一ID实现方案探究
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/08/10/%E5%85%A8%E5%B1%80%E5%94%AF%E4%B8%80ID%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88%E6%8E%A2%E7%A9%B6/" target="_self">
+        <div>
+          为什么需要全局唯一ID  单体架构基本都是单库且业务单表的结构，每个业务表的ID几乎都是通过AUTO_INCREMENT 默认从1开始自增。而在分布式系统下分库分表的设计，使得多个库或多个表存储相同的业务数据，这种情况根据数据库的自增ID就会产生相同ID的情况，不能保证主键的唯一性。 UUIDUniversally Unique Identifier，UUID是由一组32位数的16进制数字所构成
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-08-10 15:19" pubdate>
+              2024-08-10
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/" class="category-chain-item">分布式</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">#分布式</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/08/07/Dubbo%E5%BA%8F%E5%88%97%E5%8C%96%E9%97%AE%E9%A2%98%E4%B8%8E%E8%A7%A3%E5%86%B3%E8%AE%B0%E5%BD%95/" target="_self">
           Dubbo序列化问题与解决记录
         </a>
@@ -355,7 +679,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2024/08/02/nacos/" target="_self">
         <div>
-          
+          安装 数据库：nacos默认的数据库是derby，可以配置MySQL作为nacos的数据库，去官方仓库下载mysql-schema.sql脚本，配置到数据库中  环境变量：使用docker部署，只需要将下面的环境变量文件挂载到nacos容器的env-file下，见启动docker命令 123456789PREFER_HOST_MODE=hostnameMODE=standaloneSPRING_D
         </div>
       </a>
 
@@ -369,6 +693,34 @@
           </div>
         
         
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BB%84%E4%BB%B6/" class="category-chain-item">微服务组件</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/nacos/">#nacos</a>
+            
+          </div>
         
       </div>
     </article>
@@ -428,372 +780,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/Seata/">#Seata</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/07/31/Sentinel%E6%9C%8D%E5%8A%A1%E4%BF%9D%E6%8A%A4/" target="_self">
-          Sentinel服务保护
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/07/31/Sentinel%E6%9C%8D%E5%8A%A1%E4%BF%9D%E6%8A%A4/" target="_self">
-        <div>
-          SentinelSentinel是一个为微服务提供流量控制、流量整形、 并发限制、熔断、系统自适应过载保护等多方面保护机制的微服务哨兵。由alibaba开发。 Netflix还开发过一款Hystrix，当然已经不再维护。 簇点链路一次请求进入服务后经过的每一个被Sentinel监控的资源链，默认Sentinel会监控SpringMVC的每一个EndPoint（HTTP接口&#x2F;Control
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-07-31 13:08" pubdate>
-              2024-07-31
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BB%84%E4%BB%B6/" class="category-chain-item">微服务组件</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Sentinel/">#Sentinel</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/07/29/%E6%95%B0%E5%AD%A6/" target="_self">
-          数学算法
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/07/29/%E6%95%B0%E5%AD%A6/" target="_self">
-        <div>
-          求质数 埃式筛选法  1234567891011121314public int[] pi(int n) &#123;    int []r = new int[n + 1];    for (int i = 2; i &lt;= n; ++ i) &#123;        if (r[i] == 0) &#123;            r[i] = r[i - 1] + 1;
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-07-29 21:43" pubdate>
-              2024-07-29
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E7%AE%97%E6%B3%95/" class="category-chain-item">算法</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%95%B0%E5%AD%A6/">#数学</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/07/25/GateWay%E7%BD%91%E5%85%B3/" target="_self">
-          Gateway网关
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/07/25/GateWay%E7%BD%91%E5%85%B3/" target="_self">
-        <div>
-          什么是网关网关-网络的关口，门卫。数据从一个网络传输到另一个网络需要经过网关来做数据的路由和转发，以及数据安全的校验工作。从此以后，前端请求不再直接访问后端服务，而是访问网关（也是一个微服务）。  路由：选择数据要去的服务的目的地址 转发：转发数据给对应的服务 校验：在网关层面进行数据鉴权   SpringCloud提供了两种网关实现：  Netflix Zuul：早期实现，目前已经淘汰 Spri
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-07-25 22:09" pubdate>
-              2024-07-25
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BB%84%E4%BB%B6/" class="category-chain-item">微服务组件</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Gateway/">#Gateway</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/07/22/MyBatisPlus/" target="_self">
-          MyBatis-Plus
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/07/22/MyBatisPlus/" target="_self">
-        <div>
-          简介MyBatis-Plus 是一个 MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率而生。引入它不会对现有工程产生影响，如丝般顺滑。 依赖12345&lt;dependency&gt;    &lt;groupId&gt;com.baomidou&lt;/groupId&gt;    &lt;artifactId&gt;mybatis-plus-bo
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-07-22 15:15" pubdate>
-              2024-07-22
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BB%84%E4%BB%B6/" class="category-chain-item">微服务组件</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/MyBatis-plus/">#MyBatis-plus</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/07/21/Springboot%E6%B3%A8%E8%A7%A3%E5%A4%A7%E5%85%A8/" target="_self">
-          SpringBoot注解大全
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/07/21/Springboot%E6%B3%A8%E8%A7%A3%E5%A4%A7%E5%85%A8/" target="_self">
-        <div>
-          前言SpringBoot注解让我们摆脱了繁琐的Spring XML配置，让我们的开发更加高效，这里对常见的SpringBoot注解做个总结。 启动类上SpringBootApplication：申明让spring boot自动给程序进行必要的配置，等同于 @Configuration ，@EnableAutoConfiguration 和 @ComponentScan 三个配置。  Configu
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-07-21 20:44" pubdate>
-              2024-07-21
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/SpringBoot/" class="category-chain-item">SpringBoot</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Annotation/">#Annotation</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/07/21/OpenFeign%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" target="_self">
-          OpenFeign最佳实践
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/07/21/OpenFeign%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" target="_self">
-        <div>
-          简介Spring Cloud OpenFeign 它是 Spring 官方推出的一种声明式服务调用与负载均衡组件。它底层基于 Netflix Feign，Netflix Feign 是 Netflix 设计的开源的声明式 WebService 客户端，用于简化服务间通信。 Spring Cloud openfeign 对 Feign 进行了增强，使其支持 Spring MVC 注解，另外还整合了
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-07-21 11:46" pubdate>
-              2024-07-21
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BB%84%E4%BB%B6/" class="category-chain-item">微服务组件</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/OpenFeign/">#OpenFeign</a>
             
           </div>
         
