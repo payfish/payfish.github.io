@@ -16,15 +16,15 @@
   <meta name="author" content="fu1sh">
   <meta name="keywords" content="java">
   
-    <meta name="description" content="安装 数据库：nacos默认的数据库是derby，可以配置MySQL作为nacos的数据库，去官方仓库下载mysql-schema.sql脚本，配置到数据库中  环境变量：使用docker部署，只需要将下面的环境变量文件挂载到nacos容器的env-file下，见启动docker命令 123456789PREFER_HOST_MODE&#x3D;hostnameMODE&#x3D;standaloneSPRING_D">
+    <meta name="description" content="安装 数据库：nacos默认的数据库是derby，可以配置MySQL作为nacos的数据库，去官方仓库下载mysql-schema.sql脚本，配置到数据库中  环境变量：使用docker部署，只需要将下面的环境变量文件挂载到nacos容器的env-file下，见启动docker命令   123456789PREFER_HOST_MODE&#x3D;hostnameMODE&#x3D;standaloneSPRING">
 <meta property="og:type" content="article">
 <meta property="og:title" content="nacos">
 <meta property="og:url" content="https://payfish.github.io/2024/08/02/nacos/index.html">
 <meta property="og:site_name" content="Fu1sh&#39;s BLOG">
-<meta property="og:description" content="安装 数据库：nacos默认的数据库是derby，可以配置MySQL作为nacos的数据库，去官方仓库下载mysql-schema.sql脚本，配置到数据库中  环境变量：使用docker部署，只需要将下面的环境变量文件挂载到nacos容器的env-file下，见启动docker命令 123456789PREFER_HOST_MODE&#x3D;hostnameMODE&#x3D;standaloneSPRING_D">
+<meta property="og:description" content="安装 数据库：nacos默认的数据库是derby，可以配置MySQL作为nacos的数据库，去官方仓库下载mysql-schema.sql脚本，配置到数据库中  环境变量：使用docker部署，只需要将下面的环境变量文件挂载到nacos容器的env-file下，见启动docker命令   123456789PREFER_HOST_MODE&#x3D;hostnameMODE&#x3D;standaloneSPRING">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-08-02T08:25:24.000Z">
-<meta property="article:modified_time" content="2024-08-08T08:38:49.827Z">
+<meta property="article:modified_time" content="2024-08-31T09:43:18.814Z">
 <meta property="article:author" content="fu1sh">
 <meta property="article:tag" content="nacos">
 <meta name="twitter:card" content="summary_large_image">
@@ -220,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          482 字
+          481 字
         
       </span>
     
@@ -277,11 +277,15 @@
 <li><p>数据库：nacos默认的数据库是derby，可以配置MySQL作为nacos的数据库，去<a target="_blank" rel="noopener" href="https://github.com/alibaba/nacos/blob/develop/distribution/conf/mysql-schema.sql">官方仓库</a>下载mysql-schema.sql脚本，配置到数据库中</p>
 </li>
 <li><p>环境变量：使用docker部署，只需要将下面的环境变量文件挂载到nacos容器的env-file下，见启动docker命令</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs mysql">PREFER_HOST_MODE=hostname<br>MODE=standalone<br>SPRING_DATASOURCE_PLATFORM=mysql<br>MYSQL_SERVICE_HOST=##MySQL地址##<br>MYSQL_SERVICE_DB_NAME=nacos<br>MYSQL_SERVICE_PORT=3306<br>MYSQL_SERVICE_USER=root<br>MYSQL_SERVICE_PASSWORD=**<br>MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&amp;connectTimeout=1000&amp;socketTimeout=3000&amp;autoReconnect=true&amp;useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=Asia/Shanghai<br></code></pre></td></tr></table></figure>
-
-<p>3.docker启动</p>
-<figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs docker">docker <span class="hljs-keyword">run</span><span class="language-bash"> -d \</span><br><span class="language-bash">--name nacos \</span><br><span class="language-bash">--env-file ./nacos/custom.env \</span><br><span class="language-bash">-p 8848:8848 \</span><br><span class="language-bash">-p 9848:9848 \</span><br><span class="language-bash">-p 9849:9849 \</span><br><span class="language-bash">--restart=always \</span><br><span class="language-bash">nacos/nacos-server:v2.1.0-slim</span><br></code></pre></td></tr></table></figure></li>
+</li>
 </ol>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-attribute">PREFER_HOST_MODE</span>=hostname<br><span class="hljs-attribute">MODE</span>=standalone<br><span class="hljs-attribute">SPRING_DATASOURCE_PLATFORM</span>=mysql<br><span class="hljs-attribute">MYSQL_SERVICE_HOST</span>=##MySQL地址##<br><span class="hljs-attribute">MYSQL_SERVICE_DB_NAME</span>=nacos<br><span class="hljs-attribute">MYSQL_SERVICE_PORT</span>=3306<br><span class="hljs-attribute">MYSQL_SERVICE_USER</span>=root<br><span class="hljs-attribute">MYSQL_SERVICE_PASSWORD</span>=**<br><span class="hljs-attribute">MYSQL_SERVICE_DB_PARAM</span>=characterEncoding=utf8&amp;connectTimeout=1000&amp;socketTimeout=3000&amp;autoReconnect=true&amp;useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=Asia/Shanghai<br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>docker启动</li>
+</ol>
+<figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs docker">docker <span class="hljs-keyword">run</span><span class="language-bash"> -d \</span><br><span class="language-bash">--name nacos \</span><br><span class="language-bash">--env-file ./nacos/custom.env \</span><br><span class="language-bash">-p 8848:8848 \</span><br><span class="language-bash">-p 9848:9848 \</span><br><span class="language-bash">-p 9849:9849 \</span><br><span class="language-bash">--restart=always \</span><br><span class="language-bash">nacos/nacos-server:v2.1.0-slim</span><br></code></pre></td></tr></table></figure>
+
 <h3 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!--nacos 服务注册发现--&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alibaba.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-nacos-discovery<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-comment">&lt;!--nacos配置管理--&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alibaba.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-nacos-config<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-comment">&lt;!--读取bootstrap文件--&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-bootstrap<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
 
 <h3 id="配置中心"><a href="#配置中心" class="headerlink" title="配置中心"></a>配置中心</h3><p>设置Bootstrap.yaml文件，这样SpringCloud启动时便可以自动读取Bootstrap文件中的nacos地址，从而去nacos的配置中心拉去各种共享配置，以及实现配置的热更新。</p>

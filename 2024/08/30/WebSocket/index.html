@@ -16,22 +16,22 @@
   <meta name="author" content="fu1sh">
   <meta name="keywords" content="java">
   
-    <meta name="description" content="IPIPV4 本机：127.0.0.1 四个字节，每一字节0~255，42亿种，2011年就用完了 IPV6  2001:0db8:85a3:0000:0000:8a2e:0370:7334  8个无符号整数组成 16个字节，地球上每一粒沙子都可以分配一个 公网&#x2F;私网&#x2F;NAT 公网ip：互联网（全球唯一） 私网ip：局域网（常见192.168.） NAT（网络地址转换）：当私网">
+    <meta name="description" content="简介WebSocket 是一种计算机通信协议，为 Web 应用程序提供了全双工通信通道。它是为了克服 HTTP 协议的一些局限性而设计的，特别是 HTTP 是单向的——客户端请求，服务器响应。在 WebSocket 连接中，客户端和服务器之间的通信是持续的，可以相互发送消息，而不必每次都重新建立连接。 握手过程: WebSocket 连接从 HTTP 请求开始，客户端发起一个 HTTP 请求到服务">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java网络编程">
-<meta property="og:url" content="https://payfish.github.io/2024/06/29/Java%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/index.html">
+<meta property="og:title" content="WebSocket">
+<meta property="og:url" content="https://payfish.github.io/2024/08/30/WebSocket/index.html">
 <meta property="og:site_name" content="Fu1sh&#39;s BLOG">
-<meta property="og:description" content="IPIPV4 本机：127.0.0.1 四个字节，每一字节0~255，42亿种，2011年就用完了 IPV6  2001:0db8:85a3:0000:0000:8a2e:0370:7334  8个无符号整数组成 16个字节，地球上每一粒沙子都可以分配一个 公网&#x2F;私网&#x2F;NAT 公网ip：互联网（全球唯一） 私网ip：局域网（常见192.168.） NAT（网络地址转换）：当私网">
+<meta property="og:description" content="简介WebSocket 是一种计算机通信协议，为 Web 应用程序提供了全双工通信通道。它是为了克服 HTTP 协议的一些局限性而设计的，特别是 HTTP 是单向的——客户端请求，服务器响应。在 WebSocket 连接中，客户端和服务器之间的通信是持续的，可以相互发送消息，而不必每次都重新建立连接。 握手过程: WebSocket 连接从 HTTP 请求开始，客户端发起一个 HTTP 请求到服务">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-06-29T08:13:01.000Z">
-<meta property="article:modified_time" content="2024-07-01T12:30:56.402Z">
+<meta property="article:published_time" content="2024-08-30T02:40:37.000Z">
+<meta property="article:modified_time" content="2024-08-30T10:47:20.072Z">
 <meta property="article:author" content="fu1sh">
-<meta property="article:tag" content="网络编程">
+<meta property="article:tag" content="WebSocket">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>Java网络编程 - Fu1sh&#39;s BLOG</title>
+  <title>WebSocket - Fu1sh&#39;s BLOG</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -197,7 +197,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Java网络编程"></span>
+            <span id="subtitle" data-typed-text="WebSocket"></span>
           
         </div>
 
@@ -208,8 +208,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-06-29 16:13" pubdate>
-          2024年6月29日 下午
+        <time datetime="2024-08-30 10:40" pubdate>
+          2024年8月30日 上午
         </time>
       </span>
     
@@ -220,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          401 字
+          282 字
         
       </span>
     
@@ -231,7 +231,7 @@
         
         
         
-          4 分钟
+          3 分钟
         
       </span>
     
@@ -268,67 +268,20 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Java网络编程</h1>
+            <h1 id="seo-header">WebSocket</h1>
             
             
               <div class="markdown-body">
                 
-                <h3 id="IP"><a href="#IP" class="headerlink" title="IP"></a>IP</h3><p><strong>IPV4</strong></p>
-<p>本机：127.0.0.1</p>
-<p>四个字节，每一字节0~255，42亿种，2011年就用完了</p>
-<p><strong>IPV6</strong></p>
-<blockquote>
-<p>2001:0db8:85a3:0000:0000:8a2e:0370:7334</p>
-</blockquote>
-<p>8个无符号整数组成</p>
-<p>16个字节，地球上每一粒沙子都可以分配一个</p>
-<p><strong>公网&#x2F;私网&#x2F;NAT</strong></p>
-<p>公网ip：互联网（全球唯一）</p>
-<p>私网ip：局域网（常见192.168.）</p>
-<p>NAT（网络地址转换）：当私网内部的设备需要访问互联网时，路由器会将设备的私网IP地址转换为一个公网IP地址，并在返回通信时将其转换回私网IP地址。</p>
-<h3 id="端口"><a href="#端口" class="headerlink" title="端口"></a>端口</h3><p>端口表示计算机上一个程序的进程</p>
-<ul>
-<li><p>不同的进程有不同的端口号，用来区分软件</p>
-</li>
-<li><p>0 ~ 2^16 （65535）个</p>
-</li>
-<li><p>TCP&#x2F;UDP：单个协议下端口号不能相同，TCP和UDP互相不冲突</p>
-</li>
-<li><p>端口分类</p>
-<ul>
-<li><p>公有端口 0 ~ 1023</p>
-<ul>
-<li>HTTP：80</li>
-<li>HTTPS：443</li>
-<li>FTP：21</li>
+                <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p><strong>WebSocket</strong> 是一种计算机通信协议，为 Web 应用程序提供了全双工通信通道。它是为了克服 HTTP 协议的一些局限性而设计的，特别是 HTTP 是单向的——客户端请求，服务器响应。在 WebSocket 连接中，客户端和服务器之间的通信是持续的，可以相互发送消息，而不必每次都重新建立连接。</p>
+<p><strong>握手过程</strong>: WebSocket 连接从 HTTP 请求开始，客户端发起一个 HTTP 请求到服务器，请求头中包含 <code>Upgrade: websocket</code> 字段。服务器响应并同意升级协议，成功升级后，建立 WebSocket 连接。</p>
+<h3 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h3><ul>
+<li>网页聊天：客户端和服务器可以随时发送消息，且不需要建立新连接，减少了延迟和资源开销。</li>
+<li>视频弹幕：不用介绍了</li>
+<li>实时更新：金融数据、股票市场、货币交易、比赛比分等需要将最新数据实时推送到客户端页面</li>
 </ul>
-</li>
-<li><p>程序注册端口 1024 ~ 49151</p>
-<ul>
-<li>MySQL：3306</li>
-<li>Redis：6379</li>
-</ul>
-</li>
-<li><p>动态端口 49152 ~ 65535</p>
-</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>netstat 查看网络相关信息</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">netstat //显示所有活动的连接<br>netstat -a //显示所有连接和监听端口<br>netstat -n //以数字形式显示地址和端口号（不进行DNS解析）<br>netstat -o //显示与每个连接相关的进程ID（PID）<br>netstat -p tcp //显示特定协议的连接<br>netstat -tulnp //Linux特有，显示所有连接和监听端口，带PID和程序名<br></code></pre></td></tr></table></figure>
+<h3 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-websocket<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
 
-
-
-<h3 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h3><p>打电话，连接，稳定</p>
-<p>客户端、服务端</p>
-<p>传输完成，释放连接，效率低</p>
-<h3 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h3><p>发短信，不连接，不稳定</p>
-<p>客户端服务端没有明确的界限</p>
-<p>不管准备好与否，都可以发给你</p>
-<p>DDOS：洪水攻击</p>
-<h3 id="socket"><a href="#socket" class="headerlink" title="socket"></a>socket</h3>
                 
               </div>
             
@@ -336,32 +289,11 @@
             <div>
               <div class="post-metas my-3">
   
-    <div class="post-meta mr-3 d-flex align-items-center">
-      <i class="iconfont icon-category"></i>
-      
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Java/" class="category-chain-item">Java</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-    </div>
-  
   
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" class="print-no-link">#网络编程</a>
+        <a href="/tags/WebSocket/" class="print-no-link">#WebSocket</a>
       
     </div>
   
@@ -373,8 +305,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Java网络编程</div>
-      <div>https://payfish.github.io/2024/06/29/Java网络编程/</div>
+      <div>WebSocket</div>
+      <div>https://payfish.github.io/2024/08/30/WebSocket/</div>
     </div>
     <div class="license-meta">
       
@@ -386,7 +318,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年6月29日</div>
+          <div>2024年8月30日</div>
         </div>
       
       
@@ -418,18 +350,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/07/01/NIO/" title="NIO">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">NIO</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/06/28/%E6%B3%A8%E8%A7%A3%E4%B8%8E%E5%8F%8D%E5%B0%84/" title="注解与反射">
-                        <span class="hidden-mobile">注解与反射</span>
+                      <a href="/2024/08/28/TCP-IP/" title="TCP/IP">
+                        <span class="hidden-mobile">TCP/IP</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

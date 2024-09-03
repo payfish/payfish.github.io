@@ -23,11 +23,13 @@
 <meta property="og:site_name" content="Fu1sh&#39;s BLOG">
 <meta property="og:description" content="原理一个简单的例子 123456789101112131415public class UserHolder &#123;    private static final ThreadLocal&lt;UserDTO&gt; tl &#x3D; new ThreadLocal&lt;&gt;();    public static void saveUser(UserDTO user)&#123;">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://payfish.github.io/2024/08/15/ThreadLocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F.jpg">
 <meta property="article:published_time" content="2024-08-15T13:42:48.000Z">
-<meta property="article:modified_time" content="2024-08-15T14:25:12.757Z">
+<meta property="article:modified_time" content="2024-09-01T06:46:33.334Z">
 <meta property="article:author" content="fu1sh">
 <meta property="article:tag" content="ThreadLocal">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://payfish.github.io/2024/08/15/ThreadLocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F.jpg">
   
   
   
@@ -220,7 +222,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          163 字
+          1.2k 字
         
       </span>
     
@@ -231,7 +233,7 @@
         
         
         
-          2 分钟
+          11 分钟
         
       </span>
     
@@ -283,7 +285,39 @@
 
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java">ThreadLocalMap <span class="hljs-title function_">getMap</span><span class="hljs-params">(Thread t)</span> &#123;<br>    <span class="hljs-keyword">return</span> t.threadLocals;<br>&#125;<br><br><span class="hljs-keyword">void</span> <span class="hljs-title function_">createMap</span><span class="hljs-params">(Thread t, T firstValue)</span> &#123;<br>    t.threadLocals = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ThreadLocalMap</span>(<span class="hljs-built_in">this</span>, firstValue);<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<h3 id="强引用弱引用"><a href="#强引用弱引用" class="headerlink" title="强引用弱引用"></a>强引用弱引用</h3><h3 id="内存泄漏"><a href="#内存泄漏" class="headerlink" title="内存泄漏"></a>内存泄漏</h3>
+<h3 id="强引用弱引用"><a href="#强引用弱引用" class="headerlink" title="强引用弱引用"></a>强引用弱引用</h3><blockquote>
+<p>强引用——&gt;软引用——&gt;弱引用——&gt;虚引用</p>
+</blockquote>
+<p>弱的不太虚，虚的最弱</p>
+<h4 id="强引用"><a href="#强引用" class="headerlink" title="强引用"></a>强引用</h4><p>任何一个普通的对象引用都是强引用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">String</span> <span class="hljs-variable">s1</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;fusish&quot;</span>; <span class="hljs-comment">//字符串常量池</span><br><span class="hljs-type">String</span> <span class="hljs-variable">s2</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>(<span class="hljs-string">&quot;fusish&quot;</span>); <span class="hljs-comment">//“fuish”在堆区</span><br><span class="hljs-type">String</span> <span class="hljs-variable">s3</span> <span class="hljs-operator">=</span> s2; <span class="hljs-comment">//s2，s3这两个强引用在栈区</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>s1</code> 是一个字符串常量，指向字符串常量池中的 <code>&quot;fusish&quot;</code>。在 Java 中，字符串字面量会被保存在字符串常量池中，并且这些字符串对象在 JVM 的生命周期内通常不会被回收。因为它们被存储在常量池中，除非 JVM 关闭，否则它们的内存不会被释放。</p>
+</li>
+<li><p><code>s2</code> 是一个强引用，指向一个新创建的 <code>String</code> 对象，这个对象位于堆内存中。<code>s3</code> 是一个强引用，指向与 <code>s2</code> 相同的对象。</p>
+<p>只要 <code>s2</code> 和 <code>s3</code> 在它们的作用域范围内，且没有被显式设置为 <code>null</code> 或者没有超出作用域，它们所指向的对象将一直存在于堆内存中，不会被垃圾回收。</p>
+<p>一旦 <code>s2</code> 和 <code>s3</code> 超出它们的作用域（例如，方法执行完毕，局部变量被销毁），或者它们被显式地设为 <code>null</code>，且没有其他引用指向那个对象时，该对象就会变成垃圾，等待下一次垃圾回收。</p>
+</li>
+</ul>
+<h4 id="软引用"><a href="#软引用" class="headerlink" title="软引用"></a>软引用</h4><p><strong>软引用</strong> 是一种比弱引用更强的引用类型。在 Java 中，软引用是用来实现内存敏感的缓存的。垃圾回收器在内存不足时才会回收被软引用引用的对象；如果内存充足，这些对象就会保留在内存中。</p>
+<h4 id="弱引用"><a href="#弱引用" class="headerlink" title="弱引用"></a>弱引用</h4><p>如果一个对象只剩一个<strong>弱引用</strong>在引用它，那么它会在下一次垃圾回收中被回收，不管内存充足与否。</p>
+<h4 id="虚引用"><a href="#虚引用" class="headerlink" title="虚引用"></a>虚引用</h4><p><strong>虚引用</strong> 是一种最弱的引用类型。一个对象是否有虚引用的存在，完全不会对其生存时间构成影响，也无法通过虚引用来取得一个对象实例。虚引用主要用来在对象被回收之前进行一些清理工作。</p>
+<blockquote>
+<p>调用 <code>phantomReference.get()</code> 始终返回 <code>null</code>，因为虚引用无法访问对象。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 使用强引用创建 String 对象</span><br><span class="hljs-type">String</span> <span class="hljs-variable">strongRef1</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>(<span class="hljs-string">&quot;1&quot;</span>);<br><span class="hljs-type">String</span> <span class="hljs-variable">strongRef2</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>(<span class="hljs-string">&quot;2&quot;</span>);<br><span class="hljs-type">String</span> <span class="hljs-variable">strongRef3</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>(<span class="hljs-string">&quot;3&quot;</span>);<br><br>ReferenceQueue&lt;String&gt; referenceQueue = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ReferenceQueue</span>&lt;&gt;();<br><span class="hljs-comment">// 创建软引用、弱引用、虚引用</span><br>SoftReference&lt;String&gt; softReference = <span class="hljs-keyword">new</span> <span class="hljs-title class_">SoftReference</span>&lt;&gt;(strongRef1);<br>WeakReference&lt;String&gt; weakRef = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakReference</span>&lt;&gt;(strongRef2);<br>PhantomReference&lt;String&gt; phantomReference = <span class="hljs-keyword">new</span> <span class="hljs-title class_">PhantomReference</span>&lt;&gt;(strongRef3, referenceQueue);<br><br><span class="hljs-comment">// 打印强引用和弱引用</span><br>System.out.println(<span class="hljs-string">&quot;Before GC:&quot;</span>);<br>System.out.println(<span class="hljs-string">&quot;Soft Reference: &quot;</span> + softReference.get());<br>System.out.println(<span class="hljs-string">&quot;Weak Reference: &quot;</span> + weakRef.get());<br>System.out.println(<span class="hljs-string">&quot;Phantom Reference: &quot;</span> + phantomReference.get());<br><br><span class="hljs-comment">// 将强引用设为 null</span><br>strongRef1 = <span class="hljs-literal">null</span>;<br>strongRef2 = <span class="hljs-literal">null</span>;<br>strongRef3 = <span class="hljs-literal">null</span>;<br><span class="hljs-comment">// 触发垃圾回收</span><br>System.gc();<br><br><span class="hljs-comment">// 再次检查弱引用</span><br>System.out.println(<span class="hljs-string">&quot;\nAfter GC:&quot;</span>);<br>System.out.println(<span class="hljs-string">&quot;Soft Reference: &quot;</span> + softReference.get());<br>System.out.println(<span class="hljs-string">&quot;Weak Reference: &quot;</span> + weakRef.get());<br>System.out.println(<span class="hljs-string">&quot;Phantom Reference: &quot;</span> + phantomReference.get());<br><span class="hljs-keyword">if</span> (referenceQueue.poll() != <span class="hljs-literal">null</span>) &#123;<br>System.out.println(<span class="hljs-string">&quot;The phantom-referenced object has been enqueued for finalization.&quot;</span>);<br>&#125; <span class="hljs-keyword">else</span> &#123;<br>System.out.println(<span class="hljs-string">&quot;The phantom-referenced object has NOT been enqueued yet.&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java">Before GC:<br>Soft Reference: <span class="hljs-number">1</span><br>Weak Reference: <span class="hljs-number">2</span><br>Phantom Reference: <span class="hljs-literal">null</span><br><br>After GC:<br>Soft Reference: <span class="hljs-number">1</span><br>Weak Reference: <span class="hljs-literal">null</span><br>Phantom Reference: <span class="hljs-literal">null</span><br>The phantom-referenced object has been enqueued <span class="hljs-keyword">for</span> finalization.<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="内存泄漏"><a href="#内存泄漏" class="headerlink" title="内存泄漏"></a>内存泄漏</h3><p>什么是内存泄漏？ </p>
+<p>某个对象申请的内存无法被释放。<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/139214244">彻底搞清楚ThreadLocal与弱引用</a>写的很好，但是不完善，借用他的一张图：</p>
+<p><img src="/2024/08/15/ThreadLocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F.jpg" srcset="/img/loading.gif" lazyload alt="JVM内存区域"></p>
+<p>ThreadlocalMap对象的key是threadLocal对象的弱引用，value是存储的对象的强引用，如果主线程和thread的线程栈中threadLocal的引用被手动释放（反正就是某种原因导致threadLocal的强引用指向null了，不再指向堆中的ThreadLocal对象）。那么下一次垃圾回收时就会回收掉ThreadLocal对象（因为只有唯一一个弱引用指向它），此时ThreadLocalMap中的value由于是强引用无法被GC回收，也无法被访问。ThreadLocalMap 变量的生命周期是和当前线程的生命周期一样长的，只有在当前线程运行结束之后才会清除掉 value，因此会导致这个 value 一直停留在内存中，导致内存泄漏。</p>
+<p>虽然 JDK 的开发者想到了这个问题，在使用 set get remove 的时候，会对 key 为 null 的 value 进行清理。但是我们还是要注意使用完ThreadLocal后手动调用remove函数清除不用的value。</p>
+
                 
               </div>
             

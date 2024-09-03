@@ -18,20 +18,20 @@
   
     <meta name="description" content="安装最近docker数据源大量失效，拉不下来镜像不是你的问题，可以自己检索还能用的镜像源  docker pull redis  启动redis创建目录首先需要手动创建&#x2F;docker&#x2F;redis&#x2F;conf&#x2F;redis.conf这个文件，命令如下： 1mkdir -p &#x2F;docker&#x2F;redis&#x2F;conf &amp;&amp; touch &#x2F;docker&#x2F;re">
 <meta property="og:type" content="article">
-<meta property="og:title" content="docker安装最新版redis以及正确配置">
+<meta property="og:title" content="Docker安装最新版redis以及正确配置">
 <meta property="og:url" content="https://payfish.github.io/2024/08/19/docker%E5%AE%89%E8%A3%85%E6%9C%80%E6%96%B0%E7%89%88redis%E4%BB%A5%E5%8F%8A%E6%AD%A3%E7%A1%AE%E9%85%8D%E7%BD%AE/index.html">
 <meta property="og:site_name" content="Fu1sh&#39;s BLOG">
 <meta property="og:description" content="安装最近docker数据源大量失效，拉不下来镜像不是你的问题，可以自己检索还能用的镜像源  docker pull redis  启动redis创建目录首先需要手动创建&#x2F;docker&#x2F;redis&#x2F;conf&#x2F;redis.conf这个文件，命令如下： 1mkdir -p &#x2F;docker&#x2F;redis&#x2F;conf &amp;&amp; touch &#x2F;docker&#x2F;re">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-08-19T08:54:43.000Z">
-<meta property="article:modified_time" content="2024-08-23T06:02:09.392Z">
+<meta property="article:modified_time" content="2024-09-01T06:51:01.528Z">
 <meta property="article:author" content="fu1sh">
-<meta property="article:tag" content="docker&#x2F;redis">
+<meta property="article:tag" content="Docker">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>docker安装最新版redis以及正确配置 - Fu1sh&#39;s BLOG</title>
+  <title>Docker安装最新版redis以及正确配置 - Fu1sh&#39;s BLOG</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -197,7 +197,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="docker安装最新版redis以及正确配置"></span>
+            <span id="subtitle" data-typed-text="Docker安装最新版redis以及正确配置"></span>
           
         </div>
 
@@ -220,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          330 字
+          325 字
         
       </span>
     
@@ -268,7 +268,7 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">docker安装最新版redis以及正确配置</h1>
+            <h1 id="seo-header">Docker安装最新版redis以及正确配置</h1>
             
             
               <div class="markdown-body">
@@ -281,17 +281,20 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">mkdir -p /docker/redis/conf &amp;&amp; touch /docker/redis/conf/redis.conf<br></code></pre></td></tr></table></figure>
 
 <p>再在&#x2F;docker&#x2F;redis下创建一个data文件夹，用来存放rdb和aof文件</p>
-<h4 id="下载配置文件"><a href="#下载配置文件" class="headerlink" title="下载配置文件"></a>下载配置文件</h4><p>接着去[官网](<a target="_blank" rel="noopener" href="https://redis.io/docs/latest/operate/oss_and_stack/management/config/">Redis configuration | Docs</a>)下载redis.conf文件，下载最新版即可（因为我们pull的是最新版）。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">cd /docker/redis/conf<br>mkdir data<br></code></pre></td></tr></table></figure>
+
+<h4 id="下载配置文件"><a href="#下载配置文件" class="headerlink" title="下载配置文件"></a>下载配置文件</h4><p>接着去<a target="_blank" rel="noopener" href="https://redis.io/docs/latest/operate/oss_and_stack/management/config/">官网</a>下载redis.conf文件，下载最新版即可（因为我们pull的是最新版）。</p>
 <p>需要修改端口号和保护模式：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-built_in">bind</span> 127.0.0.1 -::1 只允许本地访问，注释掉，改为允许所有端口访问</span><br>bind 0.0.0.0<br><br>protected-mode no #确保 protected-mode 设为 no<br></code></pre></td></tr></table></figure>
 
 <h4 id="上传配置文件"><a href="#上传配置文件" class="headerlink" title="上传配置文件"></a>上传配置文件</h4><p>将配置文件复制到我们之前创建的<code>/docker/redis/conf/redis.conf</code>中，需要用到vim，可自行学习，下面简单说一下步骤</p>
 <figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-number">1</span>、首先全部复制我们修改好的配置文件<br><span class="hljs-number">2</span>、<span class="hljs-keyword">vim</span> /docker/redis/<span class="hljs-keyword">conf</span>/redis.<span class="hljs-keyword">conf</span><br><span class="hljs-number">3</span>、按i键<br><span class="hljs-number">4</span>、粘贴<br><span class="hljs-number">5</span>、输入:<span class="hljs-keyword">wq</span><br><span class="hljs-number">6</span>、回车<br></code></pre></td></tr></table></figure>
 
-<h4 id="运行容器"><a href="#运行容器" class="headerlink" title="运行容器"></a>运行容器</h4><figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs docker">docker <span class="hljs-keyword">run</span><span class="language-bash"> -d \</span><br><span class="language-bash">  --name redis \</span><br><span class="language-bash">  -p 6379:6379 \</span><br><span class="language-bash">  -v /docker/redis/conf/redis.conf:/etc/redis/redis.conf \ <span class="hljs-comment">#配置文件挂载</span></span><br>  -v /docker/redis/data:/data \ <span class="hljs-comment">#数据挂载</span><br>  --restart unless-stopped \<br>  redis:latest \<br>  redis-server /etc/redis/redis.conf --requirepass <span class="hljs-string">&quot;123456&quot;</span><span class="hljs-comment">#使用配置文件启动，设置密码</span><br></code></pre></td></tr></table></figure>
+<h4 id="运行容器"><a href="#运行容器" class="headerlink" title="运行容器"></a>运行容器</h4><figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs docker">docker <span class="hljs-keyword">run</span><span class="language-bash"> -d \</span><br><span class="language-bash">  --name redis \</span><br><span class="language-bash">  -p 6379:6379 \</span><br><span class="language-bash">  -v /docker/redis/conf/redis.conf:/etc/redis/redis.conf \</span><br><span class="language-bash">  -v /docker/redis/data:/data \</span><br><span class="language-bash">  --restart unless-stopped \</span><br><span class="language-bash">  redis:latest \</span><br><span class="language-bash">  redis-server /etc/redis/redis.conf --requirepass <span class="hljs-string">&quot;123456&quot;</span></span><br></code></pre></td></tr></table></figure>
 
-
-
+<blockquote>
+<p> 注意：redis insight客户端需要填写用户名，默认为default</p>
+</blockquote>
 
                 
               </div>
@@ -310,7 +313,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/docker/" class="category-chain-item">docker</a>
+  <a href="/categories/Docker/" class="category-chain-item">Docker</a>
   
   
 
@@ -325,7 +328,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/docker-redis/" class="print-no-link">#docker/redis</a>
+        <a href="/tags/Docker/" class="print-no-link">#Docker</a>
       
     </div>
   
@@ -337,7 +340,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>docker安装最新版redis以及正确配置</div>
+      <div>Docker安装最新版redis以及正确配置</div>
       <div>https://payfish.github.io/2024/08/19/docker安装最新版redis以及正确配置/</div>
     </div>
     <div class="license-meta">
