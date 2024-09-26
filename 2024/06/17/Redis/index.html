@@ -27,7 +27,7 @@
 <meta property="og:image" content="https://payfish.github.io/2024/06/17/Redis/rdb.png">
 <meta property="og:image" content="https://payfish.github.io/2024/06/17/Redis/aof.png">
 <meta property="article:published_time" content="2024-06-17T08:18:09.000Z">
-<meta property="article:modified_time" content="2024-08-30T05:41:00.982Z">
+<meta property="article:modified_time" content="2024-09-20T14:31:45.407Z">
 <meta property="article:author" content="fu1sh">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary_large_image">
@@ -224,7 +224,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.7k 字
+          5.1k 字
         
       </span>
     
@@ -235,7 +235,7 @@
         
         
         
-          39 分钟
+          43 分钟
         
       </span>
     
@@ -312,7 +312,25 @@
 <li>Redis重启时，重新执行AOF文件中的命令来重建数据集。</li>
 </ul>
 <p><img src="/2024/06/17/Redis/aof.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h3><h3 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h3><p>哨兵模式用于监控Redis实例的健康状况，并在主节点故障时进行自动故障转移。它是一种高可用性解决方案，确保Redis集群能够在主节点发生故障时继续正常运行。</p>
+<h3 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h3><p>将主节点（Master）上 的数据复制到从节点（Slave）</p>
+<p>在Redis主从架构中，主节点负责处理所有的写操作，并将这些操作异步复制到从节点，从节点主要用于读取操作，以分担主节点的压力和提高读取性能</p>
+<p>主从复制的主要作用是什么？</p>
+<ul>
+<li><strong>数据冗余</strong>：实现了数据的热备份，是持久化之外的一种数据冗余方式</li>
+<li><strong>故障恢复</strong>：如果主节点挂掉了，可以将一个从节点提升为主节点，实现故障的快速恢复</li>
+</ul>
+<p>使用Sentinel哨兵来实现自动的故障转移，主节点挂掉后Sentinel会自动将一个从节点升级为主节点，保证系统的可用性</p>
+<ul>
+<li><strong>负载均衡：</strong> 在主从复制的基础上，配合读写分离，可以由主节点提供写服务，由从节点提供读服务 <em>（即写 Redis 时连接主节点，读 Redis 时连接从节点）</em>，分担服务器负载。尤其是在写少读多的场景下，通过多个从节点分担读负载，可以大大提高 Redis 服务器的并发量。</li>
+<li><strong>高可用基石：</strong> 除了上述作用以外，主从复制还是哨兵和集群能够实施的 <strong>基础</strong>。</li>
+</ul>
+<p>Redis删除过期数据的策略：</p>
+<ul>
+<li>惰性删除：只会在取出Key的时候才检查Key是否过期并删除，对CPU友好，但是内存中可能积压大量过期Key</li>
+<li>定期删除：定期抽取一批Key执行删除过期Key的操作，对内存友好</li>
+</ul>
+<p>Redis采用二者结合的方式</p>
+<h3 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h3><p>哨兵模式用于监控Redis实例的健康状况，并在主节点故障时进行自动故障转移。它是一种高可用性解决方案，确保Redis集群能够在主节点发生故障时继续正常运行。</p>
 <h4 id="工作机制"><a href="#工作机制" class="headerlink" title="工作机制"></a>工作机制</h4><ol>
 <li><strong>监控</strong>：Sentinel不断检查主节点和从节点是否正常运行。</li>
 <li><strong>通知</strong>：当某个节点出现问题时，Sentinel可以通知系统管理员或其他应用程序。</li>
@@ -336,8 +354,8 @@
 <h4 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h4><p>定义：同一时段大量的缓存key同时失效或者Redis服务宕机，导致大量请求到达数据库，带来巨大压力。</p>
 <p>解决方案</p>
 <ul>
-<li>给不同key的TTL添加随机值</li>
-<li>搭建Redis集群提高服务的可用性</li>
+<li>给不同key的TTL添加随机值（√）</li>
+<li>搭建Redis集群提高服务的可用性（废话）</li>
 <li>给缓存业务添加降级限流策略</li>
 <li>给业务添加多级缓存</li>
 </ul>
@@ -352,7 +370,7 @@
 </li>
 <li><p>逻辑过期</p>
 <ul>
-<li>不设置TTL，加一个expire time，当前线程查询缓存发现逻辑过期时间已经过期后，获取互斥锁，开启一个新线程来为自己执行重建数据库的操作。其他线程查询这个缓存均返回过期数据就行，无需等待</li>
+<li>不设置TTL，加一个expire time，当前线程查询缓存发现逻辑过期时间已经过期后，获取互斥锁，开启一个新线程来为自己执行重建缓存的操作。其他线程查询这个缓存均返回过期数据就行，无需等待</li>
 <li>缺点：不保证一致性，有额外的内存消耗，实现复杂</li>
 </ul>
 </li>
