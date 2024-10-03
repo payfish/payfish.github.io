@@ -32,8 +32,11 @@
 <meta property="og:image" content="https://payfish.github.io/2024/06/26/JVM/%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA.png">
 <meta property="og:image" content="https://payfish.github.io/2024/06/26/JVM/%E5%8F%A5%E6%9F%84%E6%B1%A0.png">
 <meta property="og:image" content="https://payfish.github.io/2024/06/26/JVM/%E7%9B%B4%E6%8E%A5%E6%8C%87%E9%92%88.png">
+<meta property="og:image" content="https://payfish.github.io/2024/06/26/JVM/finalize.png">
+<meta property="og:image" content="https://payfish.github.io/2024/06/26/JVM/gc.png">
+<meta property="og:image" content="https://payfish.github.io/2024/06/26/JVM/G1.png">
 <meta property="article:published_time" content="2024-06-26T03:41:24.000Z">
-<meta property="article:modified_time" content="2024-09-04T13:47:33.514Z">
+<meta property="article:modified_time" content="2024-10-03T14:37:49.008Z">
 <meta property="article:author" content="fu1sh">
 <meta property="article:tag" content="JVM">
 <meta name="twitter:card" content="summary_large_image">
@@ -230,7 +233,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.8k 字
+          7.1k 字
         
       </span>
     
@@ -241,7 +244,7 @@
         
         
         
-          41 分钟
+          60 分钟
         
       </span>
     
@@ -351,7 +354,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HeapTest</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">long</span> <span class="hljs-variable">totalMemory</span> <span class="hljs-operator">=</span> Runtime.getRuntime().totalMemory();<br>        <span class="hljs-type">long</span> <span class="hljs-variable">maxMemory</span> <span class="hljs-operator">=</span> Runtime.getRuntime().maxMemory();<br>        System.out.println(totalMemory + <span class="hljs-string">&quot;-&gt;&quot;</span> + totalMemory / <span class="hljs-number">1024</span> / <span class="hljs-number">1024</span> + <span class="hljs-string">&quot;mb&quot;</span>);<br>        System.out.println(maxMemory + <span class="hljs-string">&quot;-&gt;&quot;</span> + maxMemory / <span class="hljs-number">1024</span> / <span class="hljs-number">1024</span> + <span class="hljs-string">&quot;mb&quot;</span>);<br><br>        List&lt;HeapTest&gt; list = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();<br><br>        <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) &#123;<br>            list.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">HeapTest</span>());<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <p><img src="/2024/06/26/JVM/heapDump.png" srcset="/img/loading.gif" lazyload alt="jProfiler可以看到ArrayList被撑爆了"></p>
-<h4 id="内存溢出"><a href="#内存溢出" class="headerlink" title="内存溢出"></a>内存溢出</h4><p>下面给出个内存区域内存溢出的简单测试方法。如上已在堆中进行了简单测试</p>
+<h4 id="内存溢出"><a href="#内存溢出" class="headerlink" title="内存溢出"></a>内存溢出</h4><p>PC是唯一不会发生OOM的区域，本地方法栈只要不出现错误调用一般也不会OOM，因为本地方法一般都轮不到我们程序员来调用。下面给出各内存区域内存溢出的简单测试方法。</p>
 <p><img src="/2024/06/26/JVM/%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA.png" srcset="/img/loading.gif" lazyload></p>
 <p>这里有一点要重点说明，在多线程情况下，给每个线程的栈分配的内存越大，反而越容易产生内存溢出异常。操作系统为每个进程分配的内存是有限制的，虚拟机提供了参数来控制 Java 堆和方法区这两部分内存的最大值，忽略掉程序计数器消耗的内存（很小），以及进程本身消耗的内存，剩下的内存便给了虚拟机栈和本地方法栈，每个线程分配到的栈容量越大，可以建立的线程数量自然就越少。因此，如果是建立过多的线程导致的内存溢出，在不能减少线程数的情况下，就只能通过减少最大堆和每个线程的栈容量来换取更多的线程。</p>
 <p>由于 Java 堆内也可能发生内存泄露（Memory Leak），这里简要说明一下内存泄露和内存溢出的区别：</p>
@@ -366,37 +369,85 @@
 <p>通过直接指针访问的方式如下：</p>
 <p><img src="/2024/06/26/JVM/%E7%9B%B4%E6%8E%A5%E6%8C%87%E9%92%88.png" srcset="/img/loading.gif" lazyload></p>
 <p>这两种对象的访问方式各有优势，使用句柄访问方式的最大好处就是 reference 中存放的是稳定的句柄地址，在对象被移动（垃圾收集时移动对象是非常普遍的行为）时只会改变句柄中的实例数据指针，而 reference 本身不需要修改。使用直接指针访问方式的最大好处是速度快，它节省了一次指针定位的时间开销。目前 Java 默认使用的 HotSpot 虚拟机采用的便是是第二种方式进行对象访问的。[摘自《深入理解JVM虚拟机》]</p>
-<h3 id="GC"><a href="#GC" class="headerlink" title="GC"></a>GC</h3><h4 id="垃圾对象判定"><a href="#垃圾对象判定" class="headerlink" title="垃圾对象判定"></a>垃圾对象判定</h4><p><strong>引用计数算法</strong>：是给每个对象设置一个计数器，当有地方引用这个对象的时候，计数器+1，当引用失效的时候，计数器-1，当计数器为0的时候，对象不可能还在被使用了。缺点：它很难解决对象之间的相互循环引用问题，已被弃用</p>
-<p><strong>根搜索算法</strong>：Java 和 C# 中都是采用根搜索算法来判定对象是否存活的。这种算 法的基本思路是通过一系列名为“GC Roots”的对象作为起始点，从 这些节点开始向下搜索，搜索所走过的路径称为引用链，当一个对象到 GC Roots 没有任何引用链相连时，就证明此对象是不可用的。 在 Java 语言里，可作为 GC Roots 的兑现包括下面几种：</p>
+<h3 id="GC算法"><a href="#GC算法" class="headerlink" title="GC算法"></a>GC算法</h3><h4 id="垃圾对象判定"><a href="#垃圾对象判定" class="headerlink" title="垃圾对象判定"></a>垃圾对象判定</h4><p><strong>引用计数算法</strong>：是给每个对象设置一个计数器，当有地方引用这个对象的时候，计数器+1，当引用失效的时候，计数器-1，当计数器为0的时候，对象不可能还在被使用了。缺点如下代码：它很难解决两个对象之间的相互循环引用问题，已被弃用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Main</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">Test</span> <span class="hljs-variable">a</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Test</span>();<br>        <span class="hljs-type">Test</span> <span class="hljs-variable">b</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Test</span>();<br><br>        a.another = b;<br>        b.another = a;<br><br>        <span class="hljs-comment">//这里直接把a和b赋值为null，这样前面的两个对象我们不可能再得到了</span><br>        a = b = <span class="hljs-literal">null</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Test</span>&#123;<br>        Test another;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>根搜索算法</strong>：Java 和 C# 中都是采用根搜索算法来判定对象是否存活的。这种算法的基本思路是通过一系列名为“GC Roots”的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链，当一个对象到 GC Roots 没有任何引用链相连时，就证明此对象是不可用的。 在 Java 语言里，每个对象的引用可作为 GC Roots 的条件包括下面几种：</p>
 <ul>
-<li>虚拟机栈（栈帧中的本地变量表）中引用的对象</li>
-<li>方法区中类静态属性引用的对象</li>
-<li>方法区中对常量对象的引用</li>
-<li>本地方法栈中 JNI（Native 方法）的引用对象</li>
+<li>栈（栈帧中的本地变量表）中引用的对象，其实就是我们方法中的局部变量，同样也包括本地方法栈中 JNI（Native 方法）的引用对象	</li>
+<li>方法区中类的静态成员变量引用的对象</li>
+<li>方法区中，常量池里面引用的对象，比如我们之前提到的<code>String</code>类型对象。</li>
+<li>被添加了锁的对象（比如synchronized关键字）</li>
 </ul>
-<h4 id="复制算法（Copying）"><a href="#复制算法（Copying）" class="headerlink" title="复制算法（Copying）"></a>复制算法（Copying）</h4><p><strong>Eden区</strong>：</p>
-<ul>
-<li>Eden区是新对象最初分配的地方。</li>
-<li>当Eden区满时，会触发一次Minor GC（新生代的垃圾收集）。</li>
-<li>在Minor GC过程中，复制算法会将存活的对象复制到Survivor区的一个空闲区域（一般是To区）。</li>
-</ul>
-<p><strong>Survivor区</strong>：</p>
-<ul>
-<li>在Minor GC过程中，存活的对象会从Eden区和From区复制到To区。</li>
-<li>每次Minor GC后，From区和To区的角色会互换，即To区变为新的From区，From区变为空闲区（To）。</li>
-</ul>
-<p>优点：无内存碎片，内存效率高，时间复杂度低</p>
-<p>缺点：需要一片额外空白内存空间，内存利用率低</p>
+<p>如果某个对象无法到达任何GC Roots，则证明此对象是不可能再被使用的。</p>
+<p><strong>最终判定</strong></p>
+<p>经过根搜索算法判定后不再被引用的对象，不一定就一定被判了死刑必须回收，也有可能是死缓。</p>
+<p>对象的finalize方法就是有可能挽救它生命的救命恩人，如果子类重写了此方法，那么子类对象在被判定为可回收时，会进行二次确认，也就是执行<code>finalize()</code>方法，而在此方法中，当前对象是完全有可能重新建立GC Roots的！所以，如果在二次确认后对象不满足可回收的条件，那么此对象不会被回收，巧妙地逃过了垃圾回收的命运。比如下面这个例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Main</span> &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Test a;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException &#123;<br>        a = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Test</span>();<br>        <span class="hljs-comment">//这里直接把a赋值为null，这样前面的对象我们不可能再得到了</span><br>        a  = <span class="hljs-literal">null</span>;<br>        <span class="hljs-comment">//手动申请执行垃圾回收操作（注意只是申请，并不一定会执行，但是一般情况下都会执行）</span><br>        System.gc();<br>        <span class="hljs-comment">//等垃圾回收一下()</span><br>        Thread.sleep(<span class="hljs-number">1000</span>);<br>        <span class="hljs-comment">//a最终没有被回收</span><br>        System.out.println(a);<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Test</span>&#123;<br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">finalize</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>            System.out.println(Thread.currentThread());<br>            System.out.println(<span class="hljs-built_in">this</span> + <span class="hljs-string">&quot; 开始了它的救赎之路！&quot;</span>);<br>            a = <span class="hljs-built_in">this</span>;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">Thread[Finalizer,8,system]<br><span class="hljs-meta prompt_">Main$</span><span class="language-bash">Test@1e2d67c9 开始了它的救赎之路！</span><br><span class="hljs-meta prompt_">Main$</span><span class="language-bash">Test@1e2d67c9</span><br></code></pre></td></tr></table></figure>
+
+<p>注意<code>finalize()</code>方法是GC Root标记之后JVM自动创建一个名叫Finalizer的子线程去自动调用的，优先级较低，所以上面让主线程睡了一秒等待一下，同时，同一个对象的<code>finalize()</code>方法只会有一次调用机会，也就是说，如果我们连续两次这样操作，那么第二次，对象必定被回收。</p>
+<p>当然，<code>finalize()</code>方法也并不是专门防止对象被回收的，我们可以使用它来释放一些程序使用中的资源等。</p>
+<p><img src="/2024/06/26/JVM/finalize.png" srcset="/img/loading.gif" lazyload alt="摘自itbaima"></p>
 <h4 id="标记-清除算法（Mark-Sweep）"><a href="#标记-清除算法（Mark-Sweep）" class="headerlink" title="标记-清除算法（Mark-Sweep）"></a>标记-清除算法（Mark-Sweep）</h4><p>​	为每个对象存储一个标记位，记录对象的状态（活着或是死亡）。分为两个阶段，一个是标记阶段，这个阶段内，为每个对象更新标记位，检查对象是否死亡；第二个阶段是清除阶段，该阶段对死亡的对象进行清除，执行 <code>GC</code> 操作。</p>
 <p>优点：内存利用率高</p>
 <p>缺点：每个活着的对象都要在标记阶段遍历一遍；所有对象都要在清除阶段扫描一遍，因此算法复杂度较高。没有移动对象，内存碎片多</p>
-<h4 id="标记-整理-压缩算法（Mark-Compact）"><a href="#标记-整理-压缩算法（Mark-Compact）" class="headerlink" title="标记-整理&#x2F;压缩算法（Mark-Compact）"></a>标记-整理&#x2F;压缩算法（Mark-Compact）</h4><p>标记阶段：与标记-清除算法类似，标记出所有活动对象。</p>
-<p>整理阶段：将所有存活的对象向一端移动，然后清理掉端边界以外的内存。</p>
-<p>优缺点：相比标记-清除算法，减少了内存碎片的产生，但是移动对象可能会增加算法的复杂性和执行时间。</p>
+<h4 id="标记-复制算法（Copying）"><a href="#标记-复制算法（Copying）" class="headerlink" title="标记-复制算法（Copying）"></a>标记-复制算法（Copying）</h4><p>标记要清除的对象，把存活的对象复制到另一块内存，然后一次性清除之前的那一块内存的所有对象，包括被标记为要清除的和活动的。最后交换两块区域即可。也就是Survivor区的from和to的交换策略。</p>
+<blockquote>
+<p>新生代又可细分为<strong>Eden空间</strong>、<strong>From Survivor空间</strong>、<strong>To Survivor空间</strong>，默认比例为8:1:1。</p>
+</blockquote>
+<p>优点：无内存碎片，内存效率高，时间复杂度低</p>
+<p>缺点：需要一片额外空白内存空间，内存利用率低</p>
+<h4 id="标记-整理算法（Mark-Compact）"><a href="#标记-整理算法（Mark-Compact）" class="headerlink" title="标记-整理算法（Mark-Compact）"></a>标记-整理算法（Mark-Compact）</h4><p>标记阶段：与标记-清除算法类似，标记出所有活动对象。</p>
+<p>整理阶段：将所有的活动对象移到一起，将要清除的对象移动到一起，然后清理掉这些对象。</p>
+<p>优缺点：相比标记-清除算法，减少了内存碎片的产生，但是移动对象性能比复制和标记清除更低。</p>
 <blockquote>
 <p>GC：分代收集算法</p>
 </blockquote>
 <p>即新生代的对象存活率低，使用复制算法，老年代存活率高，内存区域大，使用标记清除 + 标记压缩算法（先使用标记清除，内存碎片多到一定量就压缩清除一次）</p>
+<h4 id="分代收集"><a href="#分代收集" class="headerlink" title="分代收集"></a>分代收集</h4><p>Minor GC：Eden区空间已满时触发，对新生代进行GC</p>
+<p>Major GC：主要针对老年代</p>
+<p>Full GC：对整个堆内存和方法区进行垃圾回收，触发条件</p>
+<ul>
+<li>每次晋升到老年代的对象平均大小大于老年代的剩余空间</li>
+<li>MinorGC后存活的对象超过了老年代剩余空间</li>
+<li>jdk8之前的永久代空间不足</li>
+<li>手动调用System.gc()方法</li>
+</ul>
+<p><strong>空间分配担保机制</strong></p>
+<p>在一次MinorGC后，Eden区存活的对象仍然太多无法放进Survivor区，可以使用空间担保机制直接放入老年代中（前提是老年代要放得下才行），要是老年代也装不下这么多对象，JVM会判断一下之前每次GC进入老年代的平均大小是否小于当前老年代剩余空间，如果是的话，那么这次GC老年代也许也可以放得下。否则直接Full GC。具体见下图：</p>
+<p><img src="/2024/06/26/JVM/gc.png" srcset="/img/loading.gif" lazyload alt="GC流程"></p>
+<h3 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h3><h4 id="Serial"><a href="#Serial" class="headerlink" title="Serial"></a>Serial</h4><p>早期（1.4）的单线程收集器，每次GC时会stw，简单高效，缺点也很明显，你打游戏时暂停几秒去做垃圾回收就问你顶不顶得住。不过对于面向客户端的JavaFX和Swing这种桌面级的应用在新生代就是用的Serial收集器。</p>
+<p>新生代采用复制算法，老年代采用标记整理算法</p>
+<h4 id="ParNew"><a href="#ParNew" class="headerlink" title="ParNew"></a>ParNew</h4><p>Serial的多线程版本，GC时也会暂停所有用户线程</p>
+<h4 id="Parallel-Scavenge-Parallel-Old"><a href="#Parallel-Scavenge-Parallel-Old" class="headerlink" title="Parallel Scavenge&#x2F;Parallel Old"></a>Parallel Scavenge&#x2F;Parallel Old</h4><p>多线程版本，与ParNew不同的是，它会自动根据吞吐量来衡量GC的时机，根据机器的性能选择最优的GC方案</p>
+<p>新生代使用PS（标记复制算法），老年代使用PO（标记整理算法）。GC时也会暂停用户线程</p>
+<p>jdk8默认使用这两个垃圾收集器。</p>
+<h4 id="CMS"><a href="#CMS" class="headerlink" title="CMS"></a>CMS</h4><p>jdk1.5，HotSpot推出了具有划时代意义的CMS收集器，Concurrent Mark-Sweap：并发标记清除回收器，GC时与用户线程并发执行，有四个阶段：</p>
+<ul>
+<li>初始标记：需要暂停用户线程，但速度较快，标记出GC Root能直接关联到的对象</li>
+<li>并发标记：从GC Roots的直接关联对象开始遍历整个对象图的过程，这个过程耗时较长但是不需要停顿用户线程，可以与垃圾收集线程一起并发运行。</li>
+<li>重新标记：需要暂停用户线程，由于并发标记阶段可能某些用户线程会导致标记产生变化，因此这里需要再次暂停所有线程进行并行标记</li>
+<li>并发清除：最后就可以直接将所有标记好的无用对象进行删除，因为这些对象程序中也用不到了，所以可以与用户线程并发运行。</li>
+</ul>
+<p>由于标记清除算法会产生大量的内存碎片，导致可用连续空间逐渐变少，长期这样下来，会有更高的概率触发Full GC，并且在与用户线程并发执行的情况下，也会占用一部分的系统资源，导致用户线程的运行速度一定程度上减慢。</p>
+<p>不过，如果你希望的是最低的GC停顿时间，这款垃圾收集器无疑是最佳选择，不过自从G1收集器问世之后，CMS收集器不再推荐使用了。</p>
+<h4 id="G1"><a href="#G1" class="headerlink" title="G1"></a>G1</h4><p>jdk7提出，jdk9正式取代了JDK8默认的 Parallel Scavenge + Parallel Old 的回收方案。它是一款主要面向于服务端的垃圾收集器</p>
+<p>之前我们的垃圾回收分为<code>Minor GC</code>、<code>Major GC </code>和<code>Full GC</code>，它们分别对应的是新生代，老年代和整个堆内存的垃圾回收，而G1收集器巧妙地绕过了这些约定，它将整个Java堆划分成<code>2048</code>个大小相同的独立<code>Region</code>块，每个<code>Region块</code>的大小根据堆空间的实际大小而定，整体被控制在1MB到32MB之间，且都为2的N次幂。所有的<code>Region</code>大小相同，且在JVM的整个生命周期内不会发生改变。</p>
+<p>而每一个<code>Region</code>都可以根据需要，自由决定扮演哪个角色（Eden、Survivor和老年代），收集器会根据对应的角色采用不同的回收策略。此外，G1收集器还存在一个Humongous区域，它专门用于存放大对象（一般认为大小超过了Region容量一半的对象为大对象）这样，新生代、老年代在物理上，不再是一个连续的内存区域，而是到处分布的。</p>
+<p><img src="/2024/06/26/JVM/G1.png" srcset="/img/loading.gif" lazyload></p>
+<p>它的回收流程与CMS类似：</p>
+<ul>
+<li>初始标记：需要暂停用户线程，但速度较快，标记出GC Root能直接关联到的对象</li>
+<li>并发标记：从GC Roots的直接关联对象开始遍历整个对象图的过程，这个过程耗时较长但是不需要停顿用户线程，可以与垃圾收集线程一起并发运行。</li>
+<li>重新标记：需要暂停用户线程，用于处理并发标记阶段漏标的那部分对象。</li>
+<li>筛选回收：负责更新Region的统计数据，对各个Region的回收价值和成本进行排序，根据用户所期望的停顿时间来制定回收计划，可以自由选择任意多个Region构成回收集，然后把决定回收的那一部分Region的存活对象复制到空的Region中，再清理掉整个旧Region的全部空间。这里的操作涉及存活对象的移动，是必须暂停用户线程，由多个收集器线程并行完成的。</li>
+</ul>
+<h4 id="ZGC"><a href="#ZGC" class="headerlink" title="ZGC"></a>ZGC</h4><p>ZGC自jdk11作为一个实验性回收器提出，到jdk15正式出版，<strong>GC最大停顿时间小于1ms，支持16TB内存</strong>。只需设置<strong>–Xmx -XX:+UseZGC</strong>即可一步到位。</p>
+<p>相比于G1的region，ZGC将region分为了三种类型<strong>（2MB、32MB、N*2MB）</strong>，也就是说分页的大小不固定了，内存中可以有2MB的区域也可以有32MB的，而G1的region是统一大小的。ZGC的分页模型可以动态地调整页的大小，以适应不同大小的对象，这样显然提高了内存利用率</p>
+<p>它的执行流程和G1类似：也是初始标记-&gt;并发标记-&gt;重新标记并发标记时产生的新对象-&gt;迁移对象并清除</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000044541814#item-5">java - 你还在“垃圾”调优？快来看看JDK17的ZGC如何解放双手 | 京东云技术团队 - 京东云技术新知 - SegmentFault 思否</a></p>
 <h3 id="守护线程"><a href="#守护线程" class="headerlink" title="守护线程"></a>守护线程</h3><p><strong>后台运行</strong>：守护线程通常用于在后台执行辅助任务，例如垃圾收集、日志记录、监控等。</p>
 <p><strong>生命周期依赖于非守护线程</strong>：当所有非守护线程结束时，JVM会终止所有仍在运行的守护线程并退出。</p>
 <p><strong>低优先级</strong>：通常守护线程的优先级较低，因为它们的任务不如用户线程（非守护线程）重要。</p>
@@ -424,12 +475,8 @@
 </blockquote>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> Class&lt;?&gt; loadClass(String name) <span class="hljs-keyword">throws</span> ClassNotFoundException &#123;<br>    <span class="hljs-keyword">return</span> loadClass(name, <span class="hljs-literal">false</span>);<br>&#125;<br><span class="hljs-comment">//              -----??-----</span><br><span class="hljs-keyword">protected</span> Class&lt;?&gt; loadClass(String name, <span class="hljs-type">boolean</span> resolve)<br>    <span class="hljs-keyword">throws</span> ClassNotFoundException<br>&#123;<br>        <span class="hljs-comment">// 首先，检查是否已经被类加载器加载过</span><br>        Class&lt;?&gt; c = findLoadedClass(name);<br>        <span class="hljs-keyword">if</span> (c == <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-comment">// 存在父加载器，递归的交由父加载器</span><br>                <span class="hljs-keyword">if</span> (parent != <span class="hljs-literal">null</span>) &#123;<br>                    c = parent.loadClass(name, <span class="hljs-literal">false</span>);<br>                &#125; <span class="hljs-keyword">else</span> &#123;<br>                    <span class="hljs-comment">// 直到最上面的Bootstrap类加载器</span><br>                    c = findBootstrapClassOrNull(name);<br>                &#125;<br>            &#125; <span class="hljs-keyword">catch</span> (ClassNotFoundException e) &#123;<br>                <span class="hljs-comment">// ClassNotFoundException thrown if class not found</span><br>                <span class="hljs-comment">// from the non-null parent class loader</span><br>            &#125;<br><br>            <span class="hljs-keyword">if</span> (c == <span class="hljs-literal">null</span>) &#123;<br>                <span class="hljs-comment">// If still not found, then invoke findClass in order</span><br>                <span class="hljs-comment">// to find the class.即首先Bootstrap findClass -&gt; ExtClassLoader -&gt; AppClassLoader</span><br>                c = findClass(name);<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> c;<br>&#125;<br></code></pre></td></tr></table></figure>
 
-
-
 <p>使用<code>jar tf rt.jar</code>查看jdk8&#x2F;jre&#x2F;lib下的rt.jar包（bootstrap加载器加载的类库）</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java">java/lang/Exception.<span class="hljs-keyword">class</span><br><span class="hljs-title class_">java</span>/lang/ThreadDeath.<span class="hljs-keyword">class</span><br><span class="hljs-title class_">java</span>/lang/Error.<span class="hljs-keyword">class</span><br><span class="hljs-title class_">java</span>/lang/Throwable.<span class="hljs-keyword">class</span><br><span class="hljs-title class_">java</span>/lang/System.<span class="hljs-keyword">class</span><br><span class="hljs-title class_">java</span>/lang/ClassLoader.<span class="hljs-keyword">class</span><br><span class="hljs-title class_">java</span>/lang/Cloneable.<span class="hljs-keyword">class</span><br><span class="hljs-title class_">java</span>/lang/reflect/Type.<span class="hljs-keyword">class</span><br><span class="hljs-title class_">java</span>/lang/reflect/AnnotatedElement.<span class="hljs-keyword">class</span><br><span class="hljs-title class_">java</span>/lang/reflect/GenericDeclaration.<span class="hljs-keyword">class</span><br><span class="hljs-title class_">java</span>/lang/Class.<span class="hljs-keyword">class</span><br><span class="hljs-title class_">java</span>/lang/CharSequence.<span class="hljs-keyword">class</span><br><span class="hljs-title class_">java</span>/lang/Comparable.<span class="hljs-keyword">class</span><br><span class="hljs-title class_">java</span>/io/Serializable.<span class="hljs-keyword">class</span><br><span class="hljs-title class_">java</span>/lang/String.<span class="hljs-keyword">class</span><br><span class="hljs-title class_">java</span>/lang/Object.class<br></code></pre></td></tr></table></figure>
-
-
 
 <h3 id="Native方法"><a href="#Native方法" class="headerlink" title="Native方法"></a>Native方法</h3><p>native方法是用C和C++编写的底层方法，Java调用native方法的线程会进入该线程的本地方法栈，调用本地方法接口JNI</p>
 <p>扩展Java的使用，融合不同的语言为Java使用</p>

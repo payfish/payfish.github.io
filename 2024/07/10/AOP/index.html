@@ -24,7 +24,7 @@
 <meta property="og:description" content="IOCIOC是一种思想，全称叫做Inversion of Control，控制反转，意思是如果有两个对象A依赖于B，把本来A运行时需要主动创建B对象的操作交给IOC容器来帮我们做，创建B对象并注入A，实现了解耦 IOC也可以叫做DI，Dependency Injection，依赖注入，或者说DI是IOC思想的具体实现方式 AOP定义AOP, (Aspect Orient Programming)，">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-07-10T13:56:14.000Z">
-<meta property="article:modified_time" content="2024-09-25T10:58:53.738Z">
+<meta property="article:modified_time" content="2024-10-02T08:19:10.686Z">
 <meta property="article:author" content="fu1sh">
 <meta property="article:tag" content="AOP">
 <meta name="twitter:card" content="summary_large_image">
@@ -220,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.7k 字
+          1.8k 字
         
       </span>
     
@@ -291,7 +291,7 @@
 </li>
 </ul>
 <h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><p>AOP可以通过动态代理或操作字节码实现</p>
-<p>Spring AOP基于动态代理实现，如果要代理的对象实现了接口，SpringAOP使用 JDK 动态代理创建代理对象，如果没有实现接口，使用Cglib生成一个要代理对象的子类来作为代理对象。</p>
+<p>对于接口类型的对象，Spring 会使用 JDK 动态代理。JDK 动态代理通过实现与目标对象相同的接口，在代理对象的方法调用前后插入切面逻辑（如日志记录的代码）。对于没有实现接口的类，Spring 会使用 CGLIB（Code Generation Library）动态代理，CGLIB 通过继承目标类并覆盖目标类的方法来实现代理，在覆盖的方法中插入切面逻辑。</p>
 <h3 id="AOP实例"><a href="#AOP实例" class="headerlink" title="AOP实例"></a>AOP实例</h3><h4 id="公共字段自动填充"><a href="#公共字段自动填充" class="headerlink" title="公共字段自动填充"></a>公共字段自动填充</h4><p>利用AOP实现对数据的一些公共字段如createTime，updateUser等的自动填充功能，无需再手动set</p>
 <p><strong>自定义注解</strong></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 自定义注解，用于标识某个方法需要进行公共字段的自动填充</span><br><span class="hljs-comment"> */</span><br><span class="hljs-meta">@Target(ElementType.METHOD)</span><br><span class="hljs-meta">@Retention(RetentionPolicy.RUNTIME)</span><br><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> AutoFill &#123;<br>    <span class="hljs-comment">//数据库操作类型： UPDATE, INSERT</span><br>    OperationType <span class="hljs-title function_">value</span><span class="hljs-params">()</span>;<br>&#125;<br><br><span class="hljs-comment">//枚举定义数据库操作</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">enum</span> <span class="hljs-title class_">OperationType</span> &#123;<br>    UPDATE,<span class="hljs-comment">//更新操作</span><br>    INSERT<span class="hljs-comment">//插入操作</span><br>&#125;<br></code></pre></td></tr></table></figure>
@@ -326,7 +326,6 @@
 <h4 id="private方法同理"><a href="#private方法同理" class="headerlink" title="private方法同理"></a>private方法同理</h4><p>Spring AOP 仅支持公共方法（<code>public</code>）的切面，对于 <code>private</code>、<code>protected</code> 和 <code>package-private</code> 方法，切面不会生效。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Transactional</span><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">privateMethod</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-comment">// 事务逻辑不会生效，因为方法是私有的，无法被重写</span><br>&#125;<br></code></pre></td></tr></table></figure>
 
-<h4 id=""><a href="#" class="headerlink" title=""></a></h4>
                 
               </div>
             
