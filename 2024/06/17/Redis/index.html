@@ -27,7 +27,7 @@
 <meta property="og:image" content="https://payfish.github.io/2024/06/17/Redis/rdb.png">
 <meta property="og:image" content="https://payfish.github.io/2024/06/17/Redis/aof.png">
 <meta property="article:published_time" content="2024-06-17T08:18:09.000Z">
-<meta property="article:modified_time" content="2024-09-20T14:31:45.407Z">
+<meta property="article:modified_time" content="2024-10-05T13:25:08.872Z">
 <meta property="article:author" content="fu1sh">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary_large_image">
@@ -224,7 +224,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5.1k 字
+          5.4k 字
         
       </span>
     
@@ -235,7 +235,7 @@
         
         
         
-          43 分钟
+          45 分钟
         
       </span>
     
@@ -303,7 +303,7 @@
 </li>
 <li><p>save命令，生成dump.rbd，rdb 文件是紧凑的二进制文件，适合备份和传输。创建快照过程中Redis是阻塞的，性能开销大</p>
 </li>
-<li><p>bgsave命令(background save)：Redis 通过fork一个子进程来完成快照操作（复制了映射到内存数据的页表），主进程可以同步接收请求。但是如果在快照之间发生故障，可能会丢失最新的一些数据。</p>
+<li><p>bgsave命令(background save)：Redis 通过fork系统调用创建一个子进程来完成快照操作（复制了映射到内存数据的页表），主进程可以同步接收请求。但是如果在快照之间发生故障，可能会丢失最新的一些数据。</p>
 </li>
 </ul>
 <p><img src="/2024/06/17/Redis/rdb.png" srcset="/img/loading.gif" lazyload></p>
@@ -312,6 +312,10 @@
 <li>Redis重启时，重新执行AOF文件中的命令来重建数据集。</li>
 </ul>
 <p><img src="/2024/06/17/Redis/aof.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>bgrewriteaof</strong></p>
+<p>随着时间的推移，AOF 文件可能会变得非常大，因为它包含了大量的冗余命令。</p>
+<p><code>bgrewriteaof</code>命令的同样也是fork一个子进程去操作，主要目的是通过创建一个新的 AOF 文件来重写现有的 AOF 文件。这个新的 AOF 文件只包含恢复当前数据库状态所必需的最小命令集。它在后台运行，不会阻塞 Redis 的主线程，这意味着在重写 AOF 文件的过程中，Redis 仍然可以处理客户端的请求。</p>
+<p>例如，假设 Redis 执行了多次对同一个键的修改操作，原始的 AOF 文件会记录每一次修改命令。而<code>bgrewriteaof</code>会根据当前键的最终状态生成一个新的 AOF 文件，其中可能只包含一条或几条必要的命令，从而大大减小了 AOF 文件的大小，提高了 Redis 的启动速度（因为在启动时需要加载 AOF 文件），并且在一定程度上提高了数据恢复的效率。</p>
 <h3 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h3><p>将主节点（Master）上 的数据复制到从节点（Slave）</p>
 <p>在Redis主从架构中，主节点负责处理所有的写操作，并将这些操作异步复制到从节点，从节点主要用于读取操作，以分担主节点的压力和提高读取性能</p>
 <p>主从复制的主要作用是什么？</p>

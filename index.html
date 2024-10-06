@@ -225,6 +225,67 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2024/10/05/Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" target="_self">
+          Redis数据结构
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/05/Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" target="_self">
+        <div>
+          SDSSimple Dynamic String，简单动态字符串，由于C语言内置的字符串底层是字符数组，有诸多不爽的点：二进制不安全（读取时以\0结尾，若字符串本身带有\0字符，则读到这个字符就结束了）、不能动态扩容（就像Java的String一样，不可变）、获取字符串长度需要遍历到结束字符。 所以Redis的作者做了些许改进，自定义了SDS结构，Header存储字符串长度，申请的内存大小，SDS
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-10-05 15:46" pubdate>
+              2024-10-05
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Redis/">#Redis</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/10/04/Spring%E4%BA%8B%E5%8A%A1%E4%BC%A0%E6%92%AD%E8%A1%8C%E4%B8%BA/" target="_self">
           Spring事务传播行为
         </a>
@@ -721,46 +782,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/Feed%E6%B5%81/">#Feed流</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/08/15/ThreadLocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/" target="_self">
-          ThreadLocal内存泄漏
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/08/15/ThreadLocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/" target="_self">
-        <div>
-          原理一个简单的例子 123456789101112131415public class UserHolder &#123;    private static final ThreadLocal&lt;UserDTO&gt; tl = new ThreadLocal&lt;&gt;();    public static void saveUser(UserDTO user)&#123;
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-08-15 21:42" pubdate>
-              2024-08-15
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/ThreadLocal/">#ThreadLocal</a>
             
           </div>
         
