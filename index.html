@@ -294,7 +294,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2024/10/05/Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" target="_self">
         <div>
-          SDSSimple Dynamic String，简单动态字符串，由于C语言内置的字符串底层是字符数组，有诸多不爽的点：二进制不安全（读取时以\0结尾，若字符串本身带有\0字符，则读到这个字符就结束了）、不能动态扩容（就像Java的String一样，不可变）、获取字符串长度需要遍历到结束字符。 所以Redis的作者做了些许改进，自定义了SDS结构，Header存储字符串长度，申请的内存大小，SDS
+          基础数据结构SDSSimple Dynamic String，简单动态字符串，由于C语言内置的字符串底层是字符数组，有诸多不爽的点：二进制不安全（读取时以\0结尾，若字符串本身带有\0字符，则读到这个字符就结束了）、不能动态扩容（就像Java的String一样，不可变）、获取字符串长度需要遍历到结束字符。 所以Redis的作者做了些许改进，自定义了SDS结构，Header存储字符串长度，申请的内存
         </div>
       </a>
 
@@ -333,7 +333,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/Redis/">#Redis</a>
+              <a href="/tags/Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">#Redis数据结构</a>
             
           </div>
         
