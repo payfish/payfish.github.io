@@ -43,7 +43,7 @@ code:
   # Code language
   language:
     enable: true
-    default: "TEXT"
+    default: "Java"
 
   # 代码高亮
   # Code highlight

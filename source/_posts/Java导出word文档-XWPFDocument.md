@@ -1,7 +1,8 @@
 ---
-title: java导出word文档--XWPFDocument使用总结
+title: Java导出word文档--XWPFDocument
 date: 2024-04-05 14:37:09
-tags: java
+tags: Java
+category: Java
 ---
 
 ### 依赖导入
