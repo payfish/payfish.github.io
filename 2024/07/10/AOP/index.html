@@ -1,0 +1,710 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="fu1sh">
+  <meta name="keywords" content="java">
+  
+    <meta name="description" content="IOCIOC是一种思想，全称叫做Inversion of Control，控制反转，意思是如果有两个对象A依赖于B，把本来A运行时需要主动创建B对象的操作交给IOC容器来帮我们做，创建B对象并注入A，实现了解耦 IOC也可以叫做DI，Dependency Injection，依赖注入，或者说DI是IOC思想的具体实现方式 AOP定义AOP, (Aspect Orient Programming)，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IOC与AOP">
+<meta property="og:url" content="https://payfish.github.io/2024/07/10/AOP/index.html">
+<meta property="og:site_name" content="Fu1sh&#39;s BLOG">
+<meta property="og:description" content="IOCIOC是一种思想，全称叫做Inversion of Control，控制反转，意思是如果有两个对象A依赖于B，把本来A运行时需要主动创建B对象的操作交给IOC容器来帮我们做，创建B对象并注入A，实现了解耦 IOC也可以叫做DI，Dependency Injection，依赖注入，或者说DI是IOC思想的具体实现方式 AOP定义AOP, (Aspect Orient Programming)，">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-10T13:56:14.000Z">
+<meta property="article:modified_time" content="2026-08-04T07:55:22.410Z">
+<meta property="article:author" content="fu1sh">
+<meta property="article:tag" content="AOP">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>IOC与AOP - Fu1sh&#39;s BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"payfish.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"Java"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fu1sh</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="IOC与AOP"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-10 21:56" pubdate>
+          2024年7月10日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          15 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">IOC与AOP</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="IOC"><a href="#IOC" class="headerlink" title="IOC"></a>IOC</h3><p>IOC是一种思想，全称叫做Inversion of Control，控制反转，意思是如果有两个对象A依赖于B，把本来A运行时需要主动创建B对象的操作交给IOC容器来帮我们做，创建B对象并注入A，实现了解耦</p>
+<p>IOC也可以叫做DI，Dependency Injection，依赖注入，或者说DI是IOC思想的具体实现方式</p>
+<h3 id="AOP"><a href="#AOP" class="headerlink" title="AOP"></a>AOP</h3><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>AOP, (Aspect Orient Programming)，面向切面编程，拦截指定方法并对方法进行增强，不修改源代码的情况下给程序动态添加额外功能</p>
+<ul>
+<li><p><strong>横切关注点（cross-cutting concerns）</strong>：多个类或对象中的公共行为（如日志记录、事务管理、权限控制、接口限流、接口幂等等）。</p>
+</li>
+<li><p>切面（Aspect）：对横切关注点进行封装的类，实现具体的功能。（切面 &#x3D; 切入点 + 通知，通俗点就是在什么时机，什么地方，做什么增强）</p>
+</li>
+<li><p>连接点（JoinPoint）：方法调用或方法执行的某个时刻。（能够被拦截的地方，Spring AOP 是基于动态代理的，所以是方法拦截的，每个成员方法都可以称之为连接点）</p>
+</li>
+<li><p>通知（Advice）：切面在某个连接点要执行的操作，有Before，After，AfterReturning，AfterThrowing，Around。在方法执行的什么时机（<strong>when</strong>：方法前&#x2F;方法后&#x2F;方法前后）做什么（<strong>what</strong>：增强的功能）</p>
+</li>
+<li><p>切点（Pointcut）：一个表达式，用来匹配哪些连接点需要被切面增强。（在哪些类，哪些方法上切入（<strong>where</strong>））</p>
+</li>
+<li><p>织入（weaving）：把切面加入到对象，并创建出代理对象的过程，这个由 Spring 来完成。</p>
+</li>
+</ul>
+<h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><p>AOP可以通过动态代理或操作字节码实现</p>
+<p>对于接口类型的对象，Spring 会使用 JDK 动态代理。JDK 动态代理通过实现与目标对象相同的接口，在代理对象的方法调用前后插入切面逻辑（如日志记录的代码）。对于没有实现接口的类，Spring 会使用 CGLIB（Code Generation Library）动态代理，CGLIB 通过继承目标类并覆盖目标类的方法来实现代理，在覆盖的方法中插入切面逻辑。</p>
+<h3 id="AOP实例"><a href="#AOP实例" class="headerlink" title="AOP实例"></a>AOP实例</h3><h4 id="公共字段自动填充"><a href="#公共字段自动填充" class="headerlink" title="公共字段自动填充"></a>公共字段自动填充</h4><p>利用AOP实现对数据的一些公共字段如createTime，updateUser等的自动填充功能，无需再手动set</p>
+<p><strong>自定义注解</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 自定义注解，用于标识某个方法需要进行公共字段的自动填充</span><br><span class="hljs-comment"> */</span><br><span class="hljs-meta">@Target(ElementType.METHOD)</span><br><span class="hljs-meta">@Retention(RetentionPolicy.RUNTIME)</span><br><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> AutoFill &#123;<br>    <span class="hljs-comment">//数据库操作类型： UPDATE, INSERT</span><br>    OperationType <span class="hljs-title function_">value</span><span class="hljs-params">()</span>;<br>&#125;<br><br><span class="hljs-comment">//枚举定义数据库操作</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">enum</span> <span class="hljs-title class_">OperationType</span> &#123;<br>    UPDATE,<span class="hljs-comment">//更新操作</span><br>    INSERT<span class="hljs-comment">//插入操作</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p><strong>要被填充的方法</strong></p>
+<p>以DishMapper举例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 新增菜品</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> dish</span><br><span class="hljs-comment"> */</span><br><span class="hljs-meta">@AutoFill(OperationType.INSERT)</span><br><span class="hljs-keyword">void</span> <span class="hljs-title function_">insert</span><span class="hljs-params">(Dish dish)</span>;<br></code></pre></td></tr></table></figure>
+
+
+
+<p><strong>切面类</strong></p>
+<p>实现具体的填充功能</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Aspect</span> <span class="hljs-comment">//标注这是一个切面类</span><br><span class="hljs-meta">@Component</span> <span class="hljs-comment">//加入Spring容器</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AutoFillAspect</span> &#123;<br><br>    <span class="hljs-comment">//切点</span><br>    <span class="hljs-meta">@Pointcut(&quot;execution(* com.sky.map	per.*.*(..)) &amp;&amp; @annotation(com.sky.annotation.AutoFill)&quot;)</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">autoFillPointCut</span><span class="hljs-params">()</span> &#123;&#125;<br><br>    <span class="hljs-comment">//通知</span><br>    <span class="hljs-meta">@Before(&quot;autoFillPointCut()&quot;)</span><span class="hljs-comment">//方法调用前执行autoFill方法，</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">autoFill</span><span class="hljs-params">(JoinPoint joinPoint)</span> &#123; <span class="hljs-comment">// JoinPoint：连接点</span><br>        <span class="hljs-comment">//获取操作类型</span><br>        <span class="hljs-type">MethodSignature</span> <span class="hljs-variable">signature</span> <span class="hljs-operator">=</span> (MethodSignature) joinPoint.getSignature();<span class="hljs-comment">//获取方法签名</span><br>        <span class="hljs-type">AutoFill</span> <span class="hljs-variable">autoFill</span> <span class="hljs-operator">=</span> signature.getMethod().getAnnotation(AutoFill.class);<span class="hljs-comment">//方法上的注解对象</span><br>        <span class="hljs-type">OperationType</span> <span class="hljs-variable">type</span> <span class="hljs-operator">=</span> autoFill.value();<span class="hljs-comment">//数据库操作类型</span><br><br>        <span class="hljs-comment">//获取切入点方法的参数列表</span><br>        Object[] args = joinPoint.getArgs();<br>        <span class="hljs-keyword">if</span> (args == <span class="hljs-literal">null</span> || args.length == <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br>        <span class="hljs-type">Object</span> <span class="hljs-variable">entity</span> <span class="hljs-operator">=</span> args[<span class="hljs-number">0</span>]; <span class="hljs-comment">// 这里就是Dish实体类</span><br><br>        <span class="hljs-comment">//准备赋值的数据</span><br>        <span class="hljs-type">LocalDateTime</span> <span class="hljs-variable">now</span> <span class="hljs-operator">=</span> LocalDateTime.now();<br>        <span class="hljs-type">Long</span> <span class="hljs-variable">currentId</span> <span class="hljs-operator">=</span> BaseContext.getCurrentId();<br><br>        <span class="hljs-comment">//根据操作类型，通过反射为对应的属性赋值</span><br>        <span class="hljs-keyword">if</span> (type == OperationType.INSERT) &#123;<br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-type">Method</span> <span class="hljs-variable">setCreatTime</span> <span class="hljs-operator">=</span> entity.getClass().getDeclaredMethod(AutoFillConstant.SET_CREATE_TIME,<br>                        LocalDateTime.class);<br>                <span class="hljs-type">Method</span> <span class="hljs-variable">setUpdateTime</span> <span class="hljs-operator">=</span> entity.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_TIME,<br>                        LocalDateTime.class);<br>                <span class="hljs-type">Method</span> <span class="hljs-variable">setUpdateUser</span> <span class="hljs-operator">=</span> entity.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_USER,<br>                        Long.class);<br>                <span class="hljs-type">Method</span> <span class="hljs-variable">setCreateUser</span> <span class="hljs-operator">=</span> entity.getClass().getDeclaredMethod(AutoFillConstant.SET_CREATE_USER,<br>                        Long.class);<br><br>                setCreateUser.invoke(entity, currentId);<br>                setUpdateUser.invoke(entity, currentId);<br>                setUpdateTime.invoke(entity, now);<br>                setCreatTime.invoke(entity, now);<br>            &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(e);<br>            &#125;<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == OperationType.UPDATE) &#123;<br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-type">Method</span> <span class="hljs-variable">setUpdateTime</span> <span class="hljs-operator">=</span> entity.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_TIME,<br>                        LocalDateTime.class);<br>                <span class="hljs-type">Method</span> <span class="hljs-variable">setUpdateUser</span> <span class="hljs-operator">=</span> entity.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_USER,<br>                        Long.class);<br><br>                setUpdateUser.invoke(entity, currentId);<br>                setUpdateTime.invoke(entity, now);<br>            &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(e);<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="日志记录"><a href="#日志记录" class="headerlink" title="日志记录"></a>日志记录</h4><p>定义日志记录切面记录Controller中方法的运行细节</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 自定义日志注解</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> Fu1sh</span><br><span class="hljs-comment"> */</span><br><span class="hljs-meta">@Target(ElementType.METHOD)</span><br><span class="hljs-meta">@Retention(RetentionPolicy.RUNTIME)</span><br><span class="hljs-meta">@Documented</span><br><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> Logger &#123;<br><br>    String <span class="hljs-title function_">description</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> <span class="hljs-string">&quot;&quot;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span><br><span class="hljs-meta">@Aspect</span><br><span class="hljs-meta">@Slf4j</span><br><span class="hljs-meta">@ConditionalOnClass(DispatcherServlet.class)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">LoggerAspect</span> &#123;<br><br>    <span class="hljs-comment">//*：匹配任意返回值的方法 </span><br>    <span class="hljs-comment">//com.hmall..controller：匹配包</span><br>    <span class="hljs-comment">//.*.*(..)：匹配包下任意类、任意方法、任意方法参数</span><br>    <span class="hljs-meta">@Pointcut(&quot;execution(* com.hmall..controller.*.*(..)) &amp;&amp; @annotation(com.hmall.common.annotation.Logger)&quot;)</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">loggerPointCut</span><span class="hljs-params">()</span> &#123;&#125;<br><br>    <span class="hljs-meta">@Around(&quot;loggerPointCut()&quot;)</span><br>    <span class="hljs-keyword">public</span> Object <span class="hljs-title function_">loggerAround</span><span class="hljs-params">(ProceedingJoinPoint joinPoint)</span> &#123;<br>        <span class="hljs-type">HttpServletRequest</span> <span class="hljs-variable">request</span> <span class="hljs-operator">=</span> getRequest();<br>        WebLog webLog;<br>        <span class="hljs-type">Object</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>        <span class="hljs-keyword">try</span> &#123;<br>            log.info(<span class="hljs-string">&quot;================前置通知===============&quot;</span>);<br>            <span class="hljs-type">long</span> <span class="hljs-variable">start</span> <span class="hljs-operator">=</span> System.currentTimeMillis();<br>            <span class="hljs-comment">//执行拦截的方法</span><br>            result = joinPoint.proceed();<br>            log.info(<span class="hljs-string">&quot;================返回通知===============&quot;</span>);<br>            <span class="hljs-type">long</span> <span class="hljs-variable">l</span> <span class="hljs-operator">=</span> System.currentTimeMillis() - start;<br>            <span class="hljs-type">long</span> <span class="hljs-variable">timeCost</span> <span class="hljs-operator">=</span> TimeUnit.SECONDS.toSeconds(l);<br>            <span class="hljs-type">Logger</span> <span class="hljs-variable">logger</span> <span class="hljs-operator">=</span> getAnnotationLogger(joinPoint);<br>            webLog = WebLog.builder() <span class="hljs-comment">//WebLog封装了将要展示的日志信息</span><br>                    .description(logger.description())<br>                    .startTime(start)<br>                    .timeCost(timeCost)<br>                    .url(request.getRequestURL().toString())<br>                    .uri(request.getRequestURI())<br>                    .ipAddress(request.getRemoteAddr())<br>                    .params(getParams(joinPoint))<br>                    .result(result)<br>                    .build();<br>            log.info(webLog.toString());<br>        &#125; <span class="hljs-keyword">catch</span> (Throwable e) &#123;<br>            log.info(<span class="hljs-string">&quot;================异常通知===============&quot;</span>);<br>            log.error(e.getMessage(), e);<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>            log.info(<span class="hljs-string">&quot;================后置通知===============&quot;</span>);<br>        &#125;<br>        <span class="hljs-keyword">return</span> result;<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> Object <span class="hljs-title function_">getParams</span><span class="hljs-params">(ProceedingJoinPoint joinPoint)</span> &#123;<br>        <span class="hljs-type">MethodSignature</span> <span class="hljs-variable">methodSignature</span> <span class="hljs-operator">=</span> getMethodSignature(joinPoint);<br>        String[] parameterNames = methodSignature.getParameterNames();<br>        Object[] parameterValues = joinPoint.getArgs();<br>        Map&lt;String, Object&gt; params = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; parameterNames.length; i++) &#123;<br>            params.put(parameterNames[i], parameterValues[i]);<br>        &#125;<br>        <span class="hljs-keyword">return</span> params;<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> Logger <span class="hljs-title function_">getAnnotationLogger</span><span class="hljs-params">(ProceedingJoinPoint joinPoint)</span> &#123;<br>        <span class="hljs-keyword">return</span> getMethodSignature(joinPoint).getMethod().getAnnotation(Logger.class);<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> MethodSignature <span class="hljs-title function_">getMethodSignature</span><span class="hljs-params">(ProceedingJoinPoint joinPoint)</span> &#123;<br>        <span class="hljs-keyword">return</span> (MethodSignature) joinPoint.getSignature();<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 获取http请求对象</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> HttpServletRequest <span class="hljs-title function_">getRequest</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">ServletRequestAttributes</span> <span class="hljs-variable">requestAttributes</span> <span class="hljs-operator">=</span> (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();<br>        <span class="hljs-keyword">return</span> requestAttributes != <span class="hljs-literal">null</span> ? requestAttributes.getRequest() : <span class="hljs-literal">null</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ApiOperation(&quot;用户登录接口&quot;)</span><br><span class="hljs-meta">@PostMapping(&quot;login&quot;)</span><br><span class="hljs-meta">@Logger(description = &quot;登录&quot;)</span> <span class="hljs-comment">//使用自定义日志注解记录日志信息</span><br><span class="hljs-keyword">public</span> UserLoginVO <span class="hljs-title function_">login</span><span class="hljs-params">(<span class="hljs-meta">@RequestBody</span> <span class="hljs-meta">@Validated</span> LoginFormDTO loginFormDTO)</span>&#123;<br>    <span class="hljs-keyword">return</span> userService.login(loginFormDTO);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>RequestContextHolder是Spring 提供的工具类，它使用ThreadLocal存储当前请求的上下文信息，主要用途是从任意位置获取当前 <code>ServletRequest</code> 和其他请求相关的信息，特别是在不直接处理请求的组件（如 <code>@Service</code> 或 <code>@Component</code>）中。</p>
+</blockquote>
+<h3 id="AOP失效场景"><a href="#AOP失效场景" class="headerlink" title="AOP失效场景"></a>AOP失效场景</h3><h4 id="自调用"><a href="#自调用" class="headerlink" title="自调用"></a>自调用</h4><p>AOP 基于代理机制来工作，当一个类的方法在同一个类内部被另一个方法调用时，这种自调用是直接调用的，不会经过代理对象，从而导致切面失效。</p>
+<h4 id="目标类未被-Spring-管理"><a href="#目标类未被-Spring-管理" class="headerlink" title="目标类未被 Spring 管理"></a>目标类未被 Spring 管理</h4><p>AOP 依赖于 Spring 管理的 Bean，如果目标类不是由 Spring 容器管理的 Bean，则切面不会生效。如果一个类通过 <code>new</code> 操作符实例化，而不是通过 Spring 容器注入，那么 AOP 不会生效，因为 Spring 不能为其创建代理对象。</p>
+<h4 id="final关键字"><a href="#final关键字" class="headerlink" title="final关键字"></a>final关键字</h4><p>final修饰的类不能被继承，修饰的方法不能被重写。</p>
+<p><strong>JDK 动态代理</strong>：JDK 动态代理只能代理接口中的方法，而不涉及类的继承，因此 <code>final</code> 类和 <code>final</code> 方法的限制对 JDK 动态代理没有直接影响。但由于 JDK 动态代理只能代理接口方法，所以如果类没有实现接口，Spring 会默认使用 CGLIB 代理。</p>
+<p><strong>CGLIB 代理</strong>：CGLIB 代理通过生成目标类的子类并重写方法来实现代理。如果类或方法是 <code>final</code> 的，CGLIB 代理就无法创建有效的代理对象，因为它无法继承 <code>final</code> 类或重写 <code>final</code> 方法，这会导致 AOP 切面失效。</p>
+<h4 id="private方法同理"><a href="#private方法同理" class="headerlink" title="private方法同理"></a>private方法同理</h4><p>Spring AOP 仅支持公共方法（<code>public</code>）的切面，对于 <code>private</code>、<code>protected</code> 和 <code>package-private</code> 方法，切面不会生效。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Transactional</span><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">privateMethod</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-comment">// 事务逻辑不会生效，因为方法是私有的，无法被重写</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/SpringBoot/" class="category-chain-item">SpringBoot</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AOP/" class="print-no-link">#AOP</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>IOC与AOP</div>
+      <div>https://payfish.github.io/2024/07/10/AOP/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>fu1sh</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/12/%E6%8B%A6%E6%88%AA%E5%99%A8%E4%B8%8E%E8%BF%87%E6%BB%A4%E5%99%A8/" title="拦截器与过滤器">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">拦截器与过滤器</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/06/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92-%E9%80%92%E5%BD%92%E5%88%B0%E8%AE%B0%E5%BF%86%E5%8C%96%E6%90%9C%E7%B4%A2/" title="动态规划-递归到记忆化搜索">
+                        <span class="hidden-mobile">动态规划-递归到记忆化搜索</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var e=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,c=a();function a(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(){e&&(c=a());for(var t,o=0;o<c.length;o++)0<=(t=(t=c[o]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,n,a,i=c[o];e=function(){c=c.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(n=new Image,a=t.getAttribute("data-original"),n.onload=function(){t.src=a,t.removeAttribute("data-original"),e&&e()},t.src!==a&&(n.src=a))}()}function i(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",i),r.addEventListener("resize",i),r.addEventListener("orientationchange",i)}(this);</script></body>
+</html>

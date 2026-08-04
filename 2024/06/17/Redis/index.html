@@ -1,0 +1,895 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="fu1sh">
+  <meta name="keywords" content="java">
+  
+    <meta name="description" content="RedisLinux下登录Redis1redis-cli -h 127.0.0.1 -p 6379 -a YourPassword --raw &#x2F;&#x2F;raw显示原数据  使用Docker启动redis12345678docker run -d \  --name redis \  -p 6379:6379 \  -v &#x2F;docker&#x2F;redis&#x2F;conf&#x2F;redis.conf:&#x2F;etc&#x2F;redis&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis">
+<meta property="og:url" content="https://payfish.github.io/2024/06/17/Redis/index.html">
+<meta property="og:site_name" content="Fu1sh&#39;s BLOG">
+<meta property="og:description" content="RedisLinux下登录Redis1redis-cli -h 127.0.0.1 -p 6379 -a YourPassword --raw &#x2F;&#x2F;raw显示原数据  使用Docker启动redis12345678docker run -d \  --name redis \  -p 6379:6379 \  -v &#x2F;docker&#x2F;redis&#x2F;conf&#x2F;redis.conf:&#x2F;etc&#x2F;redis&#x2F;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://payfish.github.io/2024/06/17/Redis/hash.png">
+<meta property="og:image" content="https://payfish.github.io/2024/06/17/Redis/rdb.png">
+<meta property="og:image" content="https://payfish.github.io/2024/06/17/Redis/aof.png">
+<meta property="article:published_time" content="2024-06-17T08:18:09.000Z">
+<meta property="article:modified_time" content="2026-08-04T07:55:22.468Z">
+<meta property="article:author" content="fu1sh">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://payfish.github.io/2024/06/17/Redis/hash.png">
+  
+  
+  
+  <title>Redis - Fu1sh&#39;s BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"payfish.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"Java"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fu1sh</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Redis"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-06-17 16:18" pubdate>
+          2024年6月17日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          45 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Redis</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h1><h3 id="Linux下登录Redis"><a href="#Linux下登录Redis" class="headerlink" title="Linux下登录Redis"></a>Linux下登录Redis</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">redis-cli -h 127.0.0.1 -p 6379 -a YourPassword --raw //raw显示原数据<br></code></pre></td></tr></table></figure>
+
+<h3 id="使用Docker启动redis"><a href="#使用Docker启动redis" class="headerlink" title="使用Docker启动redis"></a>使用Docker启动redis</h3><figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs docker">docker <span class="hljs-keyword">run</span><span class="language-bash"> -d \</span><br><span class="language-bash">  --name redis \</span><br><span class="language-bash">  -p 6379:6379 \</span><br><span class="language-bash">  -v /docker/redis/conf/redis.conf:/etc/redis/redis.conf \</span><br><span class="language-bash">  -v /docker/redis/data:/data \</span><br><span class="language-bash">  --restart unless-stopped \</span><br><span class="language-bash">  redis:latest \</span><br><span class="language-bash">  redis-server /etc/redis/redis.conf --appendonly <span class="hljs-built_in">yes</span> --requirepass <span class="hljs-string">&quot;123456&quot;</span></span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：redis insight客户端需要填写用户名，默认为default</p>
+</blockquote>
+<h3 id="Redis的数据格式"><a href="#Redis的数据格式" class="headerlink" title="Redis的数据格式"></a>Redis的数据格式</h3><h4 id="String"><a href="#String" class="headerlink" title="String"></a>String</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; set name fuish<br>OK<br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; get name<br><span class="hljs-string">&quot;fuish&quot;</span><br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; del <span class="hljs-title function_">name</span><br><span class="hljs-params">(integer)</span> <span class="hljs-number">1</span><br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; exists <span class="hljs-title function_">name</span><br><span class="hljs-params">(integer)</span> <span class="hljs-number">0</span><br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; set age <span class="hljs-number">22</span><br>OK<br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; keys * <span class="hljs-comment">//keys patten ：模式匹配键</span><br><span class="hljs-number">1</span>) <span class="hljs-string">&quot;age&quot;</span><br><span class="hljs-number">2</span>) <span class="hljs-string">&quot;x&quot;</span><br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; keys *ge<br><span class="hljs-number">1</span>) <span class="hljs-string">&quot;age&quot;</span><br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; set msg 中文消息也是以二进制保存<br>OK<br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; get msg<br><span class="hljs-string">&quot;\xe4\xb8\xad\xe6\x96\x87\xe6\xb6\x88\xe6\x81\xaf\xe4\xb9\x9f\xe6\x98\xaf\xe4\xbb\xa5\xe4\xba\x8c\xe8\xbf\x9b\xe5\x88\xb6\xe4\xbf\x9d\xe5\xad\x98&quot;</span><br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; redis-cli -h <span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span> -p <span class="hljs-number">6379</span> -a **** --raw <span class="hljs-comment">//加上--raw参数表示以原始形式显示内容</span><br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; get msg<br>中文消息也是以二进制保存<br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; ttl msg <span class="hljs-comment">//查看key过期时间</span><br>-<span class="hljs-number">1</span><br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; expire msg <span class="hljs-number">10</span> <span class="hljs-comment">// 设置key的过期时间，10s</span><br><span class="hljs-number">1</span><br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; ttl msg<br><span class="hljs-number">6</span><br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; ttl msg<br><span class="hljs-number">2</span><br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; setex name <span class="hljs-number">10</span> fuish <span class="hljs-comment">//设置带有过期时间的键值对，10s</span><br>OK<br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; ttl name<br><span class="hljs-number">4</span><br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; ttl name<br><span class="hljs-number">0</span><br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; setnx name kk <span class="hljs-comment">// 键不存在时才设置键的值</span><br><span class="hljs-number">1</span><br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; get name<br>kk<br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; setnx name fuish<br><span class="hljs-number">0</span><br><span class="hljs-number">47.121</span><span class="hljs-number">.141</span><span class="hljs-number">.189</span>:<span class="hljs-number">6379</span>&gt; get name<br>kk<br></code></pre></td></tr></table></figure>
+
+<h4 id="List"><a href="#List" class="headerlink" title="List"></a>List</h4><p>旧版本底层是双向链表，新版本换成了quicklist</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; lpush list a b c d e  <span class="hljs-comment">//push elements in the head of the list</span><br>(integer) <span class="hljs-number">5</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; lrange list <span class="hljs-number">0</span> -<span class="hljs-number">1</span> <br><span class="hljs-number">1</span>) <span class="hljs-string">&quot;e&quot;</span><br><span class="hljs-number">2</span>) <span class="hljs-string">&quot;d&quot;</span><br><span class="hljs-number">3</span>) <span class="hljs-string">&quot;c&quot;</span><br><span class="hljs-number">4</span>) <span class="hljs-string">&quot;b&quot;</span><br><span class="hljs-number">5</span>) <span class="hljs-string">&quot;a&quot;</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; rpop list <span class="hljs-comment">// remove element in the tail</span><br><span class="hljs-string">&quot;a&quot;</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; lpop list<br><span class="hljs-string">&quot;e&quot;</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; llen <span class="hljs-title function_">list</span><br><span class="hljs-params">(integer)</span> <span class="hljs-number">3</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; lpush list  d e f <span class="hljs-title function_">g</span><br><span class="hljs-params">(integer)</span> <span class="hljs-number">7</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; lrange list <span class="hljs-number">0</span> -<span class="hljs-number">1</span><br><span class="hljs-number">1</span>) <span class="hljs-string">&quot;g&quot;</span><br><span class="hljs-number">2</span>) <span class="hljs-string">&quot;f&quot;</span><br><span class="hljs-number">3</span>) <span class="hljs-string">&quot;e&quot;</span><br><span class="hljs-number">4</span>) <span class="hljs-string">&quot;d&quot;</span><br><span class="hljs-number">5</span>) <span class="hljs-string">&quot;c&quot;</span><br><span class="hljs-number">6</span>) <span class="hljs-string">&quot;b&quot;</span><br><span class="hljs-number">7</span>) <span class="hljs-string">&quot;a&quot;</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; ltrim list <span class="hljs-number">2</span> <span class="hljs-number">4</span>  <span class="hljs-comment">//trim </span><br>OK<br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; lrange list <span class="hljs-number">0</span> -<span class="hljs-number">1</span><br><span class="hljs-number">1</span>) <span class="hljs-string">&quot;e&quot;</span><br><span class="hljs-number">2</span>) <span class="hljs-string">&quot;d&quot;</span><br><span class="hljs-number">3</span>) <span class="hljs-string">&quot;c&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; sadd animal <span class="hljs-title function_">dog</span><br><span class="hljs-params">(integer)</span> <span class="hljs-number">1</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; smembers animal<br><span class="hljs-number">1</span>) <span class="hljs-string">&quot;dog&quot;</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; sadd animal dog <span class="hljs-comment">// Duplicate element is NOT allowed in Set</span><br>(integer) <span class="hljs-number">0</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; sismember animal dog <span class="hljs-comment">// Is dog a member of Set Animal</span><br>(integer) <span class="hljs-number">1</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; srem animal dog <span class="hljs-comment">// Remove dog</span><br>(integer) <span class="hljs-number">1</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; sadd s1 dog cat <span class="hljs-title function_">pig</span><br><span class="hljs-params">(integer)</span> <span class="hljs-number">3</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; sadd s2 cat <span class="hljs-title function_">pig</span><br><span class="hljs-params">(integer)</span> <span class="hljs-number">2</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; sinter s1 s2 <span class="hljs-comment">// Intersection of two Sets</span><br><span class="hljs-number">1</span>) <span class="hljs-string">&quot;cat&quot;</span><br><span class="hljs-number">2</span>) <span class="hljs-string">&quot;pig&quot;</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; sunion s1 s2 <span class="hljs-comment">// Union of two Sets</span><br><span class="hljs-number">1</span>) <span class="hljs-string">&quot;dog&quot;</span><br><span class="hljs-number">2</span>) <span class="hljs-string">&quot;cat&quot;</span><br><span class="hljs-number">3</span>) <span class="hljs-string">&quot;pig&quot;</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt;  sdiff s1 s2 <span class="hljs-comment">// Difference of two Sets</span><br><span class="hljs-number">1</span>) <span class="hljs-string">&quot;dog&quot;</span><br><br></code></pre></td></tr></table></figure>
+
+<h4 id="SortedSet（ZSet）"><a href="#SortedSet（ZSet）" class="headerlink" title="SortedSet（ZSet）"></a>SortedSet（ZSet）</h4><p>维护一个score，按照分数排序</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; zadd schools <span class="hljs-number">700</span> 清华 <span class="hljs-number">680</span> 浙大 <span class="hljs-number">660</span> 复旦 <span class="hljs-number">640</span> 成电<br>(integer) <span class="hljs-number">4</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; zrange schools <span class="hljs-number">0</span> -<span class="hljs-number">1</span><br>成电<br>复旦<br>浙大<br>清华<br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; zrange schools <span class="hljs-number">0</span> -<span class="hljs-number">1</span> withscores<br>成电<br><span class="hljs-number">640</span><br>复旦<br><span class="hljs-number">660</span><br>浙大<br><span class="hljs-number">680</span><br>清华<br><span class="hljs-number">700</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; zscore schools 清华<br><span class="hljs-number">700</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; zrank schools 清华 <span class="hljs-comment">// Index of &quot;清华&quot;</span><br><span class="hljs-number">3</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; zrevrank schools 清华 <span class="hljs-comment">// Reverse the rank of &quot;清华&quot; and output</span><br><span class="hljs-number">0</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; zrevrank schools 成电<br><span class="hljs-number">3</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; zrank schools 清华 <br><span class="hljs-number">3</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h4><p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAMAAABOo35HAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC9UExURVlZWdPT07KysmRkZIWFhfT09JmZmWZmZm9vb39/fxkZGUxMTDMzM3p6epCQkKamppubm729venp6cjIyN7e3tbW1s/Pz8LCwnx8fLS0tFZWVoiIiI+Pj6GhoeTk5Glpabu7u93d3evr66CgoJSUlKqqqsnJyeDg4Hd3d8PDw+Xl5bi4uNHR0dvb26Ojo6urq+fn51hYWDg4OCgoKHBwcK2traenp0FBQe7u7vHx8U5OTre3t8zMzHV1df///7GrnpQAAAA/dFJOU///////////////////////////////////////////////////////////////////////////////////AI4mfBcAAAUGSURBVHja7NoJb6M4GMZxY0NCD64kve/pMZ2d3Z297+X7f6zFNmBAMUXa6URl/q9UJSWPUPzrizFWRUlNLgEBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYYIEFAVhggQUWWGBBABZYYIEFFlgQgAUWWGCBBRYEYIEFFlhggQUBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYn6cCIcRXgvX/h9qcIVBqDdbEM8RCxGCB9QqXYRwHYDHBgwXWl8eKZKiESHI3Ba1kWs3fKixcaJUl1YyeBm7Ocq+yLItUiVBGnXxenSHJolIKEcwHq6ikbOX1YGVzQCTN8LPmSLreghUl9sN4Uw7yajMrLC0TZ1ImzqY6FEop0+pIaEN5HaoOxVuwEqFyc4I46uSlzOLqgxlh6UaR9l3VYWl9Fdoxb1Q90KJtu41pwwFW/WHhTtW8i7TafLCqRsk6bsGw63L9qurXRmuIlbT9lDQnlXU+nBFW1Q2qnZbDprWa2tjR90LZFqx1/+Td/HpGWLlrLDvIwTcx6dQ1Vrntbig68cDms3JwbA5Y1azs1ger6sNV/bbIw1jU81MvNAGrl58RVn8ozW+btF08iGFoAlYvP3csfVur1gJBEIA1uBmue5dhZDOyO2epbmgCVi8/I6x0MMHH9pjsTfBhNzQBq5uPZoQlB0uH3DZG4EZqQ26fL3sZq5uf09Ih6qw3i/pm6BZO0qZX7rrUS68Xsbr5ZE4rePMk08pk9aUZugfqppvs6AM1Acvlo/StP+6EbW06z8hJqxbYp2BZPQUnFsLsKuhQdaHqn5ewbF7KXIn0jWO5MqOQ7RaNLPtbNMmmhimj0GUmYLl8Gs0Lq4wyPbTu1l2QKqHSouzs3OlDIslW5SQsnY/NXmFplyNvEuuLV/Tau9BzwiraDUSwXmysztYWWNtL1psXeumgIrDGaqXvBfUuvtqUYI3V2t1wk1e2msFluJJm6zDJXv/fIfjPP7DAAgsssCiwwAILLLDAosACCyywwAKLAgsssMACC6zt9fDz/v75tyOB+98PD2+ORgKffjw4OP1uJPDxl+Xy8v1I4MPF3t7VNyOB4/vF4uzdzrG+39f1kz/w66Guv/yBvw90KX/gZKkr8Qf+2dOV+gNHC12/7RxrabD2/a31bLAO/a11YbAO/K21MFhLf2s9Gqw9f2vdGqzFu11jnVusE2/gxmI9eQOnFuvYG7i0WH7uK4t15w2cWazrXWP9a7H8f/bQYvm/6IPF+sF/pVssf19Ii/WH/0K2WH/uGuvEWC39gSdj9Twy+Rqri5EZx1gt/IE7Y/XoD1wbq9vd3w1PlufnD2OBp+ebm/uxwPHF6emnscDR4vLy41jg7vHq6sNY4Pr27OyYdRaLUrDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssL6u+k+AAQCR9eHtLKvLfwAAAABJRU5ErkJggg==" srcset="/img/loading.gif" lazyload data-original="/2024/06/17/Redis/hash.png"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; hset dog name fuish<br><span class="hljs-number">1</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; hset dog age <span class="hljs-number">22</span><br><span class="hljs-number">1</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; hset dog msg hello<br><span class="hljs-number">1</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; hgetall dog<br>name<br>fuish<br>age<br><span class="hljs-number">22</span><br>msg<br>hello<br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; hdel dog msg<br><span class="hljs-number">1</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; hgetall dog<br>name<br>fuish<br>age<br><span class="hljs-number">22</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; hdel dog msg<br><span class="hljs-number">0</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; hgetall dog<br>name<br>fuish<br>age<br><span class="hljs-number">22</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; hexists dog name<br><span class="hljs-number">1</span><br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; hkeys dog<br>name<br>age<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h3><p>不同于数据库事务是一个原子操作，要么全部成功要么全部失败。Redis事务只是一批任务的执行集合，允许个别失败，不影响其他任务的成功执行</p>
+<h3 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h3><h4 id="RDB：Redis-DataBase"><a href="#RDB：Redis-DataBase" class="headerlink" title="RDB：Redis DataBase"></a>RDB：Redis DataBase</h4><ul>
+<li><p>配置文件自动每隔指定的时间间隔将Redis中的数据写入硬盘中</p>
+</li>
+<li><p>save命令，生成dump.rbd，rdb 文件是紧凑的二进制文件，适合备份和传输。创建快照过程中Redis是阻塞的，性能开销大</p>
+</li>
+<li><p>bgsave命令(background save)：Redis 通过fork系统调用创建一个子进程来完成快照操作（复制了映射到内存数据的页表），主进程可以同步接收请求。但是如果在快照之间发生故障，可能会丢失最新的一些数据。</p>
+</li>
+</ul>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAMAAABOo35HAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC9UExURVlZWdPT07KysmRkZIWFhfT09JmZmWZmZm9vb39/fxkZGUxMTDMzM3p6epCQkKamppubm729venp6cjIyN7e3tbW1s/Pz8LCwnx8fLS0tFZWVoiIiI+Pj6GhoeTk5Glpabu7u93d3evr66CgoJSUlKqqqsnJyeDg4Hd3d8PDw+Xl5bi4uNHR0dvb26Ojo6urq+fn51hYWDg4OCgoKHBwcK2traenp0FBQe7u7vHx8U5OTre3t8zMzHV1df///7GrnpQAAAA/dFJOU///////////////////////////////////////////////////////////////////////////////////AI4mfBcAAAUGSURBVHja7NoJb6M4GMZxY0NCD64kve/pMZ2d3Z297+X7f6zFNmBAMUXa6URl/q9UJSWPUPzrizFWRUlNLgEBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYYIEFAVhggQUWWGBBABZYYIEFFlgQgAUWWGCBBRYEYIEFFlhggQUBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYn6cCIcRXgvX/h9qcIVBqDdbEM8RCxGCB9QqXYRwHYDHBgwXWl8eKZKiESHI3Ba1kWs3fKixcaJUl1YyeBm7Ocq+yLItUiVBGnXxenSHJolIKEcwHq6ikbOX1YGVzQCTN8LPmSLreghUl9sN4Uw7yajMrLC0TZ1ImzqY6FEop0+pIaEN5HaoOxVuwEqFyc4I46uSlzOLqgxlh6UaR9l3VYWl9Fdoxb1Q90KJtu41pwwFW/WHhTtW8i7TafLCqRsk6bsGw63L9qurXRmuIlbT9lDQnlXU+nBFW1Q2qnZbDprWa2tjR90LZFqx1/+Td/HpGWLlrLDvIwTcx6dQ1Vrntbig68cDms3JwbA5Y1azs1ger6sNV/bbIw1jU81MvNAGrl58RVn8ozW+btF08iGFoAlYvP3csfVur1gJBEIA1uBmue5dhZDOyO2epbmgCVi8/I6x0MMHH9pjsTfBhNzQBq5uPZoQlB0uH3DZG4EZqQ26fL3sZq5uf09Ih6qw3i/pm6BZO0qZX7rrUS68Xsbr5ZE4rePMk08pk9aUZugfqppvs6AM1Acvlo/StP+6EbW06z8hJqxbYp2BZPQUnFsLsKuhQdaHqn5ewbF7KXIn0jWO5MqOQ7RaNLPtbNMmmhimj0GUmYLl8Gs0Lq4wyPbTu1l2QKqHSouzs3OlDIslW5SQsnY/NXmFplyNvEuuLV/Tau9BzwiraDUSwXmysztYWWNtL1psXeumgIrDGaqXvBfUuvtqUYI3V2t1wk1e2msFluJJm6zDJXv/fIfjPP7DAAgsssCiwwAILLLDAosACCyywwAKLAgsssMACC6zt9fDz/v75tyOB+98PD2+ORgKffjw4OP1uJPDxl+Xy8v1I4MPF3t7VNyOB4/vF4uzdzrG+39f1kz/w66Guv/yBvw90KX/gZKkr8Qf+2dOV+gNHC12/7RxrabD2/a31bLAO/a11YbAO/K21MFhLf2s9Gqw9f2vdGqzFu11jnVusE2/gxmI9eQOnFuvYG7i0WH7uK4t15w2cWazrXWP9a7H8f/bQYvm/6IPF+sF/pVssf19Ii/WH/0K2WH/uGuvEWC39gSdj9Twy+Rqri5EZx1gt/IE7Y/XoD1wbq9vd3w1PlufnD2OBp+ebm/uxwPHF6emnscDR4vLy41jg7vHq6sNY4Pr27OyYdRaLUrDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssL6u+k+AAQCR9eHtLKvLfwAAAABJRU5ErkJggg==" srcset="/img/loading.gif" lazyload data-original="/2024/06/17/Redis/rdb.png"></p>
+<h4 id="AOF-：Append-Only-File"><a href="#AOF-：Append-Only-File" class="headerlink" title="AOF ：Append-Only File"></a>AOF ：Append-Only File</h4><ul>
+<li>Redis 可以将每个写操作都追加到一个日志文件中（AOF 文件）。</li>
+<li>Redis重启时，重新执行AOF文件中的命令来重建数据集。</li>
+</ul>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAMAAABOo35HAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC9UExURVlZWdPT07KysmRkZIWFhfT09JmZmWZmZm9vb39/fxkZGUxMTDMzM3p6epCQkKamppubm729venp6cjIyN7e3tbW1s/Pz8LCwnx8fLS0tFZWVoiIiI+Pj6GhoeTk5Glpabu7u93d3evr66CgoJSUlKqqqsnJyeDg4Hd3d8PDw+Xl5bi4uNHR0dvb26Ojo6urq+fn51hYWDg4OCgoKHBwcK2traenp0FBQe7u7vHx8U5OTre3t8zMzHV1df///7GrnpQAAAA/dFJOU///////////////////////////////////////////////////////////////////////////////////AI4mfBcAAAUGSURBVHja7NoJb6M4GMZxY0NCD64kve/pMZ2d3Z297+X7f6zFNmBAMUXa6URl/q9UJSWPUPzrizFWRUlNLgEBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYYIEFAVhggQUWWGBBABZYYIEFFlgQgAUWWGCBBRYEYIEFFlhggQUBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYn6cCIcRXgvX/h9qcIVBqDdbEM8RCxGCB9QqXYRwHYDHBgwXWl8eKZKiESHI3Ba1kWs3fKixcaJUl1YyeBm7Ocq+yLItUiVBGnXxenSHJolIKEcwHq6ikbOX1YGVzQCTN8LPmSLreghUl9sN4Uw7yajMrLC0TZ1ImzqY6FEop0+pIaEN5HaoOxVuwEqFyc4I46uSlzOLqgxlh6UaR9l3VYWl9Fdoxb1Q90KJtu41pwwFW/WHhTtW8i7TafLCqRsk6bsGw63L9qurXRmuIlbT9lDQnlXU+nBFW1Q2qnZbDprWa2tjR90LZFqx1/+Td/HpGWLlrLDvIwTcx6dQ1Vrntbig68cDms3JwbA5Y1azs1ger6sNV/bbIw1jU81MvNAGrl58RVn8ozW+btF08iGFoAlYvP3csfVur1gJBEIA1uBmue5dhZDOyO2epbmgCVi8/I6x0MMHH9pjsTfBhNzQBq5uPZoQlB0uH3DZG4EZqQ26fL3sZq5uf09Ih6qw3i/pm6BZO0qZX7rrUS68Xsbr5ZE4rePMk08pk9aUZugfqppvs6AM1Acvlo/StP+6EbW06z8hJqxbYp2BZPQUnFsLsKuhQdaHqn5ewbF7KXIn0jWO5MqOQ7RaNLPtbNMmmhimj0GUmYLl8Gs0Lq4wyPbTu1l2QKqHSouzs3OlDIslW5SQsnY/NXmFplyNvEuuLV/Tau9BzwiraDUSwXmysztYWWNtL1psXeumgIrDGaqXvBfUuvtqUYI3V2t1wk1e2msFluJJm6zDJXv/fIfjPP7DAAgsssCiwwAILLLDAosACCyywwAKLAgsssMACC6zt9fDz/v75tyOB+98PD2+ORgKffjw4OP1uJPDxl+Xy8v1I4MPF3t7VNyOB4/vF4uzdzrG+39f1kz/w66Guv/yBvw90KX/gZKkr8Qf+2dOV+gNHC12/7RxrabD2/a31bLAO/a11YbAO/K21MFhLf2s9Gqw9f2vdGqzFu11jnVusE2/gxmI9eQOnFuvYG7i0WH7uK4t15w2cWazrXWP9a7H8f/bQYvm/6IPF+sF/pVssf19Ii/WH/0K2WH/uGuvEWC39gSdj9Twy+Rqri5EZx1gt/IE7Y/XoD1wbq9vd3w1PlufnD2OBp+ebm/uxwPHF6emnscDR4vLy41jg7vHq6sNY4Pr27OyYdRaLUrDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssL6u+k+AAQCR9eHtLKvLfwAAAABJRU5ErkJggg==" srcset="/img/loading.gif" lazyload data-original="/2024/06/17/Redis/aof.png"></p>
+<p><strong>bgrewriteaof</strong></p>
+<p>随着时间的推移，AOF 文件可能会变得非常大，因为它包含了大量的冗余命令。</p>
+<p><code>bgrewriteaof</code>命令的同样也是fork一个子进程去操作，主要目的是通过创建一个新的 AOF 文件来重写现有的 AOF 文件。这个新的 AOF 文件只包含恢复当前数据库状态所必需的最小命令集。它在后台运行，不会阻塞 Redis 的主线程，这意味着在重写 AOF 文件的过程中，Redis 仍然可以处理客户端的请求。</p>
+<p>例如，假设 Redis 执行了多次对同一个键的修改操作，原始的 AOF 文件会记录每一次修改命令。而<code>bgrewriteaof</code>会根据当前键的最终状态生成一个新的 AOF 文件，其中可能只包含一条或几条必要的命令，从而大大减小了 AOF 文件的大小，提高了 Redis 的启动速度（因为在启动时需要加载 AOF 文件），并且在一定程度上提高了数据恢复的效率。</p>
+<h3 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h3><p>将主节点（Master）上 的数据复制到从节点（Slave）</p>
+<p>在Redis主从架构中，主节点负责处理所有的写操作，并将这些操作异步复制到从节点，从节点主要用于读取操作，以分担主节点的压力和提高读取性能</p>
+<p>主从复制的主要作用是什么？</p>
+<ul>
+<li><strong>数据冗余</strong>：实现了数据的热备份，是持久化之外的一种数据冗余方式</li>
+<li><strong>故障恢复</strong>：如果主节点挂掉了，可以将一个从节点提升为主节点，实现故障的快速恢复</li>
+</ul>
+<p>使用Sentinel哨兵来实现自动的故障转移，主节点挂掉后Sentinel会自动将一个从节点升级为主节点，保证系统的可用性</p>
+<ul>
+<li><strong>负载均衡：</strong> 在主从复制的基础上，配合读写分离，可以由主节点提供写服务，由从节点提供读服务 <em>（即写 Redis 时连接主节点，读 Redis 时连接从节点）</em>，分担服务器负载。尤其是在写少读多的场景下，通过多个从节点分担读负载，可以大大提高 Redis 服务器的并发量。</li>
+<li><strong>高可用基石：</strong> 除了上述作用以外，主从复制还是哨兵和集群能够实施的 <strong>基础</strong>。</li>
+</ul>
+<p>Redis删除过期数据的策略：</p>
+<ul>
+<li>惰性删除：只会在取出Key的时候才检查Key是否过期并删除，对CPU友好，但是内存中可能积压大量过期Key</li>
+<li>定期删除：定期抽取一批Key执行删除过期Key的操作，对内存友好</li>
+</ul>
+<p>Redis采用二者结合的方式</p>
+<h3 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h3><p>哨兵模式用于监控Redis实例的健康状况，并在主节点故障时进行自动故障转移。它是一种高可用性解决方案，确保Redis集群能够在主节点发生故障时继续正常运行。</p>
+<h4 id="工作机制"><a href="#工作机制" class="headerlink" title="工作机制"></a>工作机制</h4><ol>
+<li><strong>监控</strong>：Sentinel不断检查主节点和从节点是否正常运行。</li>
+<li><strong>通知</strong>：当某个节点出现问题时，Sentinel可以通知系统管理员或其他应用程序。</li>
+<li><strong>自动故障转移</strong>：如果主节点故障，Sentinel会自动将一个从节点提升为新的主节点，并将其他从节点指向新的主节点。</li>
+<li><strong>配置提供</strong>：客户端可以通过Sentinel获取当前的主节点地址，从而连接到正确的主节点。</li>
+</ol>
+<h3 id="Redis生产问题"><a href="#Redis生产问题" class="headerlink" title="Redis生产问题"></a>Redis生产问题</h3><h4 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h4><p>定义：客户端请求的数据在缓存和数据库中都找不到，缓存永不生效，请求全打到数据库。</p>
+<p>解决方法</p>
+<ul>
+<li>缓存空对象<ul>
+<li>优点： 实现简单，维护方便</li>
+<li>缺点： 额外的内存消耗，且可能造成短期的数据不一致问题</li>
+</ul>
+</li>
+<li>布隆过滤器<ul>
+<li>优点：内存占用少，没有多余的key</li>
+<li>缺点：实现复杂，且存在误判可能</li>
+</ul>
+</li>
+</ul>
+<h4 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h4><p>定义：同一时段大量的缓存key同时失效或者Redis服务宕机，导致大量请求到达数据库，带来巨大压力。</p>
+<p>解决方案</p>
+<ul>
+<li>给不同key的TTL添加随机值（√）</li>
+<li>搭建Redis集群提高服务的可用性（废话）</li>
+<li>给缓存业务添加降级限流策略</li>
+<li>给业务添加多级缓存</li>
+</ul>
+<h4 id="缓存击穿（热点key问题）"><a href="#缓存击穿（热点key问题）" class="headerlink" title="缓存击穿（热点key问题）"></a>缓存击穿（热点key问题）</h4><p>定义：一个被高并发访问并且缓存重建业务较复杂的key突然失效了，无数的请求访问会在瞬间给数据库带来巨大的冲击。</p>
+<p>解决方案</p>
+<ul>
+<li><p>互斥锁：同一时间只能有一个线程拿到锁执行缓存重建</p>
+<ul>
+<li>优点：简单方便，没有多余的内存消耗，保证强一致性</li>
+<li>缺点：线程等待获取锁的时间过长，可能有死锁风险</li>
+</ul>
+</li>
+<li><p>逻辑过期</p>
+<ul>
+<li>不设置TTL，加一个expire time，当前线程查询缓存发现逻辑过期时间已经过期后，获取互斥锁，开启一个新线程来为自己执行重建缓存的操作。其他线程查询这个缓存均返回过期数据就行，无需等待</li>
+<li>缺点：不保证一致性，有额外的内存消耗，实现复杂</li>
+</ul>
+</li>
+</ul>
+<h3 id="Redis验证码登录"><a href="#Redis验证码登录" class="headerlink" title="Redis验证码登录"></a>Redis验证码登录</h3><ul>
+<li>客户端请求服务端，传给服务端手机号</li>
+<li>服务端校验手机号是否合法，生成验证码，保存验证码到Redis，通过云服务发送验证码给对应手机号</li>
+<li>客户端输入验证码登录，传给服务端手机号和验证码，服务端校验手机号，对比客户端验证码和Redis中的验证码</li>
+<li>执行业务逻辑，根据手机号查询用户，没有就新建用户，生成一个随机Token（UUID）作为登录凭证，同时使用这个Token作为key，用户信息作为value，存入Redis中，方便后续校验</li>
+<li>后续用户访问其他页面，需要登录校验，可以定义一个拦截器，<code>String token = request.getHeader(&quot;authorization&quot;);</code> 拿到前端请求中的Token，去Redis找对应的用户信息，并存入ThreadLocal中，方便未来使用</li>
+</ul>
+<h3 id="优惠券秒杀"><a href="#优惠券秒杀" class="headerlink" title="优惠券秒杀"></a>优惠券秒杀</h3><p>几个关键点：</p>
+<ul>
+<li>高并发情况下的库存超卖问题</li>
+<li>一人一单</li>
+<li>全局Id</li>
+<li>自调用AOP解决方案</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Service</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">VoucherOrderServiceImpl</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ServiceImpl</span>&lt;VoucherOrderMapper, VoucherOrder&gt; <span class="hljs-keyword">implements</span> <span class="hljs-title class_">IVoucherOrderService</span> &#123;<br><br>    <span class="hljs-meta">@Resource</span><br>    <span class="hljs-keyword">private</span> ISeckillVoucherService iSeckillVoucherService;<br>    <span class="hljs-meta">@Resource</span><br>    <span class="hljs-keyword">private</span> RedisIDGenerator redisIDGenerator;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> ConcurrentHashMap&lt;Long, Object&gt; locks = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConcurrentHashMap</span>&lt;&gt;();<br>    <br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Result <span class="hljs-title function_">secKillByVoucherId</span><span class="hljs-params">(Long voucherId)</span> &#123;<br>        <span class="hljs-comment">//查询优惠券</span><br>        <span class="hljs-type">SeckillVoucher</span> <span class="hljs-variable">seckillVoucher</span> <span class="hljs-operator">=</span> iSeckillVoucherService.getById(voucherId);<br>        <span class="hljs-comment">//判断秒杀是否开始</span><br>        <span class="hljs-keyword">if</span> (seckillVoucher.getBeginTime().isAfter(LocalDateTime.now())) &#123;<br>            <span class="hljs-keyword">return</span> Result.fail(<span class="hljs-string">&quot;秒杀尚未开始！&quot;</span>);<br>        &#125;<br>        <span class="hljs-keyword">if</span> (seckillVoucher.getEndTime().isBefore(LocalDateTime.now())) &#123;<br>            <span class="hljs-keyword">return</span> Result.fail(<span class="hljs-string">&quot;秒杀已经结束！&quot;</span>);<br>        &#125;<br>        <span class="hljs-comment">//判断库存是否充足</span><br>        <span class="hljs-keyword">if</span> (seckillVoucher.getStock() == <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-keyword">return</span> Result.fail(<span class="hljs-string">&quot;库存不足！&quot;</span>);<br>        &#125;<br>        <span class="hljs-type">Long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> UserHolder.getUser().getId();<br>        <span class="hljs-comment">//方案一：使用字符串常量池来保证userId的唯一性</span><br><span class="hljs-comment">//        synchronized (userId.toString().intern()) &#123;</span><br><span class="hljs-comment">//            IVoucherOrderService iVoucherOrderServiceProxy = (IVoucherOrderService) AopContext.currentProxy();</span><br><span class="hljs-comment">//            return iVoucherOrderServiceProxy.createVoucherOrder(voucherId);</span><br><span class="hljs-comment">//        &#125;</span><br>        <br>        <span class="hljs-comment">//方案二：使用concurrentHashMap存储userId</span><br>        <span class="hljs-type">Object</span> <span class="hljs-variable">lock</span> <span class="hljs-operator">=</span> locks.computeIfAbsent(userId, k -&gt; <span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>());<br>        <span class="hljs-keyword">synchronized</span> (lock) &#123;<br>            <span class="hljs-type">IVoucherOrderService</span> <span class="hljs-variable">iVoucherOrderServiceProxy</span> <span class="hljs-operator">=</span> (IVoucherOrderService) AopContext.currentProxy();<br>            <span class="hljs-keyword">return</span> iVoucherOrderServiceProxy.createVoucherOrder(voucherId);<br>        &#125;<br>    &#125;<br>    <br>    <span class="hljs-meta">@Transactional</span><br>    <span class="hljs-keyword">public</span> Result <span class="hljs-title function_">createVoucherOrder</span><span class="hljs-params">(Long voucherId)</span> &#123;<br>        <span class="hljs-comment">//一人一单</span><br>        <span class="hljs-type">Long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> UserHolder.getUser().getId();<br><br>        <span class="hljs-type">int</span> <span class="hljs-variable">count</span> <span class="hljs-operator">=</span> query().eq(<span class="hljs-string">&quot;user_id&quot;</span>, userId).eq(<span class="hljs-string">&quot;voucher_id&quot;</span>, voucherId).count();<br>        <span class="hljs-keyword">if</span> (count &gt; <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-keyword">return</span> Result.fail(<span class="hljs-string">&quot;每人只能购买一张！&quot;</span>);<br>        &#125;<br>        <span class="hljs-comment">//扣减库存</span><br>        <span class="hljs-type">boolean</span> <span class="hljs-variable">success</span> <span class="hljs-operator">=</span> iSeckillVoucherService.update()<br>                .setSql(<span class="hljs-string">&quot;stock = stock - 1&quot;</span>)<br>                .eq(<span class="hljs-string">&quot;voucher_id&quot;</span>, voucherId)<br>                .gt(<span class="hljs-string">&quot;stock&quot;</span>, <span class="hljs-number">0</span>)<br>                .update();<br>        <span class="hljs-keyword">if</span> (!success) &#123;<br>            <span class="hljs-keyword">return</span> Result.fail(<span class="hljs-string">&quot;库存不足！&quot;</span>);<br>        &#125;<br>        <span class="hljs-comment">//创建订单</span><br>        <span class="hljs-type">long</span> <span class="hljs-variable">orderId</span> <span class="hljs-operator">=</span> redisIDGenerator.nextId(<span class="hljs-string">&quot;order&quot;</span>);<span class="hljs-comment">//使用redis实现的全局Id生成器</span><br>        <span class="hljs-type">VoucherOrder</span> <span class="hljs-variable">voucherOrder</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">VoucherOrder</span>();<br>        voucherOrder.setId(orderId);<br>        voucherOrder.setVoucherId(voucherId);<br>        voucherOrder.setUserId(userId);<br><br>        save(voucherOrder);<br>        <span class="hljs-comment">//返回订单id</span><br>        <span class="hljs-keyword">return</span> Result.ok(orderId);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>超卖解决方案</p>
+</blockquote>
+<ul>
+<li>1.如上文，增加判断 <code>gt(&quot;stock&quot;, 0)</code>，也就是 <code>update SeckillVoucher set stock = stock - 1 WHERE id = 1001 and stock &gt; 0</code>。当然这里也可以用CAS比较stock&#x3D;&#x3D;之前查出来的stock，只是这样会阻塞很多没必要阻塞的线程，因为只要库存大于0便都可以执行操作</li>
+<li>2.版本号，CAS操作</li>
+<li>3.利用Redis单线程</li>
+</ul>
+<h3 id="Redis实现分布式锁"><a href="#Redis实现分布式锁" class="headerlink" title="Redis实现分布式锁"></a>Redis实现分布式锁</h3><p>基于synchronized悲观锁锁住UserId的方案存在以下问题：</p>
+<ul>
+<li>单机模式下可行，但是效率低</li>
+<li>集群模式下不可行，当在不同的端口启动项目时（模拟分布式集群），请求通过nginx负载均衡到不同的端口（部署项目的机器），而每台机器上运行的JVM进程都是独立的，synchronized锁不可能跨进程发挥作用</li>
+</ul>
+<p>解决方案：分布式锁（集群模式下多进程可见的互斥锁）</p>
+<ul>
+<li>redis实现分布式锁，通过key（KeyPrefix+userId）–&gt; value（UUID+ThreadId）锁到同一台redis中。</li>
+<li>数据库实现</li>
+<li>zookeeper</li>
+</ul>
+<blockquote>
+<p>redis分布式锁控制一人一单实战</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">RedisDistributedLock</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">ILock</span>&#123;<br><br>    <span class="hljs-keyword">private</span> String name;<br>    <span class="hljs-keyword">private</span> StringRedisTemplate redisTemplate;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">keyPrefix</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;lock:&quot;</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">idPrefix</span> <span class="hljs-operator">=</span> UUID.randomUUID().toString(<span class="hljs-literal">true</span>) + <span class="hljs-string">&quot;-&quot;</span>;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> DefaultRedisScript&lt;Long&gt; UNLOCK_SCRIPT;<span class="hljs-comment">//lua脚本保证解锁操作的原子性</span><br>    <span class="hljs-keyword">static</span> &#123;<br>        UNLOCK_SCRIPT = <span class="hljs-keyword">new</span> <span class="hljs-title class_">DefaultRedisScript</span>&lt;&gt;();<br>        UNLOCK_SCRIPT.setResultType(Long.class);<br>        UNLOCK_SCRIPT.setLocation(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ClassPathResource</span>(<span class="hljs-string">&quot;unLock.lua&quot;</span>));<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">RedisDistributedLock</span><span class="hljs-params">(String name, StringRedisTemplate redisTemplate)</span> &#123;<br>        <span class="hljs-built_in">this</span>.name = name;<br>        <span class="hljs-built_in">this</span>.redisTemplate = redisTemplate;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">tryLock</span><span class="hljs-params">(<span class="hljs-type">long</span> timeoutSeconds)</span> &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">lockKey</span> <span class="hljs-operator">=</span> keyPrefix + name;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">value</span> <span class="hljs-operator">=</span> idPrefix + Thread.currentThread().getId();<br>        <span class="hljs-type">Boolean</span> <span class="hljs-variable">b</span> <span class="hljs-operator">=</span> redisTemplate.opsForValue().setIfAbsent(lockKey, value, timeoutSeconds, TimeUnit.SECONDS);<br>        <span class="hljs-keyword">return</span> Boolean.TRUE.equals(b);<br><span class="hljs-comment">//        return BooleanUtil.isTrue(b);</span><br>    &#125;<br><br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">unlock</span><span class="hljs-params">()</span> &#123;<br>        redisTemplate.execute(UNLOCK_SCRIPT,<br>                Collections.singletonList(keyPrefix + name),<br>                idPrefix + Thread.currentThread().getId()<br>        );<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>而之前秒杀功能中的synchronized锁便被替换为了自定义的redis锁</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">RedisDistributedLock</span> <span class="hljs-variable">redisDistributedLock</span> <span class="hljs-operator">=</span> redisLockFactory.createLock(<span class="hljs-string">&quot;order:&quot;</span> + userId);<br><span class="hljs-type">boolean</span> <span class="hljs-variable">lock</span> <span class="hljs-operator">=</span> redisDistributedLock.tryLock(<span class="hljs-number">1200</span>);<br><span class="hljs-keyword">if</span> (!lock) &#123;<br>    <span class="hljs-keyword">return</span> Result.fail(<span class="hljs-string">&quot;一人只能下一单&quot;</span>);<br>&#125;<br><span class="hljs-keyword">try</span> &#123;<br>    <span class="hljs-type">IVoucherOrderService</span> <span class="hljs-variable">iVoucherOrderServiceProxy</span> <span class="hljs-operator">=</span> (IVoucherOrderService) AopContext.currentProxy();<br>    <span class="hljs-keyword">return</span> iVoucherOrderServiceProxy.createVoucherOrder(voucherId);<br>&#125; <span class="hljs-keyword">finally</span> &#123;<br>    redisDistributedLock.unlock();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>unLock.lua脚本文件，判断将要解锁的锁（lockKey）下的value是不是自己之前设置的UUID+ThreadId，防止把别人的</p>
+<p>锁解开了（删除了）</p>
+<blockquote>
+<p>lua脚本可以将该线程的这些redis命令原子地执行，执行过程中不允许其他线程的redis命令执行</p>
+</blockquote>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs lua"><span class="hljs-comment">--unLock.lua</span><br><span class="hljs-keyword">if</span> redis.call(<span class="hljs-string">&#x27;GET&#x27;</span>, KEYS[<span class="hljs-number">1</span>]) == ARGV[<span class="hljs-number">1</span>] <span class="hljs-keyword">then</span><br>    <span class="hljs-keyword">return</span> redis.call(<span class="hljs-string">&#x27;DEL&#x27;</span>, KEYS[<span class="hljs-number">1</span>])<br><span class="hljs-keyword">end</span><br><span class="hljs-keyword">return</span> <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="Redisson"><a href="#Redisson" class="headerlink" title="Redisson"></a>Redisson</h3><p>基于Redis的setnx命令实现的分布式锁存在以下问题：</p>
+<ul>
+<li>不可重入</li>
+<li>不可重试</li>
+<li>超时释放</li>
+<li>主从一致性</li>
+</ul>
+<blockquote>
+<p>Redisson可重入锁原理</p>
+</blockquote>
+<p>同Reentrantlock一样，Reentrantlock通过state变量记录重入的次数，重入锁state+1，释放锁state-1</p>
+<p>Redisson通过redis的hash结构控制重入，其中key是锁的名称，value的键是线程的标识，值是重入次数，源码通过lua脚本控制获取锁和释放锁的操作，每次获取锁和释放锁都要为key重新设置有效期，除非释放锁导致重入次数归零，此时直接删除锁</p>
+<blockquote>
+<p>Redisson重试机制</p>
+</blockquote>
+<p>利用信号量和发布订阅（pub、sub）功能实现等待、唤醒、获取锁失败的重试机制</p>
+<blockquote>
+<p>超时续约</p>
+</blockquote>
+<p>利用watchDog，每隔releaseTime&#x2F;3的时间便重置超时时间</p>
+<blockquote>
+<p>主从一致性保证</p>
+</blockquote>
+<p>multiLock，redisson不再区分主从节点，分布式锁需要在每个redis节点同步更新，必须在所有节点都获取到重入锁，才算获取锁成功</p>
+<h3 id="总结对于Redis的各种数据结构的实战使用"><a href="#总结对于Redis的各种数据结构的实战使用" class="headerlink" title="总结对于Redis的各种数据结构的实战使用"></a>总结对于Redis的各种数据结构的实战使用</h3><h4 id="String-1"><a href="#String-1" class="headerlink" title="String"></a>String</h4><p>用户使用手机号登录，后台生成验证码后，使用手机号作为key，存储验证码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">stringRedisTemplate.opsForValue().set(LOGIN_CODE_KEY + phone, code, LOGIN_CODE_TTL, TimeUnit.MINUTES);<br></code></pre></td></tr></table></figure>
+
+<h4 id="Hash-1"><a href="#Hash-1" class="headerlink" title="Hash"></a>Hash</h4><p>用户登录后，生成一个随机Token（UUID）作为登录凭证，同时使用这个Token作为key，用户信息作为value，存入Redis中，用户信息被转换成了一个HashMap。后续该用户的各种访问，通过拦截器去Redis拿他的用户信息来进行校验。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//</span><br>stringRedisTemplate.opsForHash().putAll(LOGIN_USER_KEY + token, userMap);<br>stringRedisTemplate.expire(LOGIN_USER_KEY + token, LOGIN_USER_TTL, TimeUnit.MINUTES);<br><br><span class="hljs-comment">// 基于token获取redis中的用户</span><br>Map&lt;Object, Object&gt; userMap = stringRedisTemplate.opsForHash().entries(LOGIN_USER_KEY + token);<br></code></pre></td></tr></table></figure>
+
+<h4 id="Set-1"><a href="#Set-1" class="headerlink" title="Set"></a>Set</h4><ul>
+<li>存储用户id，控制一个用户只能下一单（不重复性质）</li>
+<li>共同关注功能（intersect函数功能，查交集）</li>
+</ul>
+<h4 id="ZSet"><a href="#ZSet" class="headerlink" title="ZSet"></a>ZSet</h4><p>存储对应博文点赞的用户id，并按照时间戳排序，便于将最先点赞的用户展示在最前面</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">stringRedisTemplate.opsForZSet().add(key, userId.toString(), System.currentTimeMillis());<br></code></pre></td></tr></table></figure>
+
+<h3 id="异步秒杀"><a href="#异步秒杀" class="headerlink" title="异步秒杀"></a>异步秒杀</h3><blockquote>
+<p>思路就是把对于库存余量和一人一单的判断放到redis去做，只要这两个条件满足就先允许用户下单，把订单信息存到一个消息队列中（这里使用阻塞队列简单实现），对于数据库的更新操作是通过监听消息队列后台异步执行的，提升了性能</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 基于redis+阻塞队列实现异步秒杀</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> voucherId</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> Result <span class="hljs-title function_">secKillByVoucherId</span><span class="hljs-params">(Long voucherId)</span> &#123;<br>    <span class="hljs-comment">//上传秒杀优惠券时，使用redis的hash存储了秒杀开始和结束时间，以及库存</span><br>    Map&lt;Object, Object&gt; seckillMap = stringRedisTemplate.opsForHash().entries(SECKILL_MAP_KEY + voucherId);<br>    <span class="hljs-type">SeckillVoucherRedis</span> <span class="hljs-variable">svr</span> <span class="hljs-operator">=</span> BeanUtil.mapToBean(seckillMap, SeckillVoucherRedis.class, <span class="hljs-literal">false</span>);<br>    <span class="hljs-keyword">if</span> (svr.getBeginTime().isAfter(LocalDateTime.now())) &#123;<br>        <span class="hljs-keyword">return</span> Result.fail(<span class="hljs-string">&quot;秒杀尚未开始！&quot;</span>);<br>    &#125;<br>    <span class="hljs-keyword">if</span> (svr.getEndTime().isBefore(LocalDateTime.now())) &#123;<br>        <span class="hljs-keyword">return</span> Result.fail(<span class="hljs-string">&quot;秒杀已经结束！&quot;</span>);<br>    &#125;<br>    <span class="hljs-type">Long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> UserHolder.getUser().getId();<br>    <span class="hljs-type">Long</span> <span class="hljs-variable">res</span> <span class="hljs-operator">=</span> stringRedisTemplate.execute(<br>            SECKILL_SCRIPT,<br>            Collections.emptyList(),<br>            voucherId.toString(),<br>            userId.toString()<br>    );<br>    <span class="hljs-keyword">assert</span> res != <span class="hljs-literal">null</span>;<br>    <span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> res.intValue();<br>    <span class="hljs-keyword">if</span> (i != <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> Result.fail(i == <span class="hljs-number">1</span> ? <span class="hljs-string">&quot;库存不足！&quot;</span> : <span class="hljs-string">&quot;一人只能下一单&quot;</span>);<br>    <span class="hljs-type">long</span> <span class="hljs-variable">orderId</span> <span class="hljs-operator">=</span> redisIDGenerator.nextId(<span class="hljs-string">&quot;order&quot;</span>);<br>    <span class="hljs-comment">//生成订单，放到阻塞队列中</span><br>    <span class="hljs-type">VoucherOrder</span> <span class="hljs-variable">voucherOrder</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">VoucherOrder</span>();<br>    voucherOrder.setId(orderId);<br>    voucherOrder.setVoucherId(voucherId);<br>    voucherOrder.setUserId(userId);<br>    queue.add(voucherOrder);<br>    iVoucherOrderServiceProxy = (IVoucherOrderService) AopContext.currentProxy();<br>    <span class="hljs-keyword">return</span> Result.ok(orderId);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>lua脚本</p>
+</blockquote>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs lua"><span class="hljs-comment">---</span><br><span class="hljs-comment">--- Generated by EmmyLua(https://github.com/EmmyLua)</span><br><span class="hljs-comment">--- Created by Fu1sh.</span><br><span class="hljs-comment">--- DateTime: 2024/8/16 22:42</span><br><span class="hljs-comment">---</span><br><span class="hljs-keyword">local</span> voucherId = ARGV[<span class="hljs-number">1</span>]<br><span class="hljs-keyword">local</span> userId = ARGV[<span class="hljs-number">2</span>]<br><br><span class="hljs-keyword">local</span> stockKey = <span class="hljs-string">&#x27;seckill:map:&#x27;</span>..voucherId<br><span class="hljs-keyword">local</span> orderKey = <span class="hljs-string">&#x27;seckill:order:&#x27;</span>..voucherId<br><span class="hljs-comment">-- 判断库存《hash》</span><br><span class="hljs-keyword">if</span> (<span class="hljs-built_in">tonumber</span>(redis.call(<span class="hljs-string">&#x27;hget&#x27;</span>, stockKey, <span class="hljs-string">&#x27;stock&#x27;</span>)) &lt;= <span class="hljs-number">0</span>) <span class="hljs-keyword">then</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span><br><span class="hljs-keyword">end</span><br><span class="hljs-comment">-- 判断用户是否已经下过单《set》</span><br><span class="hljs-keyword">if</span> (redis.call(<span class="hljs-string">&#x27;sismember&#x27;</span>, orderKey, userId) == <span class="hljs-number">1</span>) <span class="hljs-keyword">then</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">2</span><br><span class="hljs-keyword">end</span><br><br>redis.call(<span class="hljs-string">&#x27;hincrby&#x27;</span>, stockKey, <span class="hljs-string">&#x27;stock&#x27;</span>, <span class="hljs-number">-1</span>)<br>redis.call(<span class="hljs-string">&#x27;sadd&#x27;</span>, orderKey, userId)<br><span class="hljs-keyword">return</span> <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>以下是异步更新数据库的逻辑</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> IVoucherOrderService iVoucherOrderServiceProxy;<br><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">ExecutorService</span> <span class="hljs-variable">pool</span> <span class="hljs-operator">=</span> Executors.newSingleThreadExecutor();<br><br><span class="hljs-keyword">private</span> BlockingQueue&lt;VoucherOrder&gt; queue = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBlockingQueue</span>&lt;&gt;(<span class="hljs-number">1024</span> * <span class="hljs-number">1024</span>);<br><br><span class="hljs-meta">@PostConstruct</span><span class="hljs-comment">//当一个类的实例被创建并且所有的依赖已经注入后,@PostConstruct标记的方法就会被自动调用。</span><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">init</span><span class="hljs-params">()</span> &#123;<br>    pool.submit(() -&gt; &#123;<br>        <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) &#123;<br>            <span class="hljs-type">VoucherOrder</span> <span class="hljs-variable">voucherOrder</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>            <span class="hljs-keyword">try</span> &#123;<br>                voucherOrder = queue.take();<br>                handlerVoucherOrder(voucherOrder);<br>            &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>                log.error(<span class="hljs-string">&quot;处理订单有异常发生：&quot;</span>, e);<br>            &#125;<br>        &#125;<br>    &#125;);<br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 异步将订单存入数据库</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> voucherOrder</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">handlerVoucherOrder</span><span class="hljs-params">(VoucherOrder voucherOrder)</span> &#123;<br>    <span class="hljs-type">Long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> voucherOrder.getUserId();<br>    <span class="hljs-type">RLock</span> <span class="hljs-variable">myLock</span> <span class="hljs-operator">=</span> redissonClient.getLock(<span class="hljs-string">&quot;lock:order:&quot;</span> + userId);<br>    <span class="hljs-type">boolean</span> <span class="hljs-variable">lock</span> <span class="hljs-operator">=</span> <span class="hljs-literal">false</span>;<br>    lock = myLock.tryLock();<br>    <span class="hljs-keyword">if</span> (!lock) &#123;<br>        log.error(<span class="hljs-string">&quot;不能重复下单&quot;</span>);<br>        <span class="hljs-keyword">return</span>;<br>    &#125;<br>    <span class="hljs-keyword">try</span> &#123;<br>        iVoucherOrderServiceProxy.createVoucherOrder(voucherOrder);<br>    &#125; <span class="hljs-keyword">finally</span> &#123;<br>        myLock.unlock();<br>    &#125;<br>&#125;<br><br><span class="hljs-meta">@Transactional</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">createVoucherOrder</span><span class="hljs-params">(VoucherOrder voucherOrder)</span> &#123;<br>    <span class="hljs-type">Long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> voucherOrder.getUserId();<br>    <span class="hljs-type">Long</span> <span class="hljs-variable">voucherId</span> <span class="hljs-operator">=</span> voucherOrder.getVoucherId();<br>    <span class="hljs-type">int</span> <span class="hljs-variable">count</span> <span class="hljs-operator">=</span> query().eq(<span class="hljs-string">&quot;user_id&quot;</span>, userId).eq(<span class="hljs-string">&quot;voucher_id&quot;</span>, voucherId).count();<br>    <span class="hljs-keyword">if</span> (count &gt; <span class="hljs-number">0</span>) &#123;<br>        log.error(<span class="hljs-string">&quot;不能重复下单&quot;</span>);<br>    &#125;<br>    <span class="hljs-comment">//扣减库存</span><br>    <span class="hljs-type">boolean</span> <span class="hljs-variable">success</span> <span class="hljs-operator">=</span> iSeckillVoucherService.update()<br>            .setSql(<span class="hljs-string">&quot;stock = stock - 1&quot;</span>)<br>            .eq(<span class="hljs-string">&quot;voucher_id&quot;</span>, voucherId)<br>            .gt(<span class="hljs-string">&quot;stock&quot;</span>, <span class="hljs-number">0</span>)<br>            .update();<br>    <span class="hljs-keyword">if</span> (!success) &#123;<br>        log.error(<span class="hljs-string">&quot;库存不足&quot;</span>);<br>    &#125;<br>    save(voucherOrder);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="阻塞队列的缺点"><a href="#阻塞队列的缺点" class="headerlink" title="阻塞队列的缺点"></a>阻塞队列的缺点</h4><ul>
+<li>基于JVM，队列中的元素存储在JVM内存中，不支持持久化，一旦掉电消息丢失</li>
+<li>占内存，影响性能</li>
+<li>只能存取消息一次</li>
+</ul>
+<h4 id="Redis消息队列"><a href="#Redis消息队列" class="headerlink" title="Redis消息队列"></a>Redis消息队列</h4><ul>
+<li>List：双向链表，LPUSH，RPOP等，可以做消息队列，基于redis不占JVM内存，可持久化消息，满足消息有序性。但是无法避免消息丢失，且只支持单消费者（消息被一个消费者拿走就从List移除了）</li>
+<li>PubSub：发布订阅模式，支持多生产多消费者。但是不支持消息持久化，无法避免消息丢失，消息堆积有上限，超出时消息就丢失了</li>
+<li>Stream</li>
+</ul>
+<p><code>优点</code>：</p>
+<ol>
+<li>使用成本低。几乎每一个项目都会使用Redis，用Stream做消息队列就不需要额外再引入中间件，减少系统复杂性，运维成本，硬件资源。</li>
+</ol>
+<p><code>缺点</code>：</p>
+<ol>
+<li>Redis 的数据都存储在内存中，内存持续增长超过机器内存上限，就会面临 OOM 的风险</li>
+<li>Stream 作为Redis的一种数据结构，Redis 在持久化或主从切换时有丢失数据的风险，所以Stream也有丢失消息的风险</li>
+<li>所有的消息会一直保存在Stream中，没有删除机制。要么定时清除，那么设置队列的长度自动丢弃先入列消息</li>
+</ol>
+<h4 id="RabbitMQ实现异步秒杀"><a href="#RabbitMQ实现异步秒杀" class="headerlink" title="RabbitMQ实现异步秒杀"></a>RabbitMQ实现异步秒杀</h4><blockquote>
+<p>秒杀逻辑，判断用户是否具有秒杀资格</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 基于redis+消息队列实现异步秒杀</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> voucherId</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> Result <span class="hljs-title function_">secKillByVoucherId</span><span class="hljs-params">(Long voucherId)</span> &#123;<br>    Map&lt;Object, Object&gt; seckillMap = stringRedisTemplate.opsForHash().entries(SECKILL_MAP_KEY + voucherId);<br>    <span class="hljs-type">SeckillVoucherRedis</span> <span class="hljs-variable">svr</span> <span class="hljs-operator">=</span> BeanUtil.mapToBean(seckillMap, SeckillVoucherRedis.class, <span class="hljs-literal">false</span>);<br>    <span class="hljs-keyword">if</span> (svr.getBeginTime().isAfter(LocalDateTime.now())) &#123;<br>        <span class="hljs-keyword">return</span> Result.fail(<span class="hljs-string">&quot;秒杀尚未开始！&quot;</span>);<br>    &#125;<br>    <span class="hljs-keyword">if</span> (svr.getEndTime().isBefore(LocalDateTime.now())) &#123;<br>        <span class="hljs-keyword">return</span> Result.fail(<span class="hljs-string">&quot;秒杀已经结束！&quot;</span>);<br>    &#125;<br>    <span class="hljs-type">Long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> UserHolder.getUser().getId();<br>    <span class="hljs-type">Long</span> <span class="hljs-variable">res</span> <span class="hljs-operator">=</span> stringRedisTemplate.execute(<br>            SECKILL_SCRIPT,<br>            Collections.emptyList(),<br>            voucherId.toString(),<br>            userId.toString()<br>    );<br>    <span class="hljs-keyword">assert</span> res != <span class="hljs-literal">null</span>;<br>    <span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> res.intValue();<br>    <span class="hljs-keyword">if</span> (i != <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> Result.fail(i == <span class="hljs-number">1</span> ? <span class="hljs-string">&quot;库存不足！&quot;</span> : <span class="hljs-string">&quot;一人只能下一单&quot;</span>);<br>    <span class="hljs-comment">//走到这里代表有秒杀资格</span><br>    <span class="hljs-type">long</span> <span class="hljs-variable">orderId</span> <span class="hljs-operator">=</span> redisIDGenerator.nextId(<span class="hljs-string">&quot;order&quot;</span>);<br>    <span class="hljs-comment">//生成优惠券订单</span><br>    <span class="hljs-type">VoucherOrder</span> <span class="hljs-variable">voucherOrder</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">VoucherOrder</span>();<br>    voucherOrder.setId(orderId);<br>    voucherOrder.setVoucherId(voucherId);<br>    voucherOrder.setUserId(userId);<br>    <span class="hljs-comment">//将订单发布到消息队列中，VoucherOrderListener中实现监听</span><br>    <span class="hljs-keyword">try</span> &#123;<br>        rabbitTemplate.convertAndSend(<span class="hljs-string">&quot;secKill.topic&quot;</span>, <span class="hljs-string">&quot;secKill.success&quot;</span>, voucherOrder);<br>    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>        log.error(<span class="hljs-string">&quot;秒杀成功的消息发送失败，支付单id：&#123;&#125;， 优惠券id：&#123;&#125;&quot;</span>, orderId, voucherId, e);<br>    &#125;<br>    <span class="hljs-comment">//直接返回前端</span><br>    <span class="hljs-keyword">return</span> Result.ok(orderId);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>监听器，监听秒杀消息，异步在后台扣减优惠券库存已经保存订单信息</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Slf4j</span><br><span class="hljs-meta">@Service</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">VoucherOrderListener</span> &#123;<br><br>    <span class="hljs-meta">@Resource</span><br>    <span class="hljs-keyword">private</span> RedissonClient redissonClient;<br><br>    <span class="hljs-meta">@Resource</span><br>    <span class="hljs-keyword">private</span> IVoucherOrderService voucherOrderService;<br><br>    <span class="hljs-meta">@RabbitListener(bindings = @QueueBinding(</span><br><span class="hljs-meta">            value = @Queue(name = &quot;secKill.success.queue&quot;),</span><br><span class="hljs-meta">            exchange = @Exchange(name = &quot;secKill.topic&quot;),</span><br><span class="hljs-meta">            key = &quot;secKill.success&quot;</span><br><span class="hljs-meta">    ))</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onMessage</span><span class="hljs-params">(VoucherOrder voucherOrder)</span> &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            handlerVoucherOrder(voucherOrder);<br>        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>            log.error(<span class="hljs-string">&quot;处理订单有异常发生：&quot;</span>, e);<br>            <span class="hljs-comment">// 根据业务逻辑可以考虑消息重试或者放入死信队列</span><br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">handlerVoucherOrder</span><span class="hljs-params">(VoucherOrder voucherOrder)</span> &#123;<br>        <span class="hljs-type">Long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> voucherOrder.getUserId();<br>        <span class="hljs-comment">//理论上redis+lua脚本已经实现了一人一单的功能，同一个用户不可能走到这里，但是还是留着兜底用</span><br>        <span class="hljs-type">RLock</span> <span class="hljs-variable">lock</span> <span class="hljs-operator">=</span> redissonClient.getLock(<span class="hljs-string">&quot;lock:order:&quot;</span> + userId);<br><br>        <span class="hljs-type">boolean</span> <span class="hljs-variable">isLocked</span> <span class="hljs-operator">=</span> lock.tryLock();<br><br>        <span class="hljs-keyword">if</span> (!isLocked) &#123;<br>            log.error(<span class="hljs-string">&quot;用户重复下单，用户ID：&#123;&#125;&quot;</span>, userId);<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br><br>        <span class="hljs-keyword">try</span> &#123;<br>            voucherOrderService.createVoucherOrder(voucherOrder);<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>            lock.unlock();<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Redis/" class="print-no-link">#Redis</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Redis</div>
+      <div>https://payfish.github.io/2024/06/17/Redis/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>fu1sh</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年6月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/06/20/JUC%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" title="JUC并发编程">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">JUC并发编程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/05/16/HTTP%E6%80%BB%E7%BB%93/" title="HTTP总结">
+                        <span class="hidden-mobile">HTTP总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var e=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,c=a();function a(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(){e&&(c=a());for(var t,o=0;o<c.length;o++)0<=(t=(t=c[o]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,n,a,i=c[o];e=function(){c=c.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(n=new Image,a=t.getAttribute("data-original"),n.onload=function(){t.src=a,t.removeAttribute("data-original"),e&&e()},t.src!==a&&(n.src=a))}()}function i(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",i),r.addEventListener("resize",i),r.addEventListener("orientationchange",i)}(this);</script></body>
+</html>
