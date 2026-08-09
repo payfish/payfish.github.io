@@ -4,7 +4,13 @@ import {
   readFileSync,
   readdirSync,
 } from 'node:fs';
-import { join, relative, sep } from 'node:path';
+import {
+  isAbsolute,
+  join,
+  relative,
+  resolve,
+  sep,
+} from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
 
@@ -22,11 +28,28 @@ function walk(dir) {
     });
 }
 
-const routeFile = (route) => join(
-  PUBLIC,
-  decodeURIComponent(route).replace(/^\//, ''),
-  'index.html',
-);
+const decodePathname = (pathname) => {
+  try {
+    return decodeURIComponent(pathname);
+  } catch {
+    assert.fail(`invalid URL encoding in local path ${pathname}`);
+  }
+};
+const resolvePublicPath = (pathname, ...segments) => {
+  const decoded = decodePathname(pathname).replace(/^[/\\]+/, '');
+  const resolved = resolve(PUBLIC, decoded, ...segments);
+  const publicRelative = relative(PUBLIC, resolved);
+
+  assert.ok(
+    publicRelative !== '..'
+      && !publicRelative.startsWith(`..${sep}`)
+      && !isAbsolute(publicRelative),
+    `resolved path must stay within public: ${pathname}`,
+  );
+
+  return resolved;
+};
+const routeFile = (route) => resolvePublicPath(route, 'index.html');
 const routeHtml = (route) => {
   const path = routeFile(route);
   assert.ok(existsSync(path), `missing generated route ${route}`);
@@ -40,13 +63,6 @@ const pageUrl = (htmlFile) => {
   return new URL(route, SITE);
 };
 const assetPattern = /\.(?:css|js|png|jpe?g|webp|gif|svg|ico|woff2?|ttf|otf)$/i;
-const decodePathname = (pathname) => {
-  try {
-    return decodeURIComponent(pathname);
-  } catch {
-    assert.fail(`invalid URL encoding in local asset path ${pathname}`);
-  }
-};
 const localAsset = (raw, base) => {
   const value = raw.trim().replaceAll('&amp;', '&');
   if (
@@ -66,9 +82,9 @@ const localAsset = (raw, base) => {
 
   if (!/^https?:$/.test(url.protocol) || url.origin !== SITE.origin) return null;
   if (!assetPattern.test(url.pathname)) return null;
-  return decodePathname(url.pathname);
+  return url.pathname;
 };
-const assetFile = (pathname) => join(PUBLIC, pathname.replace(/^\//, ''));
+const assetFile = (pathname) => resolvePublicPath(pathname);
 const srcsetUrls = (srcset) => {
   const urls = [];
   let position = 0;
@@ -105,6 +121,37 @@ const htmlFiles = existsSync(PUBLIC)
   ? walk(PUBLIC).filter((path) => path.endsWith('.html'))
   : [];
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+test('route and asset path mappings reject traversal outside public', () => {
+  const traversalCases = [
+    ['route', routeFile, '/../package.json'],
+    ['encoded route', routeFile, '/%2e%2e/package.json'],
+    ['encoded route separator', routeFile, '/%2e%2e%2fpackage.json'],
+    ['asset', assetFile, '/../package.json'],
+    ['encoded asset', assetFile, '/%2e%2e/package.json'],
+  ];
+
+  for (const [label, mapPath, pathname] of traversalCases) {
+    assert.throws(
+      () => mapPath(pathname),
+      /must stay within public/,
+      `${label} traversal must be rejected`,
+    );
+  }
+
+  assert.equal(
+    routeFile('/2026/03/11/RAG学习笔记/'),
+    join(PUBLIC, '2026', '03', '11', 'RAG学习笔记', 'index.html'),
+  );
+  assert.equal(
+    routeFile('/2026/03/15/NLP%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/'),
+    join(PUBLIC, '2026', '03', '15', 'NLP学习笔记', 'index.html'),
+  );
+  assert.equal(
+    assetFile('/images/rag-architecture.svg'),
+    join(PUBLIC, 'images', 'rag-architecture.svg'),
+  );
+});
 
 test('Redefine shell, routes, search, attribution, and dark mode are generated', () => {
   const home = routeHtml('/');
@@ -160,8 +207,12 @@ test('AI article routes, rendered titles, dates, and taxonomy are correct', () =
   }
 
   assert.ok(
-    !existsSync(join(PUBLIC, '2026', '08')),
-    'obsolete August 2026 article routes must not be generated',
+    !existsSync(routeFile('/2026/08/09/RAG学习笔记/')),
+    'obsolete RAG route /2026/08/09/RAG学习笔记/ must not be generated',
+  );
+  assert.ok(
+    !existsSync(routeFile('/2026/08/09/NLP学习笔记/')),
+    'obsolete NLP route /2026/08/09/NLP学习笔记/ must not be generated',
   );
 
   const rag = routeHtml('/2026/03/11/RAG学习笔记/');
