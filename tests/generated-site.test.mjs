@@ -177,6 +177,15 @@ test('Redefine shell, routes, search, attribution, and dark mode are generated',
   );
 });
 
+test('disabled Redefine demo values are absent from generated theme config', () => {
+  const generated = [
+    routeHtml('/'),
+    routeHtml('/2026/03/11/RAG学习笔记/'),
+  ].join('\n');
+
+  assert.doesNotMatch(generated, /wallhaven|custom-icon|you@example\.com/i);
+});
+
 test('AI article routes, rendered titles, dates, and taxonomy are correct', () => {
   const posts = [
     ['/2026/03/11/RAG学习笔记/', 'RAG学习笔记', '2026-03-11', ['RAG', '大模型', '知识库']],

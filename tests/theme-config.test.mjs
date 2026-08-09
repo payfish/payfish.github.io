@@ -78,6 +78,10 @@ test('merged theme config uses only approved site behavior', () => {
     JSON.stringify(siteOverrides),
     /wallhaven|Theme Redefine|redefine\.ohevan\.com/i,
   );
+  assert.doesNotMatch(
+    JSON.stringify(theme),
+    /wallhaven|custom-icon|you@example\.com/i,
+  );
 });
 
 test('installed theme retains its GPL license declaration', () => {

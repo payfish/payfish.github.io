@@ -34,6 +34,10 @@ home_banner:
       - 最困难的时刻，也许就是拐点的开始
     hitokoto:
       enable: false
+  social_links:
+    enable: false
+    links: []
+    qrs: []
 
 navbar:
   links:
@@ -88,6 +92,9 @@ articles:
   copyright:
     enable: false
   lazyload: true
+  recommendation:
+    enable: false
+    placeholder: /images/home-banner.webp
 
 comment:
   enable: false
