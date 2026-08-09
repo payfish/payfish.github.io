@@ -1,4 +1,13 @@
-# RAG学习笔记
+---
+title: RAG学习笔记
+date: 2026-03-11
+categories:
+  - AI学习
+tags:
+  - RAG
+  - 大模型
+  - 知识库
+---
 
 ## RAG是什么
 
@@ -39,15 +48,27 @@ RAG是（Retrieval Augmented Generation）的缩写，Retrieval：检索，特�
 
   **重排序 (Reranker)** ：前面“检索召回”那一步虽然快，但特别粗糙。它捞出来的 20 个段落里，可能有 5 个是讲“2025年薪酬”，3 个是讲“外包薪酬”，只有 2 个才是真正回答“2026年正式员工薪酬”的。如果把这 20 个全给大模型，大模型绝对会乱说。**检索召回**就像是 HR 用软件按关键词筛选简历，只要简历里有“Java”就全捞进来（不管你精通还是只会拼写），一口气捞了 20 份。**重排序 (Reranker)** 就是技术总监**亲自面试**！它极其严格，它会拿着用户的问题，对着这 20 个段落，逐字逐句地交叉对比、深度阅读，给每一段打出一个极其精确的分数（0~100分）。
 
-​		**Prompt构建 (Prompt Construction)**：这是大模型生成回答前的**“最后一道包装工序”**。系统会动态生成一段模		板化的指令，把**人设、参考资料、用户问题**像三明治一样死死地夹在一起。下图是prompt构建的真实代码
+**Prompt构建(Prompt Construction)**：这是大模型生成回答前的**“最后一道包装工序”**。系统会动态生成一段模板化指令，将**角色设定、参考资料、用户问题**组织在一起。下面是可复制的Prompt构建示例代码：
 
-![image-20260311114828442](C:\Users\Fu1sh\AppData\Roaming\Typora\typora-user-images\image-20260311114828442.png)
+```python
+def build_prompt(context: str, question: str) -> str:
+    return f"""你是企业知识库问答助手。
+请仅根据以下参考资料回答问题，不要使用参考资料之外的信息。
+如果参考资料不足以回答，请明确回复：“根据现有资料无法确定。”
+
+参考资料：
+{context}
+
+用户问题：
+{question}
+"""
+```
 
 
 
 **RAG系统架构图**
 
-![img](https://pica.zhimg.com/v2-59b8c866b6b2caca2cb97fb8dd145e0e_1440w.webp?consumer=ZHI_MENG)
+![RAG系统架构](/images/rag-architecture.svg)
 
 
 
@@ -58,4 +79,3 @@ Embedding （嵌入）的本质，就是一个超级翻译官，它强行把人�
 ## 向量数据库
 
 用来存放向量化后的知识库的数据库，和传统的关系型数据库不一样的是，它存放的是知识片段的语义向量。
-

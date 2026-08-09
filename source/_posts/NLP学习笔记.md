@@ -1,4 +1,12 @@
-# NLP学习笔记
+---
+title: NLP学习笔记
+date: 2026-03-15
+categories:
+  - AI学习
+tags:
+  - NLP
+  - 大模型
+---
 
 ## NLP发展历程
 
