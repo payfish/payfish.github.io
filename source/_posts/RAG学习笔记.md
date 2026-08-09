@@ -68,7 +68,9 @@ def build_prompt(context: str, question: str) -> str:
 
 **RAG系统架构图**
 
-![RAG系统架构](/images/rag-architecture.svg)
+<div class="rag-architecture-scroll" style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+  <img src="/images/rag-architecture.svg" alt="RAG系统架构" width="1200" height="520" style="display:block;width:100%;min-width:900px;height:auto">
+</div>
 
 
 
