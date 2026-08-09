@@ -1,0 +1,97 @@
+info:
+  title: "Fu1sh's BLOG"
+  subtitle: 最困难的时刻，也许就是拐点的开始
+  author: fu1sh
+  url: https://payfish.github.io
+
+defaults:
+  favicon: /images/favicon.svg
+  avatar: /images/avatar.png
+
+colors:
+  default_mode: light
+
+global:
+  website_counter:
+    enable: false
+    site_pv: false
+    site_uv: false
+    post_pv: false
+  open_graph:
+    enable: true
+    image: /images/home-banner.webp
+    description: Fu1sh的个人博客，记录技术、项目与生活。
+
+home_banner:
+  enable: true
+  style: fixed
+  image:
+    light: /images/home-banner.webp
+    dark: /images/home-banner.webp
+  title: "Fu1sh's BLOG"
+  subtitle:
+    text:
+      - 最困难的时刻，也许就是拐点的开始
+    hitokoto:
+      enable: false
+
+navbar:
+  links:
+    Home:
+      path: /
+      icon: fa-solid fa-house
+    Archives:
+      path: /archives/
+      icon: fa-solid fa-box-archive
+    Categories:
+      path: /categories/
+      icon: fa-solid fa-folder-tree
+    Tags:
+      path: /tags/
+      icon: fa-solid fa-tags
+    About:
+      path: /about/
+      icon: fa-solid fa-user
+  search:
+    enable: true
+    preload: true
+
+home:
+  sidebar:
+    enable: true
+    position: left
+    first_item: menu
+    show_on_mobile: true
+    links:
+      Archives:
+        path: /archives/
+        icon: fa-solid fa-box-archive
+      Categories:
+        path: /categories/
+        icon: fa-solid fa-folder-tree
+      Tags:
+        path: /tags/
+        icon: fa-solid fa-tags
+  article_date_format: YYYY-MM-DD
+
+articles:
+  word_count:
+    enable: true
+    count: true
+    min2read: true
+  code_block:
+    copy: true
+    style: mac
+    highlight_theme:
+      light: github
+      dark: vs2015
+  copyright:
+    enable: false
+  lazyload: true
+
+comment:
+  enable: false
+
+footer:
+  runtime: false
+  statistics: false
