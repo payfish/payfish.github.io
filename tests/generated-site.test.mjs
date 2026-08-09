@@ -177,13 +177,32 @@ test('Redefine shell, routes, search, attribution, and dark mode are generated',
   );
 });
 
-test('disabled Redefine demo values are absent from generated theme config', () => {
-  const generated = [
-    routeHtml('/'),
-    routeHtml('/2026/03/11/RAG学习笔记/'),
-  ].join('\n');
+test('disabled Redefine demo values and assets are absent from generated site', () => {
+  assert.ok(htmlFiles.length > 0, 'no generated HTML files found');
+  for (const htmlFile of htmlFiles) {
+    assert.doesNotMatch(
+      read(htmlFile),
+      /wallhaven|custom-icon|you@example\.com/i,
+      `${relative(PUBLIC, htmlFile)} contains a disabled demo value`,
+    );
+  }
 
-  assert.doesNotMatch(generated, /wallhaven|custom-icon|you@example\.com/i);
+  const demoAssets = [
+    '/images/redefine-avatar.svg',
+    '/images/redefine-favicon.svg',
+    '/images/redefine-logo.svg',
+    '/images/redefine-logo.webp',
+    '/images/redefine-og.webp',
+    '/images/wallhaven-wqery6-dark.webp',
+    '/images/wallhaven-wqery6-light.webp',
+  ];
+  for (const asset of demoAssets) {
+    assert.ok(!existsSync(assetFile(asset)), `unexpected generated demo asset ${asset}`);
+  }
+
+  for (const asset of ['/images/loading.svg', '/images/bookmark-placeholder.svg']) {
+    assert.ok(existsSync(assetFile(asset)), `missing required runtime asset ${asset}`);
+  }
 });
 
 test('AI article routes, rendered titles, dates, and taxonomy are correct', () => {
