@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1200 520"
+     width="1200"
+     height="520"
+     role="img"
+     aria-labelledby="rag-title rag-desc"
+     preserveAspectRatio="xMidYMid meet"
+     style="width: 100%; height: auto;">
+  <title id="rag-title">RAG系统架构</title>
+  <desc id="rag-desc">离线阶段将企业文档清洗、分块和向量化后写入向量数据库；在线阶段将用户问题向量化，经过检索召回、重排序和Prompt构建后交给大模型回答。</desc>
+
+  <defs>
+    <marker id="arrowhead"
+            markerWidth="10"
+            markerHeight="10"
+            refX="9"
+            refY="3"
+            orient="auto"
+            markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748b"/>
+    </marker>
+    <style>
+      text {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        letter-spacing: 0;
+      }
+      .row-background {
+        fill: #f8fafc;
+        stroke: #dbe3ec;
+        stroke-width: 2;
+      }
+      .row-label {
+        fill: #253044;
+      }
+      .row-label-text {
+        fill: #ffffff;
+        font-size: 18px;
+        font-weight: 700;
+        text-anchor: middle;
+        dominant-baseline: middle;
+      }
+      .offline-node {
+        fill: #eaf7f1;
+        stroke: #278663;
+        stroke-width: 2;
+      }
+      .online-node {
+        fill: #edf4ff;
+        stroke: #3972bd;
+        stroke-width: 2;
+      }
+      .prompt-node {
+        fill: #fff7dc;
+        stroke: #b78116;
+        stroke-width: 2;
+      }
+      .answer-node {
+        fill: #fff0ed;
+        stroke: #c75a45;
+        stroke-width: 2;
+      }
+      .node-text {
+        fill: #172033;
+        font-size: 18px;
+        font-weight: 600;
+        text-anchor: middle;
+        dominant-baseline: middle;
+      }
+      .arrow {
+        fill: none;
+        stroke: #64748b;
+        stroke-width: 3;
+        marker-end: url(#arrowhead);
+      }
+      .retrieval-link {
+        stroke-dasharray: 8 7;
+      }
+    </style>
+  </defs>
+
+  <rect class="row-background" x="20" y="24" width="1160" height="216" rx="8"/>
+  <rect class="row-label" x="40" y="44" width="132" height="42" rx="6"/>
+  <text class="row-label-text" x="106" y="65">离线索引</text>
+
+  <rect class="offline-node" x="90" y="118" width="220" height="82" rx="8"/>
+  <text class="node-text" x="200" y="159">企业文档</text>
+
+  <rect class="offline-node" x="360" y="118" width="220" height="82" rx="8"/>
+  <text class="node-text" x="470" y="159">清洗与分块</text>
+
+  <rect class="offline-node" x="630" y="118" width="220" height="82" rx="8"/>
+  <text class="node-text" x="740" y="159">Embedding</text>
+
+  <rect class="offline-node" x="900" y="118" width="220" height="82" rx="8"/>
+  <text class="node-text" x="1010" y="159">向量数据库</text>
+
+  <path class="arrow" d="M310 159 H354"/>
+  <path class="arrow" d="M580 159 H624"/>
+  <path class="arrow" d="M850 159 H894"/>
+
+  <rect class="row-background" x="20" y="280" width="1160" height="216" rx="8"/>
+  <rect class="row-label" x="40" y="300" width="132" height="42" rx="6"/>
+  <text class="row-label-text" x="106" y="321">在线问答</text>
+
+  <rect class="online-node" x="30" y="370" width="160" height="82" rx="8"/>
+  <text class="node-text" x="110" y="411">用户问题</text>
+
+  <rect class="online-node" x="226" y="370" width="160" height="82" rx="8"/>
+  <text class="node-text" x="306" y="411">Query向量化</text>
+
+  <rect class="online-node" x="422" y="370" width="160" height="82" rx="8"/>
+  <text class="node-text" x="502" y="411">检索召回</text>
+
+  <rect class="online-node" x="618" y="370" width="160" height="82" rx="8"/>
+  <text class="node-text" x="698" y="411">重排序</text>
+
+  <rect class="prompt-node" x="814" y="370" width="160" height="82" rx="8"/>
+  <text class="node-text" x="894" y="411">Prompt</text>
+
+  <rect class="answer-node" x="1010" y="370" width="160" height="82" rx="8"/>
+  <text class="node-text" x="1090" y="411">大模型回答</text>
+
+  <path class="arrow" d="M190 411 H220"/>
+  <path class="arrow" d="M386 411 H416"/>
+  <path class="arrow" d="M582 411 H612"/>
+  <path class="arrow" d="M778 411 H808"/>
+  <path class="arrow" d="M974 411 H1004"/>
+  <path class="arrow retrieval-link" d="M1010 200 V258 H502 V364"/>
+</svg>
