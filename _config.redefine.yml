@@ -102,3 +102,5 @@ comment:
 footer:
   runtime: false
   statistics: false
+  start: 2024/04/03 00:00:00
+  icon: '<i class="fa-solid fa-code"></i>'

@@ -71,6 +71,8 @@ test('merged theme config uses only approved site behavior', () => {
   assert.equal(theme.articles?.copyright?.enable, false);
   assert.equal(theme.footer?.runtime, false);
   assert.equal(theme.footer?.statistics, false);
+  assert.equal(theme.footer?.start, '2024/04/03 00:00:00');
+  assert.equal(theme.footer?.icon, '<i class="fa-solid fa-code"></i>');
   assert.equal(theme.colors?.default_mode, 'light');
   assert.equal(theme.articles?.code_block?.highlight_theme?.light, 'github');
   assert.equal(theme.articles?.code_block?.highlight_theme?.dark, 'vs2015');

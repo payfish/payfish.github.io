@@ -19,6 +19,16 @@ hexo.extend.filter.register('before_generate', () => {
     socialLinks.links = [];
     socialLinks.qrs = [];
   }
+
+  // Redefine 2.9.0 lowercases canonical paths, which breaks case-sensitive routes.
+  hexo.extend.helper.register('autoCanonical', (config, page) => {
+    const baseUrl = config.url.endsWith('/') ? config.url : `${config.url}/`;
+    const canonicalPath = String(page.canonical_path ?? '')
+      .replace(/index\.html$/, '')
+      .replace(/^\/+/, '');
+
+    return `<link rel="canonical" href="${baseUrl}${canonicalPath}"/>`;
+  });
 });
 
 hexo.extend.filter.register('after_generate', () => {

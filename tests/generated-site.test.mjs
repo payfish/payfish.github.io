@@ -177,6 +177,27 @@ test('Redefine shell, routes, search, attribution, and dark mode are generated',
   );
 });
 
+test('every canonical URL preserves the exact generated route casing', () => {
+  assert.ok(htmlFiles.length > 0, 'no generated HTML files found');
+
+  for (const htmlFile of htmlFiles) {
+    const html = read(htmlFile);
+    const match = html.match(
+      /<link\b[^>]*\brel=["']canonical["'][^>]*\bhref=["']([^"']+)["'][^>]*>/i,
+    );
+    assert.ok(match, `${relative(PUBLIC, htmlFile)} is missing a canonical URL`);
+
+    const actual = new URL(match[1], SITE);
+    const expected = pageUrl(htmlFile);
+    assert.equal(actual.origin, expected.origin, `${relative(PUBLIC, htmlFile)} canonical origin`);
+    assert.equal(
+      decodePathname(actual.pathname),
+      decodePathname(expected.pathname),
+      `${relative(PUBLIC, htmlFile)} canonical route casing`,
+    );
+  }
+});
+
 test('disabled Redefine demo values and assets are absent from generated site', () => {
   assert.ok(htmlFiles.length > 0, 'no generated HTML files found');
   for (const htmlFile of htmlFiles) {
@@ -203,6 +224,11 @@ test('disabled Redefine demo values and assets are absent from generated site', 
   for (const asset of ['/images/loading.svg', '/images/bookmark-placeholder.svg']) {
     assert.ok(existsSync(assetFile(asset)), `missing required runtime asset ${asset}`);
   }
+
+  const home = routeHtml('/');
+  const currentYear = new Date().getFullYear();
+  assert.doesNotMatch(home, /2022|fa-heart|fa-beat/);
+  assert.match(home, new RegExp(`2024[\\s\\S]*${currentYear}[\\s\\S]*fa-code`));
 });
 
 test('AI article routes, rendered titles, dates, and taxonomy are correct', () => {

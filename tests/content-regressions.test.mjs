@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { access, readFile } from 'node:fs/promises';
+import { access, readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
@@ -45,6 +45,33 @@ test('package requires Node.js 18 or newer', async () => {
   );
 
   assert.equal(packageJson.engines?.node, '>=18');
+});
+
+test('taxonomy names do not differ only by letter casing', async () => {
+  const posts = await readdir(path.join(projectRoot, 'source', '_posts'));
+  const taxonomies = new Map();
+
+  for (const filename of posts.filter((name) => name.endsWith('.md')).sort()) {
+    const post = await parsePost(filename);
+    for (const field of ['tags', 'category', 'categories']) {
+      for (const value of [post[field]].flat().filter(Boolean)) {
+        const normalized = String(value).toLocaleLowerCase('en-US');
+        const variants = taxonomies.get(normalized) ?? new Set();
+        variants.add(String(value));
+        taxonomies.set(normalized, variants);
+      }
+    }
+  }
+
+  for (const variants of taxonomies.values()) {
+    assert.equal(
+      variants.size,
+      1,
+      `taxonomy names must use one casing: ${[...variants].join(', ')}`,
+    );
+  }
+
+  assert.deepEqual([...taxonomies.get('docker')], ['Docker']);
 });
 
 test('RAG post has canonical metadata and no duplicate body H1', async () => {

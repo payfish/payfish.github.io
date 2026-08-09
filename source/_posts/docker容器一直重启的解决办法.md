@@ -1,7 +1,7 @@
 ---
 title: docker容器一直重启的解决办法
 date: 2024-08-22 14:19:26
-tags: docker
+tags: Docker
 category: Bugs
 
 ---
@@ -70,7 +70,6 @@ services:
 docker compose down
 docker compose up -d
 ```
-
 
 
 
