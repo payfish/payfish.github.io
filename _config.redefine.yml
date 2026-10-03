@@ -104,3 +104,9 @@ footer:
   statistics: false
   start: 2024/04/03 00:00:00
   icon: '<i class="fa-solid fa-code"></i>'
+
+inject:
+  enable: true
+  head:
+    - '<link rel="stylesheet" href="/css/about.css">'
+  footer: []

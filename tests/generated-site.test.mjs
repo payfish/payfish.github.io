@@ -177,6 +177,19 @@ test('Redefine shell, routes, search, attribution, and dark mode are generated',
   );
 });
 
+test('about page presents the author profile and public contact entry', () => {
+  const about = routeHtml('/about/');
+
+  assert.match(about, /class="author-profile"/);
+  assert.match(about, /href="\/css\/about\.css"/);
+  assert.match(about, /关于我/);
+  assert.match(about, /计算机硕士/);
+  assert.match(about, /AI解决方案/);
+  assert.match(about, /RAG/);
+  assert.match(about, /Agent/);
+  assert.match(about, /github\.com\/payfish/);
+});
+
 test('every canonical URL preserves the exact generated route casing', () => {
   assert.ok(htmlFiles.length > 0, 'no generated HTML files found');
 
